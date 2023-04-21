@@ -1,36 +1,33 @@
-package com.example.application.services.usuario;
+package com.example.application.services.user;
 
-import com.example.application.entities.usuario.UsuarioEntity;
-import com.example.application.repositories.usuario.UsuarioRepository;
+import com.example.application.entities.user.UserEntity;
+import com.example.application.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 @Service
-public class UsuarioService {
+public class UserService {
 
-    private final UsuarioRepository repository;
+    private final UserRepository repository;
 
-    public UsuarioService(@Autowired UsuarioRepository repository) {
+    public UserService(@Autowired UserRepository repository) {
         this.repository = repository;
     }
 
     public List<UserDetails> getAll() {
         List<UserDetails> result = new ArrayList<>();
-        Iterable<UsuarioEntity> userEntityIterable = this.repository.findAll();
+        Iterable<UserEntity> userEntityIterable = this.repository.findAll();
 
-        for (UsuarioEntity userIterable : userEntityIterable) {
+        for (UserEntity userIterable : userEntityIterable) {
             result.add(
                     User
                     .withUsername(userIterable.getUsername())
-                    .password("{bcrypt}"+userIterable.getSenha())
+                    .password("{bcrypt}"+userIterable.getPassword())
                     .roles("USER")
                     .build()
             );

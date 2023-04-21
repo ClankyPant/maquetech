@@ -1,4 +1,4 @@
-package com.example.application.entities.usuario;
+package com.example.application.entities.user;
 
 
 import com.example.application.entities.AbstractBean;
@@ -13,23 +13,23 @@ import lombok.Setter;
 @Getter
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
-public class UsuarioEntity extends AbstractBean {
+public class UserEntity extends AbstractBean {
 
     @Column(nullable = false)
     private String username;
 
-    private String nome;
+    private String name;
 
     @Column(nullable = false)
-    private Integer tipo;
+    private Integer type;
 
-    private String email;
+    private String mail;
 
     @Column(nullable = false, columnDefinition = "text")
-    private String senha;
+    private String password;
 
     @Column(nullable = false)
     private String cpf;
 
-    private String telefone;
+    private String phone;
 }

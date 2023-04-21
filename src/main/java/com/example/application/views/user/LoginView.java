@@ -1,4 +1,4 @@
-package com.example.application.views.usuario;
+package com.example.application.views.user;
 
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -18,14 +18,17 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
+        loginForm.setAction("login");
+        loginForm.setI18n(initLoginI18n());
+
+        add(loginForm);
+    }
+
+    private LoginI18n initLoginI18n() {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setForm(getFormMessageConfiguration(i18n));
         i18n.setErrorMessage(getFormErrorMessageConfiguration(i18n));
-
-        loginForm.setAction("login");
-        loginForm.setI18n(i18n);
-
-        add(loginForm);
+        return i18n;
     }
 
     private LoginI18n.ErrorMessage getFormErrorMessageConfiguration(LoginI18n i18n) {
