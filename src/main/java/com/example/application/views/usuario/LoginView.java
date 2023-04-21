@@ -5,16 +5,19 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
 @PageTitle("Login")
 @Route(value = "login")
-public class LoginView extends Div {
+public class LoginView extends VerticalLayout {
 
     public LoginView() {
-        getStyle().set("display", "flex").set("height", "100%").set("justify-content", "center").set("align-items", "center");
+        setSizeFull();
+        setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.CENTER);
 
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setForm(getConfiguracaoLogin(i18n));
