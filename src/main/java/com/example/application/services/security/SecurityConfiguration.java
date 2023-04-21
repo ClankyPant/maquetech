@@ -1,7 +1,9 @@
 package com.example.application.services.security;
 
+import com.example.application.services.usuario.UsuarioService;
 import com.example.application.views.usuario.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,13 +28,8 @@ public class SecurityConfiguration extends VaadinWebSecurity {
     }
 
     @Bean
-    public UserDetailsManager userDetailsService() {
-        return new InMemoryUserDetailsManager(
-                User.withUsername("marcus")
-                    .password("{noop}marcus")
-                    .roles("USER")
-                    .build()
-        );
+    public UserDetailsManager userDetailsService(@Autowired UsuarioService service) {
+        return new InMemoryUserDetailsManager(service.getAll());
     }
 }
 

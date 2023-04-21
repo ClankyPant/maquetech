@@ -1,9 +1,5 @@
 package com.example.application.views.usuario;
 
-import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,7 +19,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         LoginI18n i18n = LoginI18n.createDefault();
-        i18n.setForm(getConfiguracaoLogin(i18n));
+        i18n.setForm(getFormMessageConfiguration(i18n));
+        i18n.setErrorMessage(getFormErrorMessageConfiguration(i18n));
 
         loginForm.setAction("login");
         loginForm.setI18n(i18n);
@@ -31,15 +28,23 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         add(loginForm);
     }
 
-    private LoginI18n.Form getConfiguracaoLogin(LoginI18n i18n) {
-        LoginI18n.Form i18nForm = i18n.getForm();
-        i18nForm.setTitle("MaqueTech");
-        i18nForm.setUsername("Usuário");
-        i18nForm.setPassword("Senha");
-        i18nForm.setSubmit("Login");
-        i18nForm.setForgotPassword("Esqueci minha senha");
+    private LoginI18n.ErrorMessage getFormErrorMessageConfiguration(LoginI18n i18n) {
+        LoginI18n.ErrorMessage result = i18n.getErrorMessage();
+        result.setTitle("Erro ao logar");
+        result.setMessage("Usuario/Senha inválidos!");
 
-        return i18nForm;
+        return result;
+    }
+
+    private LoginI18n.Form getFormMessageConfiguration(LoginI18n i18n) {
+        LoginI18n.Form result = i18n.getForm();
+        result.setTitle("MaqueTech");
+        result.setUsername("Usuário");
+        result.setPassword("Senha");
+        result.setSubmit("Login");
+        result.setForgotPassword("Esqueci minha senha");
+
+        return result;
     }
 
     @Override
