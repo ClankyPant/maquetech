@@ -6,23 +6,34 @@ import com.example.application.components.appnav.AppNavItem;
 import com.example.application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
+
+import java.awt.*;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
+@PermitAll
 public class MainLayout extends AppLayout {
+
+    private final transient AuthenticationContext authContext;
 
     private H2 viewTitle;
 
-    public MainLayout() {
+    public MainLayout(@Autowired AuthenticationContext authContext) {
+        this.authContext = authContext;
+
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -42,7 +53,11 @@ public class MainLayout extends AppLayout {
         H1 appName = new H1("MaqueTech");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
-
+        Button btn = new Button("t");
+        btn.addClickListener((event) -> {
+            this.authContext.logout();
+        });
+        header.add(btn);
         Scroller scroller = new Scroller(createNavigation());
 
         addToDrawer(header, scroller, createFooter());
