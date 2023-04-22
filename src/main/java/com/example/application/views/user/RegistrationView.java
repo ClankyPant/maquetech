@@ -2,12 +2,15 @@ package com.example.application.views.user;
 
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
+import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -16,7 +19,12 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.Arrays;
 
@@ -25,7 +33,14 @@ import java.util.Arrays;
 @Route(value = "registration")
 public class RegistrationView extends VerticalLayout {
 
-    public RegistrationView() {
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+
+    private UserService userService;
+
+    public RegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+        this.userService = userService;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+
         configLayout();
 
         VerticalLayout vlContent = new VerticalLayout();
@@ -90,16 +105,35 @@ public class RegistrationView extends VerticalLayout {
             try {
                 UserEntity userEntity = new UserEntity();
                 binder.writeBean(userEntity);
-                
 
+                if (this.userService.hasByUsername(userEntity.getUsername())) {
+                    throw new Exception("Username " + userEntity.getUsername() + " já está em uso!");
+                }
+
+                String password = userEntity.getPassword();
+                String salGerado = BCrypt.gensalt();
+                String bcryptPassword = BCrypt.hashpw(password, salGerado);
+                userEntity.setPassword(bcryptPassword);
+
+                this.userService.save(userEntity);
+                inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
             } catch (ValidationException ex) {
                 notifyErro("Alguns campos não foram preenchidos corretamente!");
             } catch (Exception e) {
-                e.printStackTrace();
+                notifyErro(e.getMessage());
             }
         });
 
-        vlContent.add(formLayout, btnRegister);
+        Button btnCancel = new Button("Cancelar");
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnCancel.addClickListener((event) -> {
+            btnCancel.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+        });
+
+        HorizontalLayout hlButtons = new HorizontalLayout();
+        hlButtons.add(btnRegister, btnCancel);
+
+        vlContent.add(formLayout, hlButtons);
 
         add(vlContent);
     }

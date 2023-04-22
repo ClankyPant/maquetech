@@ -1,6 +1,7 @@
 package com.example.application.services.user;
 
 import com.example.application.entities.user.UserEntity;
+import com.example.application.enums.user.UserTypeEnum;
 import com.example.application.repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -24,16 +25,29 @@ public class UserService {
         Iterable<UserEntity> userEntityIterable = this.repository.findAll();
 
         for (UserEntity userIterable : userEntityIterable) {
-            result.add(
-                    User
-                    .withUsername(userIterable.getUsername())
-                    .password("{bcrypt}"+userIterable.getPassword())
-                    .roles("USER")
-                    .build()
-            );
+            result.add(createUserDetail(userIterable));
         }
 
         return result;
     }
 
+    public UserDetails createUserDetail(UserEntity userEntity) {
+        return User
+                .withUsername(userEntity.getUsername())
+                .password("{bcrypt}"+userEntity.getPassword())
+                .roles(userEntity.getType().equals(UserTypeEnum.NIVEL_1) ? "USER" : "PROFESSOR")
+                .build();
+    }
+
+    public boolean hasByUsername(String username) {
+        return this.getByUsername(username) != null;
+    }
+
+    public UserEntity getByUsername(String username) {
+        return this.repository.findByUsername(username);
+    }
+
+    public void save(UserEntity userEntity) {
+        this.repository.save(userEntity);
+    }
 }

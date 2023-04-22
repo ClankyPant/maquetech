@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Entity
+@Entity(name = "user_entity")
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
 public class UserEntity extends AbstractBean {
 
