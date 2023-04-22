@@ -16,6 +16,7 @@ import jakarta.annotation.security.RolesAllowed;
 public class CourseView extends MaqueVerticalLayout {
 
     public CourseView() {
+
         setAlignItems(Alignment.START);
         setJustifyContentMode(JustifyContentMode.START);
 

@@ -3,14 +3,13 @@ package com.example.application.views.user;
 import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
+import com.example.application.helpers.NotificationHelper;
 import com.example.application.services.user.professor.ProfessorCodeService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -148,9 +147,9 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 this.inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
                 this.getUI().ifPresent(ui -> ui.navigate(UserLoginView.class));
             } catch (ValidationException ex) {
-                notifyErro("Alguns campos não foram preenchidos corretamente!");
+                NotificationHelper.error("Alguns campos não foram preenchidos corretamente!");
             } catch (Exception e) {
-                notifyErro(e.getMessage());
+                NotificationHelper.error(e.getMessage());
             }
         });
 
@@ -166,12 +165,5 @@ public class UserRegistrationView extends MaqueVerticalLayout {
         vlContent.add(formLayout, hlButtons);
 
         add(vlContent);
-    }
-
-    private void notifyErro(String message) {
-        Notification notification = new Notification(message);
-        notification.setDuration(3000);
-        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        notification.open();
     }
 }
