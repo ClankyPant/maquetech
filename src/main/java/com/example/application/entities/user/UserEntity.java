@@ -6,6 +6,7 @@ import com.example.application.enums.user.UserTypeEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.usertype.UserType;
 
 @Setter
 @Getter
@@ -35,4 +36,6 @@ public class UserEntity extends AbstractBean {
     public UserTypeEnum getType() {
         return this.type != null ? this.type : UserTypeEnum.NIVEL_1;
     }
+
+    public boolean isProfessor() { return this.type.equals(UserTypeEnum.NIVEL_2); }
 }

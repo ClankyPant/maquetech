@@ -19,10 +19,10 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import io.micrometer.common.util.StringUtils;
+import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -35,7 +35,9 @@ public class RegistrationView extends VerticalLayout {
 
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
-    private UserService userService;
+    TextField professorCodeField;
+
+    private final UserService userService;
 
     public RegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.userService = userService;
@@ -55,6 +57,12 @@ public class RegistrationView extends VerticalLayout {
         binder.forField(usernameField)
                 .withValidator(username -> username.length() > 5, "Login deve conter mais que 5 caracteres!")
                 .bind(UserEntity::getUsername, UserEntity::setUsername);
+
+        TextField nameField = new TextField("Nome");
+        nameField.setRequired(true);
+        binder.forField(nameField)
+                .withValidator(username -> username.length() > 4, "Nome deve conter mais que 5 caracteres!")
+                .bind(UserEntity::getName, UserEntity::setName);
 
         PasswordField passwordField = new PasswordField("Senha");
         passwordField.setRequired(true);
@@ -89,15 +97,23 @@ public class RegistrationView extends VerticalLayout {
                 .asRequired()
                 .bind(UserEntity::getPhone, UserEntity::setPhone);
 
+        professorCodeField = new TextField("Código professor");
+        professorCodeField.setRequired(true);
+        professorCodeField.setVisible(false);
+
         ComboBox<UserTypeEnum> typeField = new ComboBox<>("Tipo usuário");
         typeField.setItems(Arrays.asList(UserTypeEnum.NIVEL_1, UserTypeEnum.NIVEL_2));
         typeField.setItemLabelGenerator(UserTypeEnum::getDescription);
         typeField.setValue(UserTypeEnum.NIVEL_1);
+        typeField.addValueChangeListener((event) -> {
+            professorCodeField.setVisible(event.getValue().equals(UserTypeEnum.NIVEL_2));
+        });
         binder.forField(typeField)
                 .asRequired()
                 .bind(UserEntity::getType, UserEntity::setType);
 
-        formLayout.add(usernameField, passwordField, mailField, cpfField, phoneField, typeField);
+        formLayout.add(usernameField, passwordField, nameField, mailField, cpfField, phoneField, typeField, professorCodeField);
+        formLayout.setColspan(nameField, 2);
         formLayout.setColspan(mailField, 2);
 
         Button btnRegister = new Button("Cadastrar-se");
@@ -105,6 +121,10 @@ public class RegistrationView extends VerticalLayout {
             try {
                 UserEntity userEntity = new UserEntity();
                 binder.writeBean(userEntity);
+
+                if (userEntity.isProfessor() && StringUtils.isBlank(this.professorCodeField.getValue())) {
+                    throw new Exception("Informe um código válido de professor para finalizar o cadastro!");
+                }
 
                 if (this.userService.hasByUsername(userEntity.getUsername())) {
                     throw new Exception("Username " + userEntity.getUsername() + " já está em uso!");
