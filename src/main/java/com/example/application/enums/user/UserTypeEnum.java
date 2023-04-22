@@ -6,10 +6,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum UserTypeEnum {
-    NORMAL(10,"Aluno"),
-    PROFESSOR(20,"Professor");
+    NIVEL_1("Aluno"),
+    NIVEL_2("Professor");
 
-    private Integer code;
-
-    private String name;
+    private String description;
 }

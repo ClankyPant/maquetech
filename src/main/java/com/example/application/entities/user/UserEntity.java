@@ -2,10 +2,8 @@ package com.example.application.entities.user;
 
 
 import com.example.application.entities.AbstractBean;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.example.application.enums.user.UserTypeEnum;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +18,9 @@ public class UserEntity extends AbstractBean {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Integer type;
+    private UserTypeEnum type = UserTypeEnum.NIVEL_1;
 
     private String mail;
 
@@ -32,4 +31,8 @@ public class UserEntity extends AbstractBean {
     private String cpf;
 
     private String phone;
+
+    public UserTypeEnum getType() {
+        return this.type != null ? this.type : UserTypeEnum.NIVEL_1;
+    }
 }
