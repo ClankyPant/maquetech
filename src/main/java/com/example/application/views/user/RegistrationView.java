@@ -1,7 +1,9 @@
 package com.example.application.views.user;
 
+import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
+import com.example.application.services.user.ProfessorCodeService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -30,19 +32,19 @@ import java.util.Arrays;
 @AnonymousAllowed
 @PageTitle("Cadastro de usuário")
 @Route(value = "registration")
-public class RegistrationView extends VerticalLayout {
+public class RegistrationView extends MaqueVerticalLayout {
 
+    private final ProfessorCodeService professorCodeService;
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
     TextField professorCodeField;
 
     private final UserService userService;
 
-    public RegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+    public RegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager, @Autowired ProfessorCodeService professorCodeService) {
         this.userService = userService;
+        this.professorCodeService = professorCodeService;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
-
-        configLayout();
 
         VerticalLayout vlContent = new VerticalLayout();
         vlContent.setWidth("50%");
@@ -122,12 +124,19 @@ public class RegistrationView extends VerticalLayout {
                 UserEntity userEntity = new UserEntity();
                 binder.writeBean(userEntity);
 
-                if (userEntity.isProfessor() && StringUtils.isBlank(this.professorCodeField.getValue())) {
-                    throw new Exception("Informe um código válido de professor para finalizar o cadastro!");
-                }
-
                 if (this.userService.hasByUsername(userEntity.getUsername())) {
                     throw new Exception("Login " + userEntity.getUsername() + " já está em uso!");
+                }
+
+                if (userEntity.isProfessor()) {
+                    String professorCode = this.professorCodeField.getValue();
+                    if (StringUtils.isBlank(professorCode)) throw new Exception("Informe um código válido de professor para finalizar o cadastro!");
+
+                    if (!this.professorCodeService.isValidCode(professorCode)) {
+                        throw new Exception("Código inválido!");
+                    }
+
+                    this.professorCodeService.invalidateCode(professorCode);
                 }
 
                 String password = userEntity.getPassword();
@@ -164,11 +173,5 @@ public class RegistrationView extends VerticalLayout {
         notification.setDuration(3000);
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         notification.open();
-    }
-
-    private void configLayout() {
-        setSizeFull();
-        setAlignItems(FlexComponent.Alignment.CENTER);
-        setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
     }
 }
