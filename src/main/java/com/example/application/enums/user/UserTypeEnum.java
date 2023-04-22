@@ -6,8 +6,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum UserTypeEnum {
-    NIVEL_1("Aluno"),
-    NIVEL_2("Professor");
+    LEVEL_1("Aluno"),
+    LEVEL_2("Professor"),
+    LEVEL_3("Laboratorista");
 
     private String description;
 }

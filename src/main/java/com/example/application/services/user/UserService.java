@@ -35,7 +35,7 @@ public class UserService {
         return User
                 .withUsername(userEntity.getUsername())
                 .password("{bcrypt}"+userEntity.getPassword())
-                .roles(userEntity.getType().equals(UserTypeEnum.NIVEL_1) ? "USER" : "PROFESSOR")
+                .roles(userEntity.getType().equals(UserTypeEnum.LEVEL_1) ? "USER" : "PROFESSOR")
                 .build();
     }
 

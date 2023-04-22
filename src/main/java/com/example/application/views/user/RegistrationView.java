@@ -21,7 +21,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import io.micrometer.common.util.StringUtils;
-import org.jsoup.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -103,11 +102,11 @@ public class RegistrationView extends VerticalLayout {
         professorCodeField.setVisible(false);
 
         ComboBox<UserTypeEnum> typeField = new ComboBox<>("Tipo usuário");
-        typeField.setItems(Arrays.asList(UserTypeEnum.NIVEL_1, UserTypeEnum.NIVEL_2));
+        typeField.setItems(Arrays.asList(UserTypeEnum.LEVEL_1, UserTypeEnum.LEVEL_2));
         typeField.setItemLabelGenerator(UserTypeEnum::getDescription);
-        typeField.setValue(UserTypeEnum.NIVEL_1);
+        typeField.setValue(UserTypeEnum.LEVEL_1);
         typeField.addValueChangeListener((event) -> {
-            professorCodeField.setVisible(event.getValue().equals(UserTypeEnum.NIVEL_2));
+            professorCodeField.setVisible(event.getValue().equals(UserTypeEnum.LEVEL_2));
         });
         binder.forField(typeField)
                 .asRequired()
