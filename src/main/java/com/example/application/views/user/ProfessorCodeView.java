@@ -15,6 +15,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import io.micrometer.common.util.StringUtils;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
@@ -23,7 +24,7 @@ import java.awt.datatransfer.StringSelection;
 import java.util.Locale;
 import java.util.UUID;
 
-@AnonymousAllowed
+@RolesAllowed("ADMIN")
 @PageTitle("Gerarador código professor")
 @Route(value = "gerador-codigo-professor", layout = MainLayout.class)
 public class ProfessorCodeView extends MaqueVerticalLayout {

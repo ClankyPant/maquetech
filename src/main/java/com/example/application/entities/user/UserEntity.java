@@ -36,5 +36,17 @@ public class UserEntity extends AbstractBean {
         return this.type != null ? this.type : UserTypeEnum.LEVEL_1;
     }
 
+    public boolean isStudent() { return this.type.equals(UserTypeEnum.LEVEL_1); }
+
     public boolean isProfessor() { return this.type.equals(UserTypeEnum.LEVEL_2); }
+
+    public boolean isAdmin() { return this.type.equals(UserTypeEnum.LEVEL_3); }
+
+    public String getRoleStr() {
+        String result = "NORMAL";
+        if (this.isProfessor()) result = "PROFESSOR";
+        if (this.isAdmin()) result = "ADMIN";
+
+        return result;
+    }
 }

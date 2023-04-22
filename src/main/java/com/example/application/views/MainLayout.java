@@ -3,6 +3,8 @@ package com.example.application.views;
 
 import com.example.application.components.appnav.AppNav;
 import com.example.application.components.appnav.AppNavItem;
+import com.example.application.entities.user.UserEntity;
+import com.example.application.services.user.UserService;
 import com.example.application.views.helloworld.HelloWorldView;
 import com.example.application.views.user.ProfessorCodeView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -15,6 +17,8 @@ import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -22,6 +26,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -33,16 +38,30 @@ import java.awt.*;
 @PermitAll
 public class MainLayout extends AppLayout {
 
+    private final UserService userService;
+
+    private UserEntity userLogged;
+
     private final transient AuthenticationContext authContext;
 
     private H2 viewTitle;
 
-    public MainLayout(@Autowired AuthenticationContext authContext) {
+    public MainLayout(@Autowired AuthenticationContext authContext, @Autowired UserService userService) {
+        this.userService = userService;
         this.authContext = authContext;
 
-        setPrimarySection(Section.DRAWER);
-        addDrawerContent();
-        addHeaderContent();
+        try {
+            this.userLogged = this.userService.getLoggedUser();
+
+            setPrimarySection(Section.DRAWER);
+            addDrawerContent();
+            addHeaderContent();
+        } catch (NotFoundException ex) {
+            Notification notification = new Notification(ex.getMessage());
+            notification.setDuration(3000);
+            notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+            notification.open();
+        }
     }
 
     private void addHeaderContent() {
@@ -81,7 +100,7 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
-        nav.addItem(new AppNavItem("Gerador de código", ProfessorCodeView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
+        nav.addItem(new AppNavItem("Gerador de código", ProfessorCodeView.class, LineAwesomeIcon.GLOBE_SOLID.create())).setVisible(this.userLogged.isAdmin());
 
         return nav;
     }
