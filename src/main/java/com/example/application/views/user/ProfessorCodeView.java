@@ -38,9 +38,6 @@ public class ProfessorCodeView extends MaqueVerticalLayout {
         vlContent.setSpacing(true);
         vlContent.setSizeUndefined();
 
-        HorizontalLayout hlContent = new HorizontalLayout();
-        hlContent.setAlignItems(Alignment.CENTER);
-
         TextField codeField = new TextField("Código");
         codeField.setHelperText("Salve o código após gerado!");
         codeField.setWidth("325px");
@@ -53,15 +50,7 @@ public class ProfessorCodeView extends MaqueVerticalLayout {
             this.professorCodeService.save(professorCode);
         });
 
-        Button copyButton = new Button("Copiar");
-        copyButton.addClickListener((event) -> {
-            Page page = UI.getCurrent().getPage();
-            page.executeJs("navigator.clipboard.writeText('" + codeField.getValue() + "');");
-        });
-
-        hlContent.add(generateCodeButton, copyButton);
-
-        vlContent.add(codeField, hlContent);
+        vlContent.add(codeField, generateCodeButton);
 
         add(vlContent);
     }
