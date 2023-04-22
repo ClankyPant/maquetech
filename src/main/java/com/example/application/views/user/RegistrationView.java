@@ -2,15 +2,19 @@ package com.example.application.views.user;
 
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
@@ -26,15 +30,13 @@ import java.util.Arrays;
 @Route(value = "registration")
 public class RegistrationView extends VerticalLayout {
 
-    private Binder<UserEntity> binder;
-
     public RegistrationView() {
         configLayout();
 
         VerticalLayout vlContent = new VerticalLayout();
         vlContent.setWidth("50%");
 
-        binder = new Binder<>(UserEntity.class);
+        Binder<UserEntity> binder = new Binder<>(UserEntity.class);
 
         FormLayout formLayout = new FormLayout();
 
@@ -63,14 +65,30 @@ public class RegistrationView extends VerticalLayout {
         phoneField.setRequired(true);
         binder.bind(phoneField, UserEntity::getPhone, UserEntity::setPhone);
 
-        ComboBox<UserTypeEnum> typeField = new ComboBox<>("Country");
+        ComboBox<UserTypeEnum> typeField = new ComboBox<>("Tipo usuário");
         typeField.setItems(Arrays.asList(UserTypeEnum.NORMAL, UserTypeEnum.PROFESSOR));
         typeField.setItemLabelGenerator(UserTypeEnum::getName);
 
         formLayout.add(usernameField, passwordField, mailField, cpfField, phoneField, typeField);
         formLayout.setColspan(mailField, 2);
 
-        vlContent.add(formLayout);
+        Button btnRegister = new Button("Cadastrar-se");
+        btnRegister.addClickListener((event) -> {
+            try {
+                UserEntity userEntity = new UserEntity();
+                binder.writeBean(userEntity);
+
+
+            } catch (ValidationException ex) {
+                Notification notification = new Notification("Alguns campos não foram preenchidos corretamente!");
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.open();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        vlContent.add(formLayout, btnRegister);
 
         add(vlContent);
     }
