@@ -1,5 +1,6 @@
 package com.example.application.views.user;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,8 +21,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         loginForm.setAction("login");
         loginForm.setI18n(initLoginI18n());
+        loginForm.setForgotPasswordButtonVisible(false);
 
-        add(loginForm);
+        add(loginForm, new RouterLink("Cadastrar-se", RegistrationView.class));
     }
 
     private LoginI18n initLoginI18n() {
