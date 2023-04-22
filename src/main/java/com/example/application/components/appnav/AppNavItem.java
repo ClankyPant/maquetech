@@ -89,6 +89,13 @@ public class AppNavItem extends Component {
         setIcon(icon);
     }
 
+    public AppNavItem(String label, Class<? extends Component> view, Component icon, boolean visible) {
+        setPath(view);
+        setLabel(label);
+        setIcon(icon);
+        this.setVisible(visible);
+    }
+
     /**
      * Adds menu item(s) inside this item, creating a hierarchy.
      * 

@@ -100,7 +100,7 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
-        nav.addItem(new AppNavItem("Gerador de código", ProfessorCodeView.class, LineAwesomeIcon.GLOBE_SOLID.create())).setVisible(this.userLogged.isAdmin());
+        nav.addItem(new AppNavItem("Gerador de código", ProfessorCodeView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
 
         return nav;
     }
