@@ -128,7 +128,7 @@ public class RegistrationView extends VerticalLayout {
                 }
 
                 if (this.userService.hasByUsername(userEntity.getUsername())) {
-                    throw new Exception("Username " + userEntity.getUsername() + " já está em uso!");
+                    throw new Exception("Login " + userEntity.getUsername() + " já está em uso!");
                 }
 
                 String password = userEntity.getPassword();
