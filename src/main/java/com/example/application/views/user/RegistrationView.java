@@ -53,6 +53,7 @@ public class RegistrationView extends VerticalLayout {
         FormLayout formLayout = new FormLayout();
 
         TextField usernameField = new TextField("Login");
+        usernameField.setAllowedCharPattern("[A-Za-z0-9]");
         usernameField.setRequired(true);
         binder.forField(usernameField)
                 .withValidator(username -> username.length() > 5, "Login deve conter mais que 5 caracteres!")
