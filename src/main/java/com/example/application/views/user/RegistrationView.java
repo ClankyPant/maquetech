@@ -116,7 +116,8 @@ public class RegistrationView extends VerticalLayout {
                 userEntity.setPassword(bcryptPassword);
 
                 this.userService.save(userEntity);
-                inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
+                this.inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
+                this.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
             } catch (ValidationException ex) {
                 notifyErro("Alguns campos não foram preenchidos corretamente!");
             } catch (Exception e) {
@@ -127,7 +128,7 @@ public class RegistrationView extends VerticalLayout {
         Button btnCancel = new Button("Cancelar");
         btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnCancel.addClickListener((event) -> {
-            btnCancel.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+            this.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
         });
 
         HorizontalLayout hlButtons = new HorizontalLayout();

@@ -11,6 +11,11 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.spring.security.AuthenticationContext;
@@ -43,21 +48,27 @@ public class MainLayout extends AppLayout {
         DrawerToggle toggle = new DrawerToggle();
         toggle.getElement().setAttribute("aria-label", "Menu toggle");
 
+        HorizontalLayout hlNavBarInfo = new HorizontalLayout();
+        hlNavBarInfo.setMargin(true);
+        hlNavBarInfo.setSizeFull();
+
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        addToNavbar(true, toggle, viewTitle);
+        Button btnLogout = new Button(new Icon(VaadinIcon.SIGN_OUT));
+        btnLogout.addClickListener((event) -> this.authContext.logout());
+        hlNavBarInfo.add(viewTitle, btnLogout);
+        hlNavBarInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        hlNavBarInfo.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        addToNavbar(true, toggle, hlNavBarInfo);
     }
 
     private void addDrawerContent() {
         H1 appName = new H1("MaqueTech");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
-        Button btn = new Button("t");
-        btn.addClickListener((event) -> {
-            this.authContext.logout();
-        });
-        header.add(btn);
+
         Scroller scroller = new Scroller(createNavigation());
 
         addToDrawer(header, scroller, createFooter());
@@ -74,9 +85,7 @@ public class MainLayout extends AppLayout {
     }
 
     private Footer createFooter() {
-        Footer layout = new Footer();
-
-        return layout;
+        return new Footer();
     }
 
     @Override
