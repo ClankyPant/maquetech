@@ -1,7 +1,7 @@
-package com.example.application.services.user;
+package com.example.application.services.user.professor;
 
-import com.example.application.entities.user.ProfessorCodeEntity;
-import com.example.application.repositories.user.ProfessorCodeRepository;
+import com.example.application.entities.user.professor.ProfessorCodeEntity;
+import com.example.application.repositories.user.professor.ProfessorCodeRepository;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 

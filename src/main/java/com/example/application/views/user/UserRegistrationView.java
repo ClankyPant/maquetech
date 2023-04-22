@@ -3,7 +3,7 @@ package com.example.application.views.user;
 import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
-import com.example.application.services.user.ProfessorCodeService;
+import com.example.application.services.user.professor.ProfessorCodeService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -11,7 +11,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -31,17 +30,18 @@ import java.util.Arrays;
 
 @AnonymousAllowed
 @PageTitle("Cadastro de usuário")
-@Route(value = "registration")
-public class RegistrationView extends MaqueVerticalLayout {
+@Route(value = "user-registration")
+public class UserRegistrationView extends MaqueVerticalLayout {
 
     private final ProfessorCodeService professorCodeService;
+
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
-    TextField professorCodeField;
+    private final TextField professorCodeField;
 
     private final UserService userService;
 
-    public RegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager, @Autowired ProfessorCodeService professorCodeService) {
+    public UserRegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager, @Autowired ProfessorCodeService professorCodeService) {
         this.userService = userService;
         this.professorCodeService = professorCodeService;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
@@ -146,7 +146,7 @@ public class RegistrationView extends MaqueVerticalLayout {
 
                 this.userService.save(userEntity);
                 this.inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
-                this.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+                this.getUI().ifPresent(ui -> ui.navigate(UserLoginView.class));
             } catch (ValidationException ex) {
                 notifyErro("Alguns campos não foram preenchidos corretamente!");
             } catch (Exception e) {
@@ -157,7 +157,7 @@ public class RegistrationView extends MaqueVerticalLayout {
         Button btnCancel = new Button("Cancelar");
         btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnCancel.addClickListener((event) -> {
-            this.getUI().ifPresent(ui -> ui.navigate(LoginView.class));
+            this.getUI().ifPresent(ui -> ui.navigate(UserLoginView.class));
         });
 
         HorizontalLayout hlButtons = new HorizontalLayout();

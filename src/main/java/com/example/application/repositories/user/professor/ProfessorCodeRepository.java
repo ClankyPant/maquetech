@@ -1,7 +1,6 @@
-package com.example.application.repositories.user;
+package com.example.application.repositories.user.professor;
 
-import com.example.application.entities.user.ProfessorCodeEntity;
-import com.example.application.entities.user.UserEntity;
+import com.example.application.entities.user.professor.ProfessorCodeEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

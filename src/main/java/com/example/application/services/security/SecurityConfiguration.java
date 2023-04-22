@@ -1,7 +1,7 @@
 package com.example.application.services.security;
 
 import com.example.application.services.user.UserService;
-import com.example.application.views.user.LoginView;
+import com.example.application.views.user.UserLoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        setLoginView(http, LoginView.class);
+        setLoginView(http, UserLoginView.class);
     }
 
     @Bean

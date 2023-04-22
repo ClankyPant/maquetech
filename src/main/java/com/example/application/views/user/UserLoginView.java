@@ -1,6 +1,5 @@
 package com.example.application.views.user;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,11 +9,11 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 @AnonymousAllowed
 @PageTitle("Login")
 @Route(value = "login")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+public class UserLoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm loginForm = new LoginForm();
 
-    public LoginView() {
+    public UserLoginView() {
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -23,7 +22,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         loginForm.setI18n(initLoginI18n());
         loginForm.setForgotPasswordButtonVisible(false);
 
-        add(loginForm, new RouterLink("Cadastrar-se", RegistrationView.class));
+        add(loginForm, new RouterLink("Cadastrar-se", UserRegistrationView.class));
     }
 
     private LoginI18n initLoginI18n() {

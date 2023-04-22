@@ -1,4 +1,4 @@
-package com.example.application.entities.user;
+package com.example.application.entities.user.professor;
 
 import com.example.application.entities.AbstractBean;
 import jakarta.persistence.Column;

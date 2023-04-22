@@ -1,37 +1,26 @@
-package com.example.application.views.user;
+package com.example.application.views.user.professor;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
-import com.example.application.services.user.ProfessorCodeService;
+import com.example.application.services.user.professor.ProfessorCodeService;
 import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import io.micrometer.common.util.StringUtils;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.util.Locale;
 import java.util.UUID;
 
 @RolesAllowed("ADMIN")
 @PageTitle("Gerarador código professor")
 @Route(value = "gerador-codigo-professor", layout = MainLayout.class)
-public class ProfessorCodeView extends MaqueVerticalLayout {
+public class ProfessorCodeGeneratorView extends MaqueVerticalLayout {
 
     private final ProfessorCodeService professorCodeService;
 
-    public ProfessorCodeView(@Autowired ProfessorCodeService professorCodeService) {
+    public ProfessorCodeGeneratorView(@Autowired ProfessorCodeService professorCodeService) {
         this.professorCodeService = professorCodeService;
 
         VerticalLayout vlContent = new VerticalLayout();
