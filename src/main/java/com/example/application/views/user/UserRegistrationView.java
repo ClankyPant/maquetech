@@ -1,9 +1,11 @@
 package com.example.application.views.user;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
+import com.example.application.entities.course.CourseEntity;
 import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.user.UserTypeEnum;
 import com.example.application.helpers.NotificationHelper;
+import com.example.application.services.course.CourseService;
 import com.example.application.services.user.professor.ProfessorCodeService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
@@ -34,14 +36,17 @@ public class UserRegistrationView extends MaqueVerticalLayout {
 
     private final ProfessorCodeService professorCodeService;
 
+    private final CourseService courseService;
+
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
     private final TextField professorCodeField;
 
     private final UserService userService;
 
-    public UserRegistrationView(@Autowired UserService userService, @Autowired InMemoryUserDetailsManager inMemoryUserDetailsManager, @Autowired ProfessorCodeService professorCodeService) {
+    public UserRegistrationView(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager, ProfessorCodeService professorCodeService, CourseService courseService) {
         this.userService = userService;
+        this.courseService = courseService;
         this.professorCodeService = professorCodeService;
         this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
 
@@ -102,18 +107,30 @@ public class UserRegistrationView extends MaqueVerticalLayout {
         professorCodeField.setRequired(true);
         professorCodeField.setVisible(false);
 
+        ComboBox<CourseEntity> courseComboBox = new ComboBox<>("Curso");
+        courseComboBox.setRequired(true);
+        courseComboBox.setItems(this.courseService.findAll());
+        courseComboBox.setItemLabelGenerator(CourseEntity::getName);
+
         ComboBox<UserTypeEnum> typeField = new ComboBox<>("Tipo usuário");
         typeField.setItems(Arrays.asList(UserTypeEnum.LEVEL_1, UserTypeEnum.LEVEL_2));
         typeField.setItemLabelGenerator(UserTypeEnum::getDescription);
         typeField.setValue(UserTypeEnum.LEVEL_1);
         typeField.addValueChangeListener((event) -> {
-            professorCodeField.setVisible(event.getValue().equals(UserTypeEnum.LEVEL_2));
+            boolean isProfessor = event.getValue().equals(UserTypeEnum.LEVEL_2);
+
+            professorCodeField.setVisible(isProfessor);
+            courseComboBox.setVisible(!isProfessor);
+
+            if (isProfessor) {
+                courseComboBox.setValue(null);
+            }
         });
         binder.forField(typeField)
                 .asRequired()
                 .bind(UserEntity::getType, UserEntity::setType);
 
-        formLayout.add(usernameField, passwordField, nameField, mailField, cpfField, phoneField, typeField, professorCodeField);
+        formLayout.add(usernameField, passwordField, nameField, mailField, cpfField, phoneField, typeField, professorCodeField, courseComboBox);
         formLayout.setColspan(nameField, 2);
         formLayout.setColspan(mailField, 2);
 
@@ -125,6 +142,14 @@ public class UserRegistrationView extends MaqueVerticalLayout {
 
                 if (this.userService.hasByUsername(userEntity.getUsername())) {
                     throw new Exception("Login " + userEntity.getUsername() + " já está em uso!");
+                }
+
+                if (userEntity.isStudent() && courseComboBox.getValue() == null) {
+                    throw new Exception("Informe um curso para finalizar o cadastro!");
+                }
+
+                if (userEntity.isStudent()) {
+                    userEntity.setCourse(courseComboBox.getValue());
                 }
 
                 if (userEntity.isProfessor()) {
@@ -147,8 +172,10 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 this.inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(userEntity));
                 this.getUI().ifPresent(ui -> ui.navigate(UserLoginView.class));
             } catch (ValidationException ex) {
+                ex.printStackTrace();
                 NotificationHelper.error("Alguns campos não foram preenchidos corretamente!");
             } catch (Exception e) {
+                e.printStackTrace();
                 NotificationHelper.error(e.getMessage());
             }
         });
