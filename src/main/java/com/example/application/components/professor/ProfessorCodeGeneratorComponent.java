@@ -1,4 +1,4 @@
-package com.example.application.views.user.professor;
+package com.example.application.components.professor;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.services.user.professor.ProfessorCodeService;
@@ -13,16 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
-@RolesAllowed("ADMIN")
-@PageTitle("Gerarador código professor")
-@Route(value = "gerador-codigo-professor", layout = MainLayout.class)
-public class ProfessorCodeGeneratorView extends MaqueVerticalLayout {
+public class ProfessorCodeGeneratorComponent extends MaqueVerticalLayout {
 
-    private final ProfessorCodeService professorCodeService;
-
-    public ProfessorCodeGeneratorView(@Autowired ProfessorCodeService professorCodeService) {
-        this.professorCodeService = professorCodeService;
-
+    public ProfessorCodeGeneratorComponent(ProfessorCodeService professorCodeService) {
         VerticalLayout vlContent = new VerticalLayout();
         vlContent.setSpacing(true);
         vlContent.setSizeUndefined();
@@ -36,7 +29,7 @@ public class ProfessorCodeGeneratorView extends MaqueVerticalLayout {
         generateCodeButton.addClickListener((event) -> {
             String professorCode = UUID.randomUUID().toString().toUpperCase();
             codeField.setValue(professorCode);
-            this.professorCodeService.save(professorCode);
+            professorCodeService.save(professorCode);
         });
 
         vlContent.add(codeField, generateCodeButton);

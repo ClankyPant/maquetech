@@ -7,7 +7,7 @@ import com.example.application.entities.user.UserEntity;
 import com.example.application.services.user.UserService;
 import com.example.application.views.helloworld.HelloWorldView;
 import com.example.application.views.course.CourseView;
-import com.example.application.views.user.professor.ProfessorCodeGeneratorView;
+import com.example.application.views.user.professor.ProfessorView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -55,6 +55,7 @@ public class MainLayout extends AppLayout {
             addDrawerContent();
             addHeaderContent();
         } catch (NotFoundException ex) {
+            ex.printStackTrace();
             Notification notification = new Notification(ex.getMessage());
             notification.setDuration(3000);
             notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -98,7 +99,7 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
-        nav.addItem(new AppNavItem("Gerador de código", ProfessorCodeGeneratorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Professores", ProfessorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
 
         return nav;
