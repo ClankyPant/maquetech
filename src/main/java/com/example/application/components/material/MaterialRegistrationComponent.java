@@ -21,17 +21,17 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
     private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
 
-    private final MaterialService materialService;
-
     public MaterialRegistrationComponent(MaterialService materialService) {
-        this.materialService = materialService;
-
         var vlContent = new VerticalLayout();
         vlContent.setSizeFull();
         vlContent.setWidth("50%");
 
         var binder = new Binder<>(MaterialEntity.class);
         var formLayout = new FormLayout();
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 1),
+                new FormLayout.ResponsiveStep("500px", 3)
+        );
 
         var materialNameField = new TextField("Nome");
         materialNameField.setRequired(true);
@@ -51,13 +51,6 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         var materialSafeStockQtyField = new NumberField("Quantidade em estoque (Segurança)");
         binder.forField(materialSafeStockQtyField).bind(MaterialEntity::getStockSafeQty, MaterialEntity::setStockSafeQty);
 
-        var materialTypeField = new ComboBox<MaterialTypeEnum>("Tipo de material");
-        materialTypeField.setItems(List.of(MaterialTypeEnum.NORMAL, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.COLLECTION, MaterialTypeEnum.ENVIRONMENT));
-        materialTypeField.setItemLabelGenerator(MaterialTypeEnum::getDescription);
-        materialTypeField.setValue(MaterialTypeEnum.NORMAL);
-        materialTypeField.setRequired(true);
-        binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
-
         var materialUnitType = new ComboBox<MaterialUnitEnum>("Unidade material");
         materialUnitType.setItems(List.of(MaterialUnitEnum.UN, MaterialUnitEnum.BX, MaterialUnitEnum.ML, MaterialUnitEnum.MG));
         materialUnitType.setItemLabelGenerator(MaterialUnitEnum::getDescription);
@@ -65,13 +58,20 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         materialUnitType.setRequired(true);
         binder.forField(materialUnitType).bind(MaterialEntity::getUnit, MaterialEntity::setUnit);
 
+        var materialTypeField = new ComboBox<MaterialTypeEnum>("Tipo de material");
+        materialTypeField.setItems(List.of(MaterialTypeEnum.NORMAL, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.COLLECTION, MaterialTypeEnum.ENVIRONMENT));
+        materialTypeField.setItemLabelGenerator(MaterialTypeEnum::getDescription);
+        materialTypeField.setValue(MaterialTypeEnum.NORMAL);
+        materialTypeField.setRequired(true);
+        binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
+
         var registerButton = new Button("Cadastrar");
         registerButton.addClickListener(event -> {
             try {
                 var materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
 
-                this.materialService.create(materialEntity);
+                materialService.create(materialEntity);
 
                 binder.refreshFields();
                 materialUnitType.setValue(MaterialUnitEnum.UN);
@@ -82,9 +82,10 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
             }
         });
 
-        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialTypeField, materialUnitType);
+        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialUnitType, materialTypeField);
         formLayout.setColspan(materialNameField, 3);
         formLayout.setColspan(materialLocationField, 3);
+        formLayout.setColspan(materialTypeField, 3);
         vlContent.add(formLayout, registerButton);
 
         add(vlContent);
