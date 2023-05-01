@@ -7,6 +7,7 @@ import com.example.application.entities.user.UserEntity;
 import com.example.application.services.user.UserService;
 import com.example.application.views.helloworld.HelloWorldView;
 import com.example.application.views.course.CourseView;
+import com.example.application.views.material.MaterialView;
 import com.example.application.views.user.professor.ProfessorView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -101,6 +102,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
         nav.addItem(new AppNavItem("Professores", ProfessorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
 
         return nav;
     }
