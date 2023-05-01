@@ -1,10 +1,12 @@
 package com.example.application.components.material;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
+import com.example.application.entities.material.CollectionTypeEntity;
 import com.example.application.entities.material.MaterialEntity;
 import com.example.application.enums.material.MaterialTypeEnum;
 import com.example.application.enums.material.MaterialUnitEnum;
 import com.example.application.helpers.NotificationHelper;
+import com.example.application.services.material.CollectionTypeService;
 import com.example.application.services.material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -21,7 +23,7 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
     private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
 
-    public MaterialRegistrationComponent(MaterialService materialService) {
+    public MaterialRegistrationComponent(MaterialService materialService, CollectionTypeService collectionTypeService) {
         var vlContent = new VerticalLayout();
         vlContent.setSizeFull();
         vlContent.setWidth("50%");
@@ -44,11 +46,14 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
         var materialStockQtyField = new NumberField("Quantidade em estoque");
         materialStockQtyField.setRequired(true);
+        materialStockQtyField.setMin(0D);
+        materialStockQtyField.setValue(0D);
         binder.forField(materialStockQtyField)
-                .withValidator(Objects::nonNull, "Informe uma quantidade de estoque para o produto!")
+                .withValidator(Objects::nonNull, "Informe uma quantidade de estoque para o material!")
                 .bind(MaterialEntity::getStockQty, MaterialEntity::setStockQty);
 
         var materialSafeStockQtyField = new NumberField("Quantidade em estoque (Segurança)");
+        materialSafeStockQtyField.setMin(0D);
         binder.forField(materialSafeStockQtyField).bind(MaterialEntity::getStockSafeQty, MaterialEntity::setStockSafeQty);
 
         var materialUnitType = new ComboBox<MaterialUnitEnum>("Unidade material");
@@ -58,11 +63,19 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         materialUnitType.setRequired(true);
         binder.forField(materialUnitType).bind(MaterialEntity::getUnit, MaterialEntity::setUnit);
 
+        var materialCollectionTypeField = new ComboBox<CollectionTypeEntity>("Tipo de acervo");
+        materialCollectionTypeField.setRequired(true);
+        materialCollectionTypeField.setItems(collectionTypeService.getAll());
+        materialCollectionTypeField.setItemLabelGenerator(CollectionTypeEntity::getName);
+        materialCollectionTypeField.setVisible(false);
+        binder.forField(materialCollectionTypeField).bind(MaterialEntity::getCollectionType, MaterialEntity::setCollectionType);
+
         var materialTypeField = new ComboBox<MaterialTypeEnum>("Tipo de material");
         materialTypeField.setItems(List.of(MaterialTypeEnum.NORMAL, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.COLLECTION, MaterialTypeEnum.ENVIRONMENT));
         materialTypeField.setItemLabelGenerator(MaterialTypeEnum::getDescription);
         materialTypeField.setValue(MaterialTypeEnum.NORMAL);
         materialTypeField.setRequired(true);
+        materialTypeField.addValueChangeListener(event -> materialCollectionTypeField.setVisible(event.getValue() != null && event.getValue().equals(MaterialTypeEnum.COLLECTION)));
         binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
 
         var registerButton = new Button("Cadastrar");
@@ -71,21 +84,29 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
                 var materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
 
+                if (materialTypeField.getValue().equals(MaterialTypeEnum.COLLECTION) && materialCollectionTypeField.getValue() == null) {
+                    NotificationHelper.error("Informe tipo de acervo para produto!");
+                    return;
+                }
+
                 materialService.create(materialEntity);
 
                 binder.refreshFields();
+                materialStockQtyField.setValue(0D);
                 materialUnitType.setValue(MaterialUnitEnum.UN);
                 materialTypeField.setValue(MaterialTypeEnum.NORMAL);
                 NotificationHelper.success("Material cadastrado com sucesso!");
             } catch (Exception ex) {
+                ex.printStackTrace();
                 NotificationHelper.error("Alguns campos não foram preenchidos corretamente!");
             }
         });
 
-        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialUnitType, materialTypeField);
+        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialUnitType, materialTypeField, materialCollectionTypeField);
         formLayout.setColspan(materialNameField, 3);
-        formLayout.setColspan(materialLocationField, 3);
         formLayout.setColspan(materialTypeField, 3);
+        formLayout.setColspan(materialLocationField, 3);
+        formLayout.setColspan(materialCollectionTypeField, 3);
         vlContent.add(formLayout, registerButton);
 
         add(vlContent);

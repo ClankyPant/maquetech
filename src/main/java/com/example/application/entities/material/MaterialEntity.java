@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collection;
+
 @Setter
 @Getter
 @Entity(name = "material_entity")
@@ -29,4 +31,7 @@ public class MaterialEntity extends AbstractBean {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MaterialUnitEnum unit;
+
+    @OneToOne
+    private CollectionTypeEntity collectionType;
 }
