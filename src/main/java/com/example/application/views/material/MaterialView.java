@@ -2,6 +2,7 @@ package com.example.application.views.material;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.components.material.MaterialCollectionTypeRegistrationComponent;
+import com.example.application.components.material.MaterialConsultComponent;
 import com.example.application.components.material.MaterialRegistrationComponent;
 import com.example.application.services.material.CollectionTypeService;
 import com.example.application.services.material.MaterialService;
@@ -16,14 +17,28 @@ import jakarta.annotation.security.RolesAllowed;
 @Route(value = "material", layout = MainLayout.class)
 public class MaterialView extends MaqueVerticalLayout {
 
+    private final TabSheet tabSheet = new TabSheet();
+
+    private final MaterialConsultComponent materialConsultComponent;
+
+    private final MaterialRegistrationComponent materialRegistrationComponent;
+
+
     public MaterialView(MaterialService materialService, CollectionTypeService collectionTypeService) {
         setAlignItems(Alignment.START);
         setJustifyContentMode(JustifyContentMode.START);
 
-        TabSheet tabSheet = new TabSheet();
+        materialRegistrationComponent = new MaterialRegistrationComponent(materialService, collectionTypeService);
+
+        materialConsultComponent = new MaterialConsultComponent(materialService);
+        materialConsultComponent.addEditMaterialListener(id -> {
+            tabSheet.setSelectedIndex(1);
+            materialRegistrationComponent.changeId(id);
+        });
+
         tabSheet.setSizeFull();
-//        tabSheet.add("Consulta", new MaterialConsultComponent());
-        tabSheet.add("Cadastro", new MaterialRegistrationComponent(materialService, collectionTypeService));
+        tabSheet.add("Consulta", materialConsultComponent);
+        tabSheet.add("Cadastro", materialRegistrationComponent);
         tabSheet.add("Cadastro (Tipo acervo)", new MaterialCollectionTypeRegistrationComponent(collectionTypeService));
 
         add(tabSheet);

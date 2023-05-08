@@ -21,14 +21,21 @@ import java.util.Objects;
 
 public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
+    private MaterialEntity materialEntity;
+
+    private final Binder<MaterialEntity> binder = new Binder<>(MaterialEntity.class);
+
+    private final MaterialService materialService;
+
     private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
 
     public MaterialRegistrationComponent(MaterialService materialService, CollectionTypeService collectionTypeService) {
+        this.materialService = materialService;
+
         var vlContent = new VerticalLayout();
         vlContent.setSizeFull();
         vlContent.setWidth("50%");
 
-        var binder = new Binder<>(MaterialEntity.class);
         var formLayout = new FormLayout();
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
@@ -78,10 +85,9 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         materialTypeField.addValueChangeListener(event -> materialCollectionTypeField.setVisible(event.getValue() != null && event.getValue().equals(MaterialTypeEnum.COLLECTION)));
         binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
 
-        var registerButton = new Button("Cadastrar");
+        var registerButton = new Button("Cadastrar / editar");
         registerButton.addClickListener(event -> {
             try {
-                var materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
 
                 if (materialTypeField.getValue().equals(MaterialTypeEnum.COLLECTION) && materialCollectionTypeField.getValue() == null) {
@@ -91,6 +97,7 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
                 materialService.create(materialEntity);
 
+                materialEntity = null;
                 binder.refreshFields();
                 materialStockQtyField.setValue(0D);
                 materialUnitType.setValue(MaterialUnitEnum.UN);
@@ -110,5 +117,10 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         vlContent.add(formLayout, registerButton);
 
         add(vlContent);
+    }
+
+    public void changeId(Long id) {
+        materialEntity = this.materialService.getById(id);
+        this.binder.readBean(materialEntity);
     }
 }
