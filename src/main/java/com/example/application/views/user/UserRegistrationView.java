@@ -24,6 +24,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
@@ -33,6 +34,9 @@ import java.util.Arrays;
 @PageTitle("Cadastro de usuário")
 @Route(value = "user-registration")
 public class UserRegistrationView extends MaqueVerticalLayout {
+
+    @Value("${root.user.code}")
+    private String adminCode;
 
     private final ProfessorCodeService professorCodeService;
 
@@ -113,16 +117,23 @@ public class UserRegistrationView extends MaqueVerticalLayout {
         courseComboBox.setItemLabelGenerator(CourseEntity::getName);
 
         ComboBox<UserTypeEnum> typeField = new ComboBox<>("Tipo usuário");
-        typeField.setItems(Arrays.asList(UserTypeEnum.LEVEL_1, UserTypeEnum.LEVEL_2));
+        typeField.setItems(Arrays.asList(UserTypeEnum.LEVEL_1, UserTypeEnum.LEVEL_2, UserTypeEnum.LEVEL_3));
         typeField.setItemLabelGenerator(UserTypeEnum::getDescription);
         typeField.setValue(UserTypeEnum.LEVEL_1);
         typeField.addValueChangeListener((event) -> {
-            boolean isProfessor = event.getValue().equals(UserTypeEnum.LEVEL_2);
+            boolean isAdmin = event.getValue().equals(UserTypeEnum.LEVEL_3);
+            boolean isProfessorOrAdmin = !event.getValue().equals(UserTypeEnum.LEVEL_1);
 
-            professorCodeField.setVisible(isProfessor);
-            courseComboBox.setVisible(!isProfessor);
+            if (isAdmin) {
+                professorCodeField.setLabel("Código admin");
+            } else {
+                professorCodeField.setLabel("Código professor");
+            }
 
-            if (isProfessor) {
+            professorCodeField.setVisible(isProfessorOrAdmin);
+            courseComboBox.setVisible(!isProfessorOrAdmin);
+
+            if (isProfessorOrAdmin) {
                 courseComboBox.setValue(null);
             }
         });
