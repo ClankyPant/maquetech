@@ -23,7 +23,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import io.micrometer.common.util.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -44,7 +43,7 @@ public class UserRegistrationView extends MaqueVerticalLayout {
 
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
-    private final TextField professorCodeField;
+    private final TextField specialUserCodeField;
 
     private final UserService userService;
 
@@ -107,9 +106,9 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 .asRequired()
                 .bind(UserEntity::getPhone, UserEntity::setPhone);
 
-        professorCodeField = new TextField("Código professor");
-        professorCodeField.setRequired(true);
-        professorCodeField.setVisible(false);
+        specialUserCodeField = new TextField("Código professor");
+        specialUserCodeField.setRequired(true);
+        specialUserCodeField.setVisible(false);
 
         ComboBox<CourseEntity> courseComboBox = new ComboBox<>("Curso");
         courseComboBox.setRequired(true);
@@ -125,12 +124,12 @@ public class UserRegistrationView extends MaqueVerticalLayout {
             boolean isProfessorOrAdmin = !event.getValue().equals(UserTypeEnum.LEVEL_1);
 
             if (isAdmin) {
-                professorCodeField.setLabel("Código admin");
+                specialUserCodeField.setLabel("Código admin");
             } else {
-                professorCodeField.setLabel("Código professor");
+                specialUserCodeField.setLabel("Código professor");
             }
 
-            professorCodeField.setVisible(isProfessorOrAdmin);
+            specialUserCodeField.setVisible(isProfessorOrAdmin);
             courseComboBox.setVisible(!isProfessorOrAdmin);
 
             if (isProfessorOrAdmin) {
@@ -141,7 +140,7 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 .asRequired()
                 .bind(UserEntity::getType, UserEntity::setType);
 
-        formLayout.add(usernameField, passwordField, nameField, mailField, cpfField, phoneField, typeField, professorCodeField, courseComboBox);
+        formLayout.add(usernameField, passwordField, nameField, mailField, cpfField, phoneField, typeField, specialUserCodeField, courseComboBox);
         formLayout.setColspan(nameField, 2);
         formLayout.setColspan(mailField, 2);
 
@@ -164,7 +163,7 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 }
 
                 if (userEntity.isProfessor()) {
-                    String professorCode = this.professorCodeField.getValue();
+                    String professorCode = this.specialUserCodeField.getValue();
                     if (StringUtils.isBlank(professorCode)) throw new Exception("Informe um código válido de professor para finalizar o cadastro!");
 
                     if (!this.professorCodeService.isValidCode(professorCode)) {
@@ -172,6 +171,11 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                     }
 
                     this.professorCodeService.invalidateCode(professorCode);
+                } else if (userEntity.isAdmin()) {
+                    String professorCode = this.specialUserCodeField.getValue();
+                    if (!this.adminCode.equals(professorCode)) {
+                        throw new Exception("Código admin inválido!");
+                    }
                 }
 
                 String password = userEntity.getPassword();
