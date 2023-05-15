@@ -37,16 +37,12 @@ public class UserRegistrationView extends MaqueVerticalLayout {
     @Value("${root.user.code}")
     private String adminCode;
 
-    private final ProfessorCodeService professorCodeService;
-
-    private final CourseService courseService;
-    private final TextField professorCodeField;
-    private final ProfessorCodeService professorCodeService;
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
-
     private final TextField specialUserCodeField;
 
     private final UserService userService;
+    private final CourseService courseService;
+    private final ProfessorCodeService professorCodeService;
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
     public UserRegistrationView(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager, ProfessorCodeService professorCodeService, CourseService courseService) {
         this.userService = userService;
