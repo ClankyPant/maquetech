@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum MaterialTypeEnum {
-    NORMAL("Normal"),
-    CONSUMABLE("Consumivel"),
-    COLLECTION("Acervo"),
-    ENVIRONMENT("Ambiente");
+    TOOL("Ferramenta"),
+    CONSUMABLE("Meterial de consumo"),
+    DESK("Material de escritório"),
+    ENVIRONMENT("Reserva");
 
     private String description;
 }

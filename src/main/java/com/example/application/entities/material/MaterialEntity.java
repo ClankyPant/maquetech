@@ -34,4 +34,6 @@ public class MaterialEntity extends AbstractBean {
 
     @OneToOne
     private CollectionTypeEntity collectionType;
+
+    private Boolean onlyProfessor;
 }

@@ -1,10 +1,8 @@
 package com.example.application.views.material;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
-import com.example.application.components.material.MaterialCollectionTypeRegistrationComponent;
 import com.example.application.components.material.MaterialConsultComponent;
 import com.example.application.components.material.MaterialRegistrationComponent;
-import com.example.application.services.material.CollectionTypeService;
 import com.example.application.services.material.MaterialService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -19,18 +17,16 @@ public class MaterialView extends MaqueVerticalLayout {
 
     private final TabSheet tabSheet = new TabSheet();
 
-    private final MaterialConsultComponent materialConsultComponent;
-
     private final MaterialRegistrationComponent materialRegistrationComponent;
 
 
-    public MaterialView(MaterialService materialService, CollectionTypeService collectionTypeService) {
+    public MaterialView(MaterialService materialService) {
         setAlignItems(Alignment.START);
         setJustifyContentMode(JustifyContentMode.START);
 
-        materialRegistrationComponent = new MaterialRegistrationComponent(materialService, collectionTypeService);
+        materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
 
-        materialConsultComponent = new MaterialConsultComponent(materialService);
+        var materialConsultComponent = new MaterialConsultComponent(materialService);
         materialConsultComponent.addEditMaterialListener(id -> {
             tabSheet.setSelectedIndex(1);
             materialRegistrationComponent.changeId(id);
@@ -39,7 +35,6 @@ public class MaterialView extends MaqueVerticalLayout {
         tabSheet.setSizeFull();
         tabSheet.add("Consulta", materialConsultComponent);
         tabSheet.add("Cadastro", materialRegistrationComponent);
-        tabSheet.add("Cadastro (Tipo acervo)", new MaterialCollectionTypeRegistrationComponent(collectionTypeService));
 
         add(tabSheet);
     }

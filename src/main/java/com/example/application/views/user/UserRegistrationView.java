@@ -40,7 +40,8 @@ public class UserRegistrationView extends MaqueVerticalLayout {
     private final ProfessorCodeService professorCodeService;
 
     private final CourseService courseService;
-
+    private final TextField professorCodeField;
+    private final ProfessorCodeService professorCodeService;
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
     private final TextField specialUserCodeField;
@@ -179,8 +180,8 @@ public class UserRegistrationView extends MaqueVerticalLayout {
                 }
 
                 String password = userEntity.getPassword();
-                String salGerado = BCrypt.gensalt();
-                String bcryptPassword = BCrypt.hashpw(password, salGerado);
+                String saltPassword = BCrypt.gensalt();
+                String bcryptPassword = BCrypt.hashpw(password, saltPassword);
                 userEntity.setPassword(bcryptPassword);
 
                 this.userService.save(userEntity);

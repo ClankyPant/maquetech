@@ -1,14 +1,13 @@
 package com.example.application.components.material;
 
 import com.example.application.components.maquetech.MaqueVerticalLayout;
-import com.example.application.entities.material.CollectionTypeEntity;
 import com.example.application.entities.material.MaterialEntity;
 import com.example.application.enums.material.MaterialTypeEnum;
 import com.example.application.enums.material.MaterialUnitEnum;
 import com.example.application.helpers.NotificationHelper;
-import com.example.application.services.material.CollectionTypeService;
 import com.example.application.services.material.MaterialService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,31 +15,26 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
 public class MaterialRegistrationComponent extends MaqueVerticalLayout {
 
-    private MaterialEntity materialEntity;
+    private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
 
-    private final Binder<MaterialEntity> binder = new Binder<>(MaterialEntity.class);
+    private MaterialEntity materialEntity;
 
     private final MaterialService materialService;
 
-    private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
+    private final Binder<MaterialEntity> binder = new Binder<>(MaterialEntity.class);
 
-    public MaterialRegistrationComponent(MaterialService materialService, CollectionTypeService collectionTypeService) {
+    public MaterialRegistrationComponent(MaterialService materialService) {
         this.materialService = materialService;
 
         var vlContent = new VerticalLayout();
         vlContent.setSizeFull();
         vlContent.setWidth("50%");
-
-        var formLayout = new FormLayout();
-        formLayout.setResponsiveSteps(
-                new FormLayout.ResponsiveStep("0", 1),
-                new FormLayout.ResponsiveStep("500px", 3)
-        );
 
         var materialNameField = new TextField("Nome");
         materialNameField.setRequired(true);
@@ -70,38 +64,28 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         materialUnitType.setRequired(true);
         binder.forField(materialUnitType).bind(MaterialEntity::getUnit, MaterialEntity::setUnit);
 
-        var materialCollectionTypeField = new ComboBox<CollectionTypeEntity>("Tipo de acervo");
-        materialCollectionTypeField.setRequired(true);
-        materialCollectionTypeField.setItems(collectionTypeService.getAll());
-        materialCollectionTypeField.setItemLabelGenerator(CollectionTypeEntity::getName);
-        materialCollectionTypeField.setVisible(false);
-        binder.forField(materialCollectionTypeField).bind(MaterialEntity::getCollectionType, MaterialEntity::setCollectionType);
-
         var materialTypeField = new ComboBox<MaterialTypeEnum>("Tipo de material");
-        materialTypeField.setItems(List.of(MaterialTypeEnum.NORMAL, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.COLLECTION, MaterialTypeEnum.ENVIRONMENT));
+        materialTypeField.setItems(List.of(MaterialTypeEnum.TOOL, MaterialTypeEnum.DESK, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.ENVIRONMENT));
         materialTypeField.setItemLabelGenerator(MaterialTypeEnum::getDescription);
-        materialTypeField.setValue(MaterialTypeEnum.NORMAL);
+        materialTypeField.setValue(MaterialTypeEnum.TOOL);
         materialTypeField.setRequired(true);
-        materialTypeField.addValueChangeListener(event -> materialCollectionTypeField.setVisible(event.getValue() != null && event.getValue().equals(MaterialTypeEnum.COLLECTION)));
         binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
+
+        var isOnlyProfessorField = new Checkbox("Apenas professores");
+        binder.forField(isOnlyProfessorField).bind(MaterialEntity::getOnlyProfessor, MaterialEntity::setOnlyProfessor);
 
         var registerButton = new Button("Cadastrar / editar");
         registerButton.addClickListener(event -> {
             try {
+                materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
-
-                if (materialTypeField.getValue().equals(MaterialTypeEnum.COLLECTION) && materialCollectionTypeField.getValue() == null) {
-                    NotificationHelper.error("Informe tipo de acervo para produto!");
-                    return;
-                }
-
                 materialService.create(materialEntity);
 
                 materialEntity = null;
                 binder.refreshFields();
                 materialStockQtyField.setValue(0D);
                 materialUnitType.setValue(MaterialUnitEnum.UN);
-                materialTypeField.setValue(MaterialTypeEnum.NORMAL);
+                materialTypeField.setValue(MaterialTypeEnum.TOOL);
                 NotificationHelper.success("Material cadastrado com sucesso!");
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -109,11 +93,15 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
             }
         });
 
-        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialUnitType, materialTypeField, materialCollectionTypeField);
+        var formLayout = new FormLayout();
+        formLayout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0", 1),
+                new FormLayout.ResponsiveStep("500px", 3)
+        );
+        formLayout.add(materialNameField, materialLocationField, materialStockQtyField, materialSafeStockQtyField, materialUnitType, materialTypeField, isOnlyProfessorField);
         formLayout.setColspan(materialNameField, 3);
         formLayout.setColspan(materialTypeField, 3);
         formLayout.setColspan(materialLocationField, 3);
-        formLayout.setColspan(materialCollectionTypeField, 3);
         vlContent.add(formLayout, registerButton);
 
         add(vlContent);

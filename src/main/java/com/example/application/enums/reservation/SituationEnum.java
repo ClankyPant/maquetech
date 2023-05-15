@@ -8,8 +8,9 @@ import lombok.Getter;
 public enum SituationEnum {
     PENDING(10, "Pendente"),
     APPROVED(20, "Aprovado"),
-    FINISHED(30, "Finalizado"),
-    CANCELED(40, "Cancelado");
+    IN_PROGRESS(30, "Em andamento"),
+    FINISHED(40, "Finalizado"),
+    CANCELED(50, "Cancelado");
 
     private Integer code;
     private String description;
