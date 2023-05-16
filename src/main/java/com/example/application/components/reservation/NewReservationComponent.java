@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
+import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
@@ -98,7 +99,7 @@ public class NewReservationComponent extends Dialog {
     }
 
     public LocalDateTime getInitialDateTime() {
-        return LocalDateTime.now(ZoneId.systemDefault()).plusHours(1);
+        return LocalDate.now().atTime(LocalDateTime.now().plusHours(1).getHour(), 0, 0);
     }
 
     public LocalDateTime getInitialDateTimePlusOneHour() {
@@ -109,10 +110,12 @@ public class NewReservationComponent extends Dialog {
         var initialDateTime = getInitialDateTime();
         startDateTimePicket.setMin(initialDateTime);
         startDateTimePicket.setValue(initialDateTime);
+        startDateTimePicket.setStep(Duration.ofMinutes(10));
 
         var finalDate = getInitialDateTimePlusOneHour();
-        endDateTimePicket.setValue(finalDate);
         endDateTimePicket.setMin(initialDateTime);
+        endDateTimePicket.setValue(finalDate);
+        endDateTimePicket.setStep(Duration.ofMinutes(10));
 
         binder.forField(startDateTimePicket)
                 .withConverter(new ConvertLocalDateTimeToDate())
