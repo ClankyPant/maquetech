@@ -5,7 +5,9 @@ import com.example.application.helpers.NotificationHelper;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -21,6 +23,7 @@ import com.vaadin.flow.data.converter.Converter;
 
 import java.time.*;
 import java.util.Date;
+import java.util.Objects;
 
 public class NewReservationComponent extends Dialog {
 
@@ -47,20 +50,8 @@ public class NewReservationComponent extends Dialog {
         btnNext.setIcon(VaadinIcon.ARROW_RIGHT.create());
         btnNext.setIconAfterText(true);
         btnNext.addClickListener(event -> {
-            try {
-                var startDate = this.startDateTimePicket.getValue();
-                var endDate = this.endDateTimePicket.getValue();
-
-                if (startDate.isAfter(endDate)) throw new IllegalArgumentException("Data inicio deve ser menor que data fim!");
-
+            if (binder.isValid()) {
                 selectTabByIndex(1);
-                btnPrevius.setEnabled(true);
-                btnNext.setEnabled(false);
-
-                setWidth("75%");
-                setHeight("75%");
-            } catch (Exception ex) {
-                NotificationHelper.error(ex.getMessage());
             }
         });
 
@@ -69,11 +60,6 @@ public class NewReservationComponent extends Dialog {
         btnPrevius.setIconAfterText(false);
         btnPrevius.addClickListener(event -> {
             selectTabByIndex(0);
-            btnPrevius.setEnabled(false);
-            btnNext.setEnabled(true);
-
-            setWidth("45%");
-            setHeight("40%");
         });
 
         var hlContent = new HorizontalLayout();
@@ -99,7 +85,26 @@ public class NewReservationComponent extends Dialog {
     }
 
     public LocalDateTime getInitialDateTime() {
-        return LocalDate.now().atTime(LocalDateTime.now().plusHours(1).getHour(), 0, 0);
+        var now = LocalDateTime.now();
+
+        while ((now.getMinute() % 15) != 0) {
+            now = now.plusMinutes(1);
+        }
+
+        return now;
+    }
+
+    @Override
+    public void open() {
+        var startDateTime = getInitialDateTime();
+        var endDateTime = getInitialDateTimePlusOneHour();
+
+        startDateTimePicket.setValue(startDateTime);
+        endDateTimePicket.setValue(endDateTime);
+
+        selectTabByIndex(0);
+
+        super.open();
     }
 
     public LocalDateTime getInitialDateTimePlusOneHour() {
@@ -107,29 +112,36 @@ public class NewReservationComponent extends Dialog {
     }
 
     public Component getFirstStep() {
+        var now = LocalDateTime.now();
+
         var initialDateTime = getInitialDateTime();
-        startDateTimePicket.setMin(initialDateTime);
+        startDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
         startDateTimePicket.setValue(initialDateTime);
         startDateTimePicket.setStep(Duration.ofMinutes(15));
+        startDateTimePicket.setMin(now);
 
         var finalDate = getInitialDateTimePlusOneHour();
-        endDateTimePicket.setMin(initialDateTime);
+        endDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
         endDateTimePicket.setValue(finalDate);
         endDateTimePicket.setStep(Duration.ofMinutes(15));
+        endDateTimePicket.setMin(now);
 
         binder.forField(startDateTimePicket)
+                .withValidator(Objects::nonNull, "Informe uma data")
+                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
+                .withValidator(dateTime -> dateTime.isBefore(endDateTimePicket.getValue()), "Data inicio deve ser menor que data fim!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationEntity::getBookingStartDate, ReservationEntity::setBookingStartDate);
 
         binder.forField(endDateTimePicket)
+                .withValidator(Objects::nonNull, "Informe uma data")
+                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationEntity::getBookingEndDate, ReservationEntity::setBookingEndDate);
 
-        var vlContent = new VerticalLayout();
-        vlContent.setSpacing(true);
-        vlContent.setAlignItems(FlexComponent.Alignment.CENTER);
-        vlContent.add(startDateTimePicket, endDateTimePicket);
-        return vlContent;
+        var formLayout = new FormLayout();
+        formLayout.add(startDateTimePicket, endDateTimePicket);
+        return formLayout;
     }
 
     public static class ConvertLocalDateTimeToDate implements Converter<LocalDateTime, Date> {
@@ -159,6 +171,12 @@ public class NewReservationComponent extends Dialog {
     }
 
     public void selectTabByIndex(int index) {
+        var isFirtStep = index == 0;
+        setWidth(isFirtStep ? "65%" : "75%");
+        setHeight(isFirtStep ? "450px" : "750px");
+        btnPrevius.setEnabled(!isFirtStep);
+        btnNext.setEnabled(isFirtStep);
+
         var selectedTab = tabSheet.getSelectedTab();
         selectedTab.setEnabled(false);
 
