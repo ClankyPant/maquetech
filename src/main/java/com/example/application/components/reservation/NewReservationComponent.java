@@ -110,12 +110,12 @@ public class NewReservationComponent extends Dialog {
         var initialDateTime = getInitialDateTime();
         startDateTimePicket.setMin(initialDateTime);
         startDateTimePicket.setValue(initialDateTime);
-        startDateTimePicket.setStep(Duration.ofMinutes(10));
+        startDateTimePicket.setStep(Duration.ofMinutes(15));
 
         var finalDate = getInitialDateTimePlusOneHour();
         endDateTimePicket.setMin(initialDateTime);
         endDateTimePicket.setValue(finalDate);
-        endDateTimePicket.setStep(Duration.ofMinutes(10));
+        endDateTimePicket.setStep(Duration.ofMinutes(15));
 
         binder.forField(startDateTimePicket)
                 .withConverter(new ConvertLocalDateTimeToDate())
