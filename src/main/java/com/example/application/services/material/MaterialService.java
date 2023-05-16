@@ -1,6 +1,7 @@
 package com.example.application.services.material;
 
 import com.example.application.entities.material.MaterialEntity;
+import com.example.application.enums.user.UserTypeEnum;
 import com.example.application.repositories.material.MaterialRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,11 @@ public class MaterialService {
         this.repository.save(materialEntity);
     }
 
-    public List<MaterialEntity> getAll() {
+    public List<MaterialEntity> getAllByUserType(UserTypeEnum userTypeEnum) {
+        if (UserTypeEnum.LEVEL_1.equals(userTypeEnum)) {
+            return this.repository.onlyProfessorIsFalse();
+        }
+
         return this.repository.findAll();
     }
 
