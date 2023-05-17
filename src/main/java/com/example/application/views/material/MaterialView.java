@@ -21,7 +21,6 @@ public class MaterialView extends MaqueVerticalLayout {
 
     private final MaterialRegistrationComponent materialRegistrationComponent;
 
-
     public MaterialView(MaterialService materialService, UserService userService) throws NotFoundException {
         setAlignItems(Alignment.START);
         setJustifyContentMode(JustifyContentMode.START);
