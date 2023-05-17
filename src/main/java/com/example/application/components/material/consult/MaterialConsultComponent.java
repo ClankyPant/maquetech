@@ -5,8 +5,11 @@ import com.example.application.listeners.material.EditMaterialListener;
 import com.example.application.models.material.MaterialModel;
 import com.example.application.services.material.MaterialService;
 import com.example.application.services.user.UserService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
 
@@ -17,12 +20,14 @@ public class MaterialConsultComponent extends VerticalLayout {
 
     private List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 
+    private final boolean isOnlyConsult;
     private final UserEntity loggedUser;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
     private final Grid<MaterialModel> grid = new Grid<>();
 
-    public MaterialConsultComponent(MaterialService materialService, UserService userService) throws NotFoundException {
+    public MaterialConsultComponent(MaterialService materialService, UserService userService, boolean isOnlyConsult) throws NotFoundException {
+        this.isOnlyConsult = isOnlyConsult;
         this.materialService = materialService;
         this.loggedUser = userService.getLoggedUser();
         this.materialFilter = new MaterialFilterComponent(materialService);
@@ -43,14 +48,25 @@ public class MaterialConsultComponent extends VerticalLayout {
         grid.addColumn(MaterialModel::getStockSafeQty).setKey("MATERIAL_STOCK_SAFE").setHeader("Qtd. estoque seg.");
         grid.addColumn(MaterialModel::getTypeDescription).setKey("MATERIAL_TYPE").setHeader("Tipo");
         grid.addColumn(MaterialModel::getUnitDescription).setKey("MATERIAL_UNIT").setHeader("Unidade");
-        grid.addComponentColumn(materialEntity -> {
-            var btnEdit = new Button("Editar");
-            btnEdit.addClickListener(event -> editMaterial(materialEntity.getId()));
-            return btnEdit;
-        }).setKey("MATERIAL_EDIT").setHeader("Ação");
+        grid.addComponentColumn(this::getGridActionColumn).setKey("MATERIAL_EDIT").setHeader("Ação");
 
         setSizeFull();
         add(btnConsult, grid);
+    }
+
+    private Component getGridActionColumn(MaterialModel materialModel) {
+        if (this.isOnlyConsult) {
+            return new Button("Editar", event -> editMaterial(materialModel.getId()));
+        }
+
+        var hlContent = new HorizontalLayout();
+        hlContent.setSpacing(true);
+        hlContent.add(new Button("Add", event -> {
+            materialModel.setOnReservation(!materialModel.isOnReservation());
+            event.getSource().setEnabled(!materialModel.isOnReservation());
+        }), new Button("Edit"), new Button("Rem"));
+
+        return hlContent;
     }
 
     private void initFilter() {

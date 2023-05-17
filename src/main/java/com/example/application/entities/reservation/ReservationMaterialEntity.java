@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity(name = "material_reservation_entity")
+@Entity(name = "reservation_material_entity")
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "reservation_id", "material_id" }) })
-public class MaterialReservationEntity extends AbstractBean {
+public class ReservationMaterialEntity extends AbstractBean {
 
     @OneToOne
     private ReservationEntity reservation;

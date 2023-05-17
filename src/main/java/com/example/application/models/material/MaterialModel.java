@@ -25,6 +25,8 @@ public class MaterialModel {
 
     private MaterialUnitEnum unit;
 
+    private boolean onReservation = false;
+
     public String getTypeDescription() {
         return this.type.getDescription();
     }

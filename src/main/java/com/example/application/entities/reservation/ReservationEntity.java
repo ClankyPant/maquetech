@@ -31,5 +31,5 @@ public class ReservationEntity extends AbstractBean {
     private SituationEnum situation;
 
     @OneToMany(mappedBy = "reservation")
-    private List<MaterialReservationEntity> materialList;
+    private List<ReservationMaterialEntity> materialList;
 }

@@ -2,6 +2,8 @@ package com.example.application.components.reservation.user;
 
 import com.example.application.components.reservation.NewReservationComponent;
 import com.example.application.entities.reservation.ReservationEntity;
+import com.example.application.models.reservation.ReservationMaterialModel;
+import com.example.application.models.reservation.ReservationModel;
 import com.example.application.services.material.MaterialService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
@@ -16,15 +18,12 @@ public class ReservationUserComponent extends VerticalLayout {
     public ReservationUserComponent(MaterialService materialService, UserService userService) throws NotFoundException {
         this.newReservationComponent = new NewReservationComponent(materialService, userService);
 
-        var btnNewReservation = new Button("Nova reserva");
-        btnNewReservation.addClickListener(event -> newReservationComponent.open());
-
-        var gridReservation = new Grid<ReservationEntity>();
-        gridReservation.addColumn(ReservationEntity::getBookingStartDate).setKey("start_date").setHeader("Data inicio");
-        gridReservation.addColumn(ReservationEntity::getBookingEndDate).setKey("end_date").setHeader("Data fim");
+        var gridReservation = new Grid<ReservationModel>();
+        gridReservation.addColumn(ReservationModel::getBookingStartDate).setKey("start_date").setHeader("Data inicio");
+        gridReservation.addColumn(ReservationModel::getBookingEndDate).setKey("end_date").setHeader("Data fim");
 
         setSizeFull();
         setSpacing(true);
-        add(btnNewReservation, gridReservation, newReservationComponent);
+        add(new Button("Nova reserva", event -> newReservationComponent.open()), gridReservation, newReservationComponent);
     }
 }

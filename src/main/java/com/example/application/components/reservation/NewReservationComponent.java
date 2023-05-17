@@ -2,6 +2,7 @@ package com.example.application.components.reservation;
 
 import com.example.application.components.material.consult.MaterialConsultComponent;
 import com.example.application.entities.reservation.ReservationEntity;
+import com.example.application.models.reservation.ReservationModel;
 import com.example.application.services.material.MaterialService;
 import com.example.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
@@ -32,13 +33,13 @@ public class NewReservationComponent extends Dialog {
 
     private final Button btnNext = new Button("Próximo");
     private final Button btnPrevius = new Button("Anterior");
-    private final Binder<ReservationEntity> binder = new Binder<>();
+    private final Binder<ReservationModel> binder = new Binder<>();
     private final MaterialConsultComponent materialConsultComponent;
     private final DateTimePicker endDateTimePicket = new DateTimePicker("Data fim");
     private final DateTimePicker startDateTimePicket = new DateTimePicker("Data inicio");
 
     public NewReservationComponent(MaterialService materialService, UserService userService) throws NotFoundException {
-        this.materialConsultComponent = new MaterialConsultComponent(materialService, userService);
+        this.materialConsultComponent = new MaterialConsultComponent(materialService, userService, false);
 
         init();
         initFooter();
@@ -134,13 +135,13 @@ public class NewReservationComponent extends Dialog {
                 .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
                 .withValidator(dateTime -> dateTime.isBefore(endDateTimePicket.getValue()), "Data inicio deve ser menor que data fim!")
                 .withConverter(new ConvertLocalDateTimeToDate())
-                .bind(ReservationEntity::getBookingStartDate, ReservationEntity::setBookingStartDate);
+                .bind(ReservationModel::getBookingStartDate, ReservationModel::setBookingStartDate);
 
         binder.forField(endDateTimePicket)
                 .withValidator(Objects::nonNull, "Informe uma data")
                 .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
                 .withConverter(new ConvertLocalDateTimeToDate())
-                .bind(ReservationEntity::getBookingEndDate, ReservationEntity::setBookingEndDate);
+                .bind(ReservationModel::getBookingEndDate, ReservationModel::setBookingEndDate);
 
         var formLayout = new FormLayout();
         formLayout.add(startDateTimePicket, endDateTimePicket);
