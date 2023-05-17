@@ -15,14 +15,14 @@ public interface MaterialRepository extends JpaRepository<MaterialEntity, Long> 
 
     @Query(
             value = """
-                        SELECT mat
+                        SELECT mat.*
                         FROM material_entity mat
-                        WHERE mat.onlyProfessor = false
-                          AND (mat.id IN (:id) OR -1 IN (:id))
-                          AND  (mat.type = :type OR :type IS NULL)
-                    """
+                        WHERE mat.only_professor = false
+                              AND (CAST(mat.id AS VARCHAR(255)) IN (:id) OR '-1' IN (:id))
+                              AND (mat.type = :type OR :type IS NULL)
+                    """, nativeQuery = true
     )
-    List<MaterialEntity> getMaterialForStudant(@Param("id") List<Long> idList, @Param("type") MaterialTypeEnum type);
+    List<MaterialEntity> getMaterialForStudant(@Param("id") List<String> idList, @Param("type") String type);
 
     @Query(value = "SELECT mat FROM material_entity mat WHERE mat.onlyProfessor = false AND mat.name like ('%' || :consulting_term ||    '%')")
     Page<MaterialEntity> getMaterialForStudant(@Param("consulting_term") String consultingTerm, PageRequest page);

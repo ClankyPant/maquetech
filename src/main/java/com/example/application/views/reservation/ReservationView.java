@@ -3,6 +3,7 @@ package com.example.application.views.reservation;
 import com.example.application.components.maquetech.MaqueVerticalLayout;
 import com.example.application.components.reservation.user.ReservationUserComponent;
 import com.example.application.entities.user.UserEntity;
+import com.example.application.services.material.MaterialService;
 import com.example.application.services.user.UserService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -16,21 +17,17 @@ import javassist.NotFoundException;
 @Route(value = "reservation", layout = MainLayout.class)
 public class ReservationView extends MaqueVerticalLayout {
 
-    private final UserEntity loggedUser;
-    private final ReservationUserComponent reservationUserComponent = new ReservationUserComponent();
+    private final ReservationUserComponent reservationUserComponent;
 
-    public ReservationView(UserService userService) throws NotFoundException {
-        this.loggedUser = userService.getLoggedUser();
-
-        setAlignItems(Alignment.START);
-        setJustifyContentMode(JustifyContentMode.START);
+    public ReservationView(MaterialService materialService, UserService userService) throws NotFoundException {
+        this.reservationUserComponent = new ReservationUserComponent(materialService, userService);
 
         var tabSheet = new TabSheet();
         tabSheet.setSizeFull();
         tabSheet.add("Reserva", reservationUserComponent);
-//                .setVisible(!loggedUser.isAdmin());
-//        tabSheet.add("Cadastro", materialRegistrationComponent);
 
+        setAlignItems(Alignment.START);
+        setJustifyContentMode(JustifyContentMode.START);
         add(tabSheet);
     }
 }

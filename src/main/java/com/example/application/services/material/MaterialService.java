@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MaterialService {
@@ -60,12 +61,12 @@ public class MaterialService {
     }
 
     private List<MaterialEntity> getListByUser(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
-        if (CollectionUtils.isEmpty(idList)) {
-            idList = List.of(-1L);
-        }
+        if (CollectionUtils.isEmpty(idList)) idList = List.of(-1L);
+        var idStrList = idList.stream().map(String::valueOf).toList();
+        var typeStr = Objects.nonNull(type) ? type.name() : null;
 
         if (UserTypeEnum.LEVEL_1.equals(userTypeEnum)) {
-            return this.repository.getMaterialForStudant(idList, type);
+            return this.repository.getMaterialForStudant(idStrList, typeStr);
         }
 
         return this.repository.findAll();

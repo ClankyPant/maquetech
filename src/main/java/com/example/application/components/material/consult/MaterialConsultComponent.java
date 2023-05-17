@@ -49,6 +49,7 @@ public class MaterialConsultComponent extends VerticalLayout {
             return btnEdit;
         }).setKey("MATERIAL_EDIT").setHeader("Ação");
 
+        setSizeFull();
         add(btnConsult, grid);
     }
 
