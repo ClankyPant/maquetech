@@ -64,7 +64,7 @@ public class MaterialConsultComponent extends VerticalLayout {
         hlContent.add(new Button("Add", event -> {
             materialModel.setOnReservation(!materialModel.isOnReservation());
             event.getSource().setEnabled(!materialModel.isOnReservation());
-        }), new Button("Edit"), new Button("Rem"));
+        }), new Button("Rem"));
 
         return hlContent;
     }
