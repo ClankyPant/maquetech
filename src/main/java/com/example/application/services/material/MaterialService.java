@@ -5,10 +5,12 @@ import com.example.application.enums.material.MaterialTypeEnum;
 import com.example.application.enums.user.UserTypeEnum;
 import com.example.application.models.material.MaterialModel;
 import com.example.application.repositories.material.MaterialRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.lang.model.element.Name;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,8 +27,8 @@ public class MaterialService {
         this.repository.save(materialEntity);
     }
 
-    public List<MaterialModel> getListByPage(String term, PageRequest pageRequest) {
-        return entityToModel(this.repository.getMaterialForStudent(term, pageRequest).getContent());
+    public List<MaterialModel> getListByPage(String term, UserTypeEnum userTypeEnum, PageRequest pageRequest) {
+        return entityToModel(this.getPageByUser(term, userTypeEnum, pageRequest).getContent());
     }
 
     public List<MaterialModel> getList(UserTypeEnum userTypeEnum) {
@@ -54,9 +56,13 @@ public class MaterialService {
                 .build();
     }
 
+    private Page<MaterialEntity> getPageByUser(String term, UserTypeEnum userTypeEnum, PageRequest pageRequest) {
+        if (UserTypeEnum.LEVEL_1.equals(userTypeEnum)) {
+            return this.repository.getMaterialStudent(term, pageRequest);
+        }
 
-    private List<MaterialEntity> getListByUser(UserTypeEnum userTypeEnum) {
-        return getListByUser(null, null, userTypeEnum);
+        return this.repository.getMaterial(term, pageRequest);
+
     }
 
     private List<MaterialEntity> getListByUser(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
@@ -65,10 +71,10 @@ public class MaterialService {
         var typeStr = Objects.nonNull(type) ? type.name() : null;
 
         if (UserTypeEnum.LEVEL_1.equals(userTypeEnum)) {
-            return this.repository.getMaterialForStudent(idStrList, typeStr);
+            return this.repository.getMaterialStudent(idStrList, typeStr);
         }
 
-        return this.repository.findAll();
+        return this.repository.getMaterial(idStrList, typeStr);
     }
 
     public MaterialEntity getById(Long id) {

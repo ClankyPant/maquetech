@@ -20,8 +20,22 @@ public interface MaterialRepository extends JpaRepository<MaterialEntity, Long> 
                               AND (mat.type = :type OR :type IS NULL)
                     """, nativeQuery = true
     )
-    List<MaterialEntity> getMaterialForStudent(@Param("id") List<String> idList, @Param("type") String type);
+    List<MaterialEntity> getMaterialStudent(@Param("id") List<String> idList, @Param("type") String type);
 
-    @Query(value = "SELECT mat FROM material_entity mat WHERE mat.onlyProfessor = false AND mat.name like ('%' || :consulting_term ||    '%')")
-    Page<MaterialEntity> getMaterialForStudent(@Param("consulting_term") String consultingTerm, PageRequest page);
+    @Query(value = "SELECT mat FROM material_entity mat WHERE mat.onlyProfessor = false AND mat.name like ('%' || :consulting_term || '%')")
+    Page<MaterialEntity> getMaterialStudent(@Param("consulting_term") String consultingTerm, PageRequest page);
+
+
+    @Query(
+            value = """
+                        SELECT mat.*
+                        FROM material_entity mat
+                        WHERE (CAST(mat.id AS VARCHAR(255)) IN (:id) OR '-1' IN (:id))
+                              AND (mat.type = :type OR :type IS NULL)
+                    """, nativeQuery = true
+    )
+    List<MaterialEntity> getMaterial(@Param("id") List<String> idList, @Param("type") String type);
+
+    @Query(value = "SELECT mat FROM material_entity mat WHERE mat.name like ('%' || :consulting_term || '%')")
+    Page<MaterialEntity> getMaterial(@Param("consulting_term") String consultingTerm, PageRequest page);
 }

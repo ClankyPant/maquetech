@@ -1,5 +1,6 @@
 package com.example.application.components.material.consult;
 
+import com.example.application.entities.user.UserEntity;
 import com.example.application.enums.material.MaterialTypeEnum;
 import com.example.application.helpers.NotificationHelper;
 import com.example.application.models.material.MaterialModel;
@@ -24,12 +25,15 @@ import java.util.Set;
 @Getter
 public class MaterialFilterComponent extends Dialog {
 
+    private final UserEntity user;
     private final MaterialService materialService;
     private final Binder<MaterialFilterModel> binder = new Binder<>();
     public MaterialFilterModel materialFilterModel = new MaterialFilterModel();
 
-    public MaterialFilterComponent(MaterialService materialService) {
+    public MaterialFilterComponent(MaterialService materialService, UserEntity user) {
         this.materialService = materialService;
+        this.user = user;
+
         init();
     }
 
@@ -37,7 +41,7 @@ public class MaterialFilterComponent extends Dialog {
         var materialFilter = new MultiSelectComboBox<MaterialModel>("Material");
         materialFilter.setClearButtonVisible(true);
         materialFilter.setItemsWithFilterConverter(
-                query -> materialService.getListByPage(query.getFilter().orElse(""), PageRequest.of(query.getPage(), query.getLimit())).stream(),
+                query -> materialService.getListByPage(query.getFilter().orElse(""), user.getType(),  PageRequest.of(query.getPage(), query.getLimit())).stream(),
                 term -> term
         );
         materialFilter.setItemLabelGenerator(MaterialModel::getName);

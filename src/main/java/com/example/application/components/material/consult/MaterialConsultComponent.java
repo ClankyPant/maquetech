@@ -24,7 +24,7 @@ public class MaterialConsultComponent extends VerticalLayout {
     private final boolean isOnlyConsult;
     private Button addMaterialButton;
     private Button removeMaterialButton;
-    private final UserEntity loggedUser;
+    private final UserEntity user;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
     private final Grid<MaterialModel> grid = new Grid<>();
@@ -33,8 +33,8 @@ public class MaterialConsultComponent extends VerticalLayout {
     public MaterialConsultComponent(MaterialService materialService, UserService userService, boolean isOnlyConsult) throws NotFoundException {
         this.isOnlyConsult = isOnlyConsult;
         this.materialService = materialService;
-        this.loggedUser = userService.getLoggedUser();
-        this.materialFilter = new MaterialFilterComponent(materialService);
+        this.user = userService.getLoggedUser();
+        this.materialFilter = new MaterialFilterComponent(materialService, user);
 
         init();
         initFilter();
@@ -109,7 +109,7 @@ public class MaterialConsultComponent extends VerticalLayout {
         var materialCodeList = materialModelList.stream().map(MaterialModel::getId).toList();
 
         var listMaterialAux = new HashSet<MaterialModel>();
-        var listMaterial = this.materialService.getList(materialCodeList, materialType, loggedUser.getType());
+        var listMaterial = this.materialService.getList(materialCodeList, materialType, user.getType());
         if (listMaterial != null && !listMaterial.isEmpty()) {
             for (var material : listMaterial) {
                 mapMaterial.computeIfAbsent(material.getId(), key -> material);
