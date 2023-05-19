@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +26,7 @@ public class MaterialService {
     }
 
     public List<MaterialModel> getListByPage(String term, PageRequest pageRequest) {
-        return entityToModel(this.repository.getMaterialForStudant(term, pageRequest).getContent());
+        return entityToModel(this.repository.getMaterialForStudent(term, pageRequest).getContent());
     }
 
     public List<MaterialModel> getList(UserTypeEnum userTypeEnum) {
@@ -66,7 +65,7 @@ public class MaterialService {
         var typeStr = Objects.nonNull(type) ? type.name() : null;
 
         if (UserTypeEnum.LEVEL_1.equals(userTypeEnum)) {
-            return this.repository.getMaterialForStudant(idStrList, typeStr);
+            return this.repository.getMaterialForStudent(idStrList, typeStr);
         }
 
         return this.repository.findAll();

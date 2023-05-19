@@ -52,6 +52,10 @@ public class UserEntity extends AbstractBean {
 
     public boolean isAdmin() { return this.type.equals(UserTypeEnum.LEVEL_3); }
 
+    public Boolean canSeeProfessorRegister() {
+        return !this.isStudent();
+    }
+
     public String getRoleStr() {
         String result = "NORMAL";
         if (this.isProfessor()) result = "PROFESSOR";
