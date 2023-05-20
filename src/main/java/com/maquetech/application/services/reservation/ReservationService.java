@@ -30,16 +30,17 @@ public class ReservationService {
         reservation.setBookingEndDate(reservationModel.getBookingStartDate());
         reservation.setUser(user);
         reservation.setSituation(SituationEnum.PENDING);
-        var createdReservation = repository.save(reservation);
+        reservation.setMaterialList(new ArrayList<>());
+        reservation = repository.save(reservation);
 
-        var reservationMaterialList = new ArrayList<ReservationMaterialEntity>();
         for (var materialModel : materialModelList) {
             var reservationMaterial = new ReservationMaterialEntity();
-            reservationMaterial.setReservation(createdReservation);
+            reservationMaterial.setReservation(reservation);
             reservationMaterial.setMaterial(materialModel.getEntidade());
             reservationMaterial.setQuantity(materialModel.getReservationQuantity());
-            reservationMaterialList.add(reservationMaterial);
+            reservation.getMaterialList().add(reservationMaterial);
         }
-        reservationMaterialRepository.saveAll(reservationMaterialList);
+
+        repository.save(reservation);
     }
 }

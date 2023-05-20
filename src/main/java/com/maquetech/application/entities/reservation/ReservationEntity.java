@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.AbstractList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +31,6 @@ public class ReservationEntity extends AbstractBean {
     @Enumerated(EnumType.STRING)
     private SituationEnum situation;
 
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<ReservationMaterialEntity> materialList;
 }
