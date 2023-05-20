@@ -6,6 +6,7 @@ import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -35,6 +36,7 @@ public class NewReservationComponent extends Dialog {
     private final MaterialConsultComponent materialConsultComponent;
     private final DateTimePicker endDateTimePicket = new DateTimePicker("Data fim");
     private final DateTimePicker startDateTimePicket = new DateTimePicker("Data inicio");
+    private Button btnFinish;
 
     public NewReservationComponent(MaterialService materialService, UserService userService) throws NotFoundException {
         this.materialConsultComponent = new MaterialConsultComponent(materialService, userService, false);
@@ -52,6 +54,10 @@ public class NewReservationComponent extends Dialog {
             }
         });
 
+        btnFinish = new Button("Finalizar");
+        btnFinish.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnFinish.setEnabled(false);
+
         btnPrevius.setIcon(VaadinIcon.ARROW_LEFT.create());
         btnPrevius.setEnabled(false);
         btnPrevius.setIconAfterText(false);
@@ -59,9 +65,14 @@ public class NewReservationComponent extends Dialog {
             selectTabByIndex(0);
         });
 
+        var hlRight = new HorizontalLayout();
+        hlRight.setSpacing(true);
+        hlRight.setSizeUndefined();
+        hlRight.add(btnFinish, btnNext);
+
         var hlContent = new HorizontalLayout();
         hlContent.setSizeFull();
-        hlContent.add(btnPrevius, btnNext);
+        hlContent.add(btnPrevius, hlRight);
         hlContent.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         getFooter().add(hlContent);
     }
@@ -179,6 +190,7 @@ public class NewReservationComponent extends Dialog {
         setWidth(isFirtStep ? "65%" : "75%");
         setHeight(isFirtStep ? "450px" : "750px");
         btnPrevius.setEnabled(!isFirtStep);
+        btnFinish.setEnabled(!isFirtStep);
         btnNext.setEnabled(isFirtStep);
 
         var selectedTab = tabSheet.getSelectedTab();
