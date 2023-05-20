@@ -173,6 +173,8 @@ public class NewReservationComponent extends Dialog {
     }
 
     public void selectTabByIndex(int index) {
+        this.materialConsultComponent.resetConfiguration();
+
         var isFirtStep = index == 0;
         setWidth(isFirtStep ? "65%" : "75%");
         setHeight(isFirtStep ? "450px" : "750px");

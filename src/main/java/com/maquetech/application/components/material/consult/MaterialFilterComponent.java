@@ -76,4 +76,14 @@ public class MaterialFilterComponent extends Dialog {
     private Set<MaterialModel> toSet(List<MaterialModel> data) {
         return new HashSet<>(data);
     }
+
+    public void resetConfiguration() {
+        try {
+            this.binder.refreshFields();
+            this.binder.writeBean(this.materialFilterModel);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            NotificationHelper.error(ex.getMessage());
+        }
+    }
 }

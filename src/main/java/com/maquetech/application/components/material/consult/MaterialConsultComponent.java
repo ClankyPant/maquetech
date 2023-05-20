@@ -23,7 +23,7 @@ public class MaterialConsultComponent extends VerticalLayout {
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
     private final Grid<MaterialModel> grid = new Grid<>();
-    private Map<Long, MaterialModel> mapMaterial = new HashMap<>();
+    private Map<Long, MaterialModel> materialMap = new HashMap<>();
 
     public MaterialConsultComponent(MaterialService materialService, UserService userService, boolean isOnlyConsult) throws NotFoundException {
         this.isOnlyConsult = isOnlyConsult;
@@ -76,14 +76,14 @@ public class MaterialConsultComponent extends VerticalLayout {
         var materialModelList = materialFilter.getMaterialFilterModel().getMaterialModelList();
         var materialCodeList = materialModelList.stream().map(MaterialModel::getId).toList();
 
-        var listMaterialAux = new HashSet<MaterialModel>();
-        var listMaterial = this.materialService.getList(materialCodeList, materialType, user.getType(), isOnlyConsult);;
-        if (listMaterial != null && !listMaterial.isEmpty()) {
-            for (var material : listMaterial) {
-                mapMaterial.computeIfAbsent(material.getId(), key -> material);
+        var materialListAux = new HashSet<MaterialModel>();
+        var materialList = this.materialService.getList(materialCodeList, materialType, user.getType(), isOnlyConsult);;
+        if (materialList != null && !materialList.isEmpty()) {
+            for (var material : materialList) {
+                materialMap.computeIfAbsent(material.getId(), key -> material);
 
-                listMaterialAux.add(
-                    mapMaterial.computeIfPresent(material.getId(), (key, mat) -> {
+                materialListAux.add(
+                    materialMap.computeIfPresent(material.getId(), (key, mat) -> {
                         mat.setStockQty(material.getStockQty());
                         return mat;
                     })
@@ -91,7 +91,7 @@ public class MaterialConsultComponent extends VerticalLayout {
             }
         }
 
-        grid.setItems(listMaterialAux);
+        grid.setItems(materialListAux);
     }
 
     public void addEditMaterialListener(EditMaterialListener listener) {
@@ -102,5 +102,11 @@ public class MaterialConsultComponent extends VerticalLayout {
         for (var listener : this.editMaterialListenerList) {
             listener.edit(id);
         }
+    }
+
+    public void resetConfiguration() {
+        this.materialFilter.resetConfiguration();
+        this.materialMap.clear();
+        loadGridData();
     }
 }
