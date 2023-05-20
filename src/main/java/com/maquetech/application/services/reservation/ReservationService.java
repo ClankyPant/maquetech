@@ -17,17 +17,15 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository repository;
-    private final ReservationMaterialRepository reservationMaterialRepository;
 
-    public ReservationService(ReservationRepository repository, ReservationMaterialRepository reservationMaterialRepository) {
+    public ReservationService(ReservationRepository repository) {
         this.repository = repository;
-        this.reservationMaterialRepository = reservationMaterialRepository;
     }
 
     public void create(List<MaterialModel> materialModelList, ReservationModel reservationModel, UserEntity user) {
         var reservation = new ReservationEntity();
         reservation.setBookingStartDate(reservationModel.getBookingStartDate());
-        reservation.setBookingEndDate(reservationModel.getBookingStartDate());
+        reservation.setBookingEndDate(reservationModel.getBookingEndDate());
         reservation.setUser(user);
         reservation.setSituation(SituationEnum.PENDING);
         reservation.setMaterialList(new ArrayList<>());

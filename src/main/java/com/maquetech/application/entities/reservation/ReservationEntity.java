@@ -17,11 +17,11 @@ import java.util.List;
 public class ReservationEntity extends AbstractBean {
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date bookingStartDate;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date bookingEndDate;
 
     @ManyToOne

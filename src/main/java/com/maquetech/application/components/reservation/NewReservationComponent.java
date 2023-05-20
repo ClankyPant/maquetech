@@ -1,7 +1,9 @@
 package com.maquetech.application.components.reservation;
 
+import ch.qos.logback.classic.pattern.DateConverter;
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
 import com.maquetech.application.entities.user.UserEntity;
+import com.maquetech.application.helper.DateHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
@@ -193,7 +195,7 @@ public class NewReservationComponent extends Dialog {
                     throw new IllegalArgumentException("Informe data e hora antes de prosseguir");
                 }
 
-                result = Result.ok(Date.from(localDateTime.atZone(ZoneOffset.UTC).toInstant()));
+                result = Result.ok(DateHelper.convertToDate(localDateTime));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 result = Result.error(ex.getMessage());
