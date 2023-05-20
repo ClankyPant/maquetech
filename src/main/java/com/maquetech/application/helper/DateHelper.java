@@ -2,18 +2,24 @@ package com.maquetech.application.helper;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Calendar;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DateHelper {
 
-    public static Date convertToDate(LocalDateTime localDateTime) {
-        var date = Date.from(localDateTime.atZone(ZoneOffset.UTC).toInstant());
+    private DateHelper() {
 
-        var calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.HOUR, 3);
+    }
 
-        return calendar.getTime();
+    public static Date toDate(LocalDateTime localDateTime) {
+        return Date.from(truncate(localDateTime).atZone(ZoneOffset.UTC).toInstant());
+    }
+
+    public static LocalDateTime toLocalDateTime(Date date) {
+        return truncate(date.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime());
+    }
+
+    public static LocalDateTime truncate(LocalDateTime localDateTime) {
+        return localDateTime.truncatedTo(ChronoUnit.MINUTES);
     }
 }

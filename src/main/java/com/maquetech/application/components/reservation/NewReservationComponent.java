@@ -1,6 +1,5 @@
 package com.maquetech.application.components.reservation;
 
-import ch.qos.logback.classic.pattern.DateConverter;
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helper.DateHelper;
@@ -115,13 +114,17 @@ public class NewReservationComponent extends Dialog {
     }
 
     private void finish() throws ValidationException {
-        var reservationModel = new ReservationModel();
-        binder.writeBean(reservationModel);
-
+        var reservationModel = getReservationModel();
         var materialModelList = materialConsultComponent.getOnReservationListAndValidate();
         this.reservationService.create(materialModelList, reservationModel, this.user);
         NotificationHelper.success("Reserva feita com sucesso!");
         this.close();
+    }
+
+    private ReservationModel getReservationModel() throws ValidationException {
+        var reservationModel = new ReservationModel();
+        binder.writeBean(reservationModel);
+        return reservationModel;
     }
 
     public LocalDateTime getInitialDateTime() {
@@ -195,7 +198,7 @@ public class NewReservationComponent extends Dialog {
                     throw new IllegalArgumentException("Informe data e hora antes de prosseguir");
                 }
 
-                result = Result.ok(DateHelper.convertToDate(localDateTime));
+                result = Result.ok(DateHelper.toDate(localDateTime));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 result = Result.error(ex.getMessage());
@@ -206,12 +209,18 @@ public class NewReservationComponent extends Dialog {
 
         @Override
         public LocalDateTime convertToPresentation(Date date, ValueContext valueContext) {
-            return date.toInstant().atZone(ZoneOffset.UTC).toLocalDateTime();
+            return DateHelper.toLocalDateTime(date);
         }
     }
 
     public void selectTabByIndex(int index) {
-        this.materialConsultComponent.resetConfiguration();
+        try {
+            var reservationModel = getReservationModel();
+            this.materialConsultComponent.resetConfiguration(reservationModel.getBookingStartDate(), reservationModel.getBookingEndDate());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            NotificationHelper.error(ex.getMessage());
+        }
 
         var isFirtStep = index == 0;
         setWidth(isFirtStep ? "65%" : "75%");

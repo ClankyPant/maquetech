@@ -19,14 +19,16 @@ import java.util.stream.Collectors;
 
 public class MaterialConsultComponent extends VerticalLayout {
 
+    private Date endBookingDate;
+    private Date startBookingDate;
+    private Map<Long, MaterialModel> materialMap = new HashMap<>();
     private List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 
-    private final boolean isOnlyConsult;
     private final UserEntity user;
+    private final boolean isOnlyConsult;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
     private final Grid<MaterialModel> grid = new Grid<>();
-    private Map<Long, MaterialModel> materialMap = new HashMap<>();
 
     public MaterialConsultComponent(MaterialService materialService, UserService userService, boolean isOnlyConsult) throws NotFoundException {
         this.isOnlyConsult = isOnlyConsult;
@@ -74,19 +76,21 @@ public class MaterialConsultComponent extends VerticalLayout {
     }
 
     private void loadGridData() {
-        loadGridData(null);
-    }
-
-    private void loadGridData(List<Long> materialIdList) {
         var materialType = materialFilter.getMaterialFilterModel().getType();
 
         var materialModelList = materialFilter.getMaterialFilterModel().getMaterialModelList();
-        if (CollectionUtils.isEmpty(materialIdList)) {
-            materialIdList = materialModelList.stream().map(MaterialModel::getId).toList();
-        }
+        var materialIdList = materialModelList.stream().map(MaterialModel::getId).toList();
 
         var materialListAux = new HashSet<MaterialModel>();
-        var materialList = this.materialService.getList(materialIdList, materialType, user.getType(), isOnlyConsult);;
+        var materialList = this.materialService.getList(
+                materialIdList,
+                materialType,
+                user.getType(),
+                isOnlyConsult,
+                this.startBookingDate,
+                this.endBookingDate
+        );
+
         if (materialList != null && !materialList.isEmpty()) {
             for (var material : materialList) {
                 materialMap.computeIfAbsent(material.getId(), key -> material);
@@ -113,7 +117,10 @@ public class MaterialConsultComponent extends VerticalLayout {
         }
     }
 
-    public void resetConfiguration() {
+    public void resetConfiguration(Date startBookingDate, Date endBookingDate) {
+        this.startBookingDate = startBookingDate;
+        this.endBookingDate = endBookingDate;
+
         this.materialFilter.resetConfiguration();
         this.materialMap.clear();
         loadGridData();

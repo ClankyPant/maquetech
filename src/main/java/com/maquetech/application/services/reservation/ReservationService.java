@@ -4,14 +4,19 @@ import com.maquetech.application.entities.reservation.ReservationEntity;
 import com.maquetech.application.entities.reservation.ReservationMaterialEntity;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.enums.reservation.SituationEnum;
+import com.maquetech.application.helper.ConvertHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.repositories.reservation.ReservationMaterialRepository;
 import com.maquetech.application.repositories.reservation.ReservationRepository;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -40,5 +45,13 @@ public class ReservationService {
         }
 
         repository.save(reservation);
+    }
+
+    public Map<Long, Double> getOnReservationMap(Date startBookingDate, Date endBookingDate) {
+        var result = repository.getOnReservation(startBookingDate, endBookingDate);
+
+        return result.stream()
+                        .collect(Collectors.groupingBy(data -> ConvertHelper.getLong(data[0], -1L),
+                                Collectors.summingDouble(data -> ConvertHelper.getDouble(data[1], 0D))));
     }
 }
