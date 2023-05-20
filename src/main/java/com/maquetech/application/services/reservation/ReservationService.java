@@ -11,7 +11,6 @@ import com.maquetech.application.repositories.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,22 +26,20 @@ public class ReservationService {
 
     public void create(List<MaterialModel> materialModelList, ReservationModel reservationModel, UserEntity user) {
         var reservation = new ReservationEntity();
-        reservation.setBookingStartDate(new Date());
-        reservation.setBookingEndDate(new Date());
+        reservation.setBookingStartDate(reservationModel.getBookingStartDate());
+        reservation.setBookingEndDate(reservationModel.getBookingStartDate());
         reservation.setUser(user);
         reservation.setSituation(SituationEnum.PENDING);
         var createdReservation = repository.save(reservation);
 
-        try {
-            for (var materialModel : materialModelList) {
-                var reservationMaterial = new ReservationMaterialEntity();
-                reservationMaterial.setReservation(createdReservation);
-                reservationMaterial.setMaterial(materialModel.getEntidade());
-                reservationMaterial.setQuantity(materialModel.getReservationQuantity());
-                reservationMaterialRepository.save(reservationMaterial);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        var reservationMaterialList = new ArrayList<ReservationMaterialEntity>();
+        for (var materialModel : materialModelList) {
+            var reservationMaterial = new ReservationMaterialEntity();
+            reservationMaterial.setReservation(createdReservation);
+            reservationMaterial.setMaterial(materialModel.getEntidade());
+            reservationMaterial.setQuantity(materialModel.getReservationQuantity());
+            reservationMaterialList.add(reservationMaterial);
         }
+        reservationMaterialRepository.saveAll(reservationMaterialList);
     }
 }
