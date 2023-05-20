@@ -72,7 +72,7 @@ public class MaterialModel {
         return vlContent;
     }
 
-    public Component getActionButtons() {
+    public Component getReservationActionButtons() {
         this.addMaterialButton.setEnabled(!this.onReservation);
         this.removeMaterialButton.setEnabled(this.onReservation);
 

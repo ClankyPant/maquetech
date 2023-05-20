@@ -21,16 +21,20 @@ public class MaterialConsultComponent extends VerticalLayout {
 
     private Date endBookingDate;
     private Date startBookingDate;
-    private Map<Long, MaterialModel> materialMap = new HashMap<>();
-    private List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 
     private final UserEntity user;
     private final boolean isOnlyConsult;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
     private final Grid<MaterialModel> grid = new Grid<>();
+    private final Map<Long, MaterialModel> materialMap = new HashMap<>();
+    private final List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 
-    public MaterialConsultComponent(MaterialService materialService, UserService userService, boolean isOnlyConsult) throws NotFoundException {
+    public MaterialConsultComponent(
+            MaterialService materialService,
+            UserService userService,
+            boolean isOnlyConsult
+    ) throws NotFoundException {
         this.isOnlyConsult = isOnlyConsult;
         this.materialService = materialService;
         this.user = userService.getLoggedUser();
@@ -38,44 +42,41 @@ public class MaterialConsultComponent extends VerticalLayout {
 
         init();
         initFilter();
-        loadGridData();
+        loadGrid();
     }
 
     private void init() {
-        var btnConsult = new Button("Filtros");
-        btnConsult.addClickListener(event -> materialFilter.open());
-
         grid.addColumn(MaterialModel::getName).setKey("MATERIAL_NAME").setHeader("Nome").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(MaterialModel::getStockQty).setKey("MATERIAL_STOCK").setHeader("Estoque").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(MaterialModel::getStockSafeQty).setKey("MATERIAL_STOCK_SAFE").setHeader("Estoque seguro").setTextAlign(ColumnTextAlign.CENTER).setVisible(isOnlyConsult);
         grid.addColumn(MaterialModel::getTypeDescription).setKey("MATERIAL_TYPE").setHeader("Tipo").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(MaterialModel::getUnitDescription).setKey("MATERIAL_UNIT").setHeader("Unidade").setTextAlign(ColumnTextAlign.CENTER);
         grid.addComponentColumn(MaterialModel::getReservationQuantityComponent).setKey("MATERIAL_QTY_RESERVATION").setHeader("Quantidade reserva").setTextAlign(ColumnTextAlign.CENTER).setVisible(!isOnlyConsult);
-        grid.addComponentColumn(this::getGridActionColumn).setKey("MATERIAL_EDIT").setHeader("Ação").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(this::getActionColumn).setKey("MATERIAL_EDIT").setHeader("Ação").setTextAlign(ColumnTextAlign.CENTER);
 
         setSizeFull();
-        add(btnConsult, grid);
+        add(new Button("Filtros", event -> materialFilter.open()), grid);
     }
 
-    private Component getGridActionColumn(MaterialModel materialModel) {
+    private Component getActionColumn(MaterialModel materialModel) {
         if (this.isOnlyConsult) {
             return new Button("Editar", event -> editMaterial(materialModel.getId()));
         }
 
-        return materialModel.getActionButtons();
+        return materialModel.getReservationActionButtons();
     }
 
     private void initFilter() {
         materialFilter.addOpenedChangeListener(event -> {
             if (!event.isOpened()) {
-                loadGridData();
+                loadGrid();
             }
         });
 
         add(materialFilter);
     }
 
-    private void loadGridData() {
+    private void loadGrid() {
         var materialType = materialFilter.getMaterialFilterModel().getType();
 
         var materialModelList = materialFilter.getMaterialFilterModel().getMaterialModelList();
@@ -117,13 +118,13 @@ public class MaterialConsultComponent extends VerticalLayout {
         }
     }
 
-    public void resetConfiguration(Date startBookingDate, Date endBookingDate) {
+    public void resetReservationConsult(Date startBookingDate, Date endBookingDate) {
         this.startBookingDate = startBookingDate;
         this.endBookingDate = endBookingDate;
 
         this.materialFilter.resetConfiguration();
         this.materialMap.clear();
-        loadGridData();
+        loadGrid();
     }
 
     private List<MaterialModel> getOnReservationList() {
@@ -137,23 +138,19 @@ public class MaterialConsultComponent extends VerticalLayout {
             throw new IllegalArgumentException("Adicione ao menos um material à reserva!");
         }
 
-        var materialModelIdList = materialModelList.stream().map(MaterialModel::getId).collect(Collectors.toList());
-        var materialMap = materialService.getMapById(materialModelIdList);
+        var materialModelIdList = materialModelList.stream().map(MaterialModel::getId).toList();
+        var materialEntityMap = materialService.getMapById(materialModelIdList);
 
         for (var materialModel : materialModelList) {
             var materialId = materialModel.getId();
-            var material = materialMap.getOrDefault(materialId, null);
+            var material = materialEntityMap.getOrDefault(materialId, null);
 
-            if (material == null) {
-                throw new IllegalArgumentException("Material " + materialId + " não encontrado");
-            }
+            if (material == null) throw new IllegalArgumentException("Material " + materialId + " não encontrado");
 
             var reservationQuantity = ConvertHelper.getDouble(materialModel.getReservationQuantity(), 0D);
             var stockQuantity = ConvertHelper.getDouble(material.getStockQty(), 0D);
 
-            if (stockQuantity < reservationQuantity) {
-                throw new IllegalArgumentException(materialModel.getName() + " não possui estoque suficiente. Estoque atual: " + stockQuantity + "!");
-            }
+            if (stockQuantity < reservationQuantity) throw new IllegalArgumentException(materialModel.getName() + " não possui estoque suficiente. Estoque atual: " + stockQuantity + "!");
 
             materialModel.setEntidade(material);
         }

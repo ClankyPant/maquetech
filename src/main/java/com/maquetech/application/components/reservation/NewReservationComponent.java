@@ -3,6 +3,7 @@ package com.maquetech.application.components.reservation;
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helper.DateHelper;
+import com.maquetech.application.helper.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
@@ -77,9 +78,7 @@ public class NewReservationComponent extends Dialog {
         btnPrevius.setIcon(VaadinIcon.ARROW_LEFT.create());
         btnPrevius.setEnabled(false);
         btnPrevius.setIconAfterText(false);
-        btnPrevius.addClickListener(event -> {
-            selectTabByIndex(0);
-        });
+        btnPrevius.addClickListener(event -> selectTabByIndex(0));
 
         var hlRight = new HorizontalLayout();
         hlRight.setSpacing(true);
@@ -127,45 +126,26 @@ public class NewReservationComponent extends Dialog {
         return reservationModel;
     }
 
-    public LocalDateTime getInitialDateTime() {
-        var now = LocalDateTime.now();
-
-        while ((now.getMinute() % 15) != 0) {
-            now = now.plusMinutes(1);
-        }
-
-        return now;
-    }
-
     @Override
     public void open() {
-        var startDateTime = getInitialDateTime();
-        var endDateTime = getInitialDateTimePlusOneHour();
-
-        startDateTimePicket.setValue(startDateTime);
-        endDateTimePicket.setValue(endDateTime);
+        startDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
+        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
 
         selectTabByIndex(0);
 
         super.open();
     }
 
-    public LocalDateTime getInitialDateTimePlusOneHour() {
-        return getInitialDateTime().plusHours(1);
-    }
-
     public Component getFirstStep() {
         var now = LocalDateTime.now();
 
-        var initialDateTime = getInitialDateTime();
         startDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        startDateTimePicket.setValue(initialDateTime);
+        startDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
         startDateTimePicket.setStep(Duration.ofMinutes(15));
         startDateTimePicket.setMin(now);
 
-        var finalDate = getInitialDateTimePlusOneHour();
         endDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicket.setValue(finalDate);
+        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
         endDateTimePicket.setStep(Duration.ofMinutes(15));
         endDateTimePicket.setMin(now);
 
@@ -198,7 +178,7 @@ public class NewReservationComponent extends Dialog {
                     throw new IllegalArgumentException("Informe data e hora antes de prosseguir");
                 }
 
-                result = Result.ok(DateHelper.toDate(localDateTime));
+                result = Result.ok(DateHelper.parse(localDateTime));
             } catch (Exception ex) {
                 ex.printStackTrace();
                 result = Result.error(ex.getMessage());
@@ -209,25 +189,19 @@ public class NewReservationComponent extends Dialog {
 
         @Override
         public LocalDateTime convertToPresentation(Date date, ValueContext valueContext) {
-            return DateHelper.toLocalDateTime(date);
+            return LocalDateTimeHelper.parse(date);
         }
     }
 
     public void selectTabByIndex(int index) {
-        try {
-            var reservationModel = getReservationModel();
-            this.materialConsultComponent.resetConfiguration(reservationModel.getBookingStartDate(), reservationModel.getBookingEndDate());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            NotificationHelper.error(ex.getMessage());
-        }
+        var isFirstStep = index == 0;
+        if (!isFirstStep) resetConsultConfiguration();
 
-        var isFirtStep = index == 0;
-        setWidth(isFirtStep ? "65%" : "75%");
-        setHeight(isFirtStep ? "450px" : "750px");
-        btnPrevius.setEnabled(!isFirtStep);
-        btnFinish.setEnabled(!isFirtStep);
-        btnNext.setEnabled(isFirtStep);
+        setWidth(isFirstStep ? "65%" : "75%");
+        setHeight(isFirstStep ? "450px" : "750px");
+        btnPrevius.setEnabled(!isFirstStep);
+        btnFinish.setEnabled(!isFirstStep);
+        btnNext.setEnabled(isFirstStep);
 
         var selectedTab = tabSheet.getSelectedTab();
         selectedTab.setEnabled(false);
@@ -235,5 +209,15 @@ public class NewReservationComponent extends Dialog {
         var newTab = tabSheet.getTabAt(index);
         newTab.setEnabled(true);
         tabSheet.setSelectedTab(newTab);
+    }
+
+    private void resetConsultConfiguration() {
+        try {
+            var reservationModel = getReservationModel();
+            this.materialConsultComponent.resetReservationConsult(reservationModel.getBookingStartDate(), reservationModel.getBookingEndDate());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            NotificationHelper.error(ex.getMessage());
+        }
     }
 }
