@@ -18,11 +18,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class MaterialModel {
-
-    public MaterialModel() {
-        this.removeMaterialButton.setEnabled(false);
-    }
-
     private Long id;
 
     private String name;
@@ -75,6 +70,9 @@ public class MaterialModel {
     }
 
     public Component getActionButtons() {
+        this.addMaterialButton.setEnabled(!this.onReservation);
+        this.removeMaterialButton.setEnabled(this.onReservation);
+
         addMaterialButton.addClickListener(event -> addMaterial());
         removeMaterialButton.addClickListener(event -> removeMaterial());
 
