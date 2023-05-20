@@ -11,14 +11,17 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class MaterialModel {
+
+    public MaterialModel() {
+        this.removeMaterialButton.setEnabled(false);
+    }
 
     private Long id;
 
@@ -72,8 +75,6 @@ public class MaterialModel {
     }
 
     public Component getActionButtons() {
-        removeMaterialButton.setEnabled(false);
-
         addMaterialButton.addClickListener(event -> addMaterial());
         removeMaterialButton.addClickListener(event -> removeMaterial());
 
