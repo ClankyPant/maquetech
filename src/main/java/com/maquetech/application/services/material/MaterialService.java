@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class MaterialService {
@@ -89,5 +91,9 @@ public class MaterialService {
 
     public MaterialEntity getById(Long id) {
         return this.repository.findById(id).orElse(null);
+    }
+
+    public Map<Long, MaterialEntity> getMapById(List<Long> idList) {
+        return this.repository.getList(idList).stream().collect(Collectors.toMap(MaterialEntity::getId, value -> value));
     }
 }

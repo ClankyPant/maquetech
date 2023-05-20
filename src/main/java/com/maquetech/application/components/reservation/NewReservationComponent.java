@@ -1,8 +1,11 @@
 package com.maquetech.application.components.reservation;
 
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
+import com.maquetech.application.entities.user.UserEntity;
+import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
+import com.maquetech.application.services.reservation.ReservationService;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -18,6 +21,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;
 import javassist.NotFoundException;
@@ -30,16 +34,20 @@ public class NewReservationComponent extends Dialog {
 
     private final TabSheet tabSheet = new TabSheet();
 
+    private final UserEntity user;
+    private final ReservationService reservationService;
+    private final Button btnFinish = new Button("Finalizar");
     private final Button btnNext = new Button("Próximo");
     private final Button btnPrevius = new Button("Anterior");
     private final Binder<ReservationModel> binder = new Binder<>();
     private final MaterialConsultComponent materialConsultComponent;
     private final DateTimePicker endDateTimePicket = new DateTimePicker("Data fim");
     private final DateTimePicker startDateTimePicket = new DateTimePicker("Data inicio");
-    private Button btnFinish;
 
-    public NewReservationComponent(MaterialService materialService, UserService userService) throws NotFoundException {
+    public NewReservationComponent(MaterialService materialService, UserService userService, ReservationService reservationService) throws NotFoundException {
         this.materialConsultComponent = new MaterialConsultComponent(materialService, userService, false);
+        this.reservationService = reservationService;
+        this.user = userService.getLoggedUser();
 
         init();
         initFooter();
@@ -54,9 +62,16 @@ public class NewReservationComponent extends Dialog {
             }
         });
 
-        btnFinish = new Button("Finalizar");
         btnFinish.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         btnFinish.setEnabled(false);
+        btnFinish.addClickListener(event -> {
+            try {
+                finish();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                NotificationHelper.error(ex.getMessage());
+            }
+        });
 
         btnPrevius.setIcon(VaadinIcon.ARROW_LEFT.create());
         btnPrevius.setEnabled(false);
@@ -95,6 +110,16 @@ public class NewReservationComponent extends Dialog {
         tabSheet.add("Etapa 2", materialConsultComponent).setEnabled(false);
 
         add(tabSheet);
+    }
+
+    private void finish() throws ValidationException {
+        var reservationModel = new ReservationModel();
+        binder.writeBean(reservationModel);
+
+        var materialModelList = materialConsultComponent.getOnReservationListAndValidate();
+        this.reservationService.create(materialModelList, reservationModel, this.user);
+        NotificationHelper.success("Reserva feita com sucesso!");
+        this.close();
     }
 
     public LocalDateTime getInitialDateTime() {

@@ -38,4 +38,8 @@ public interface MaterialRepository extends JpaRepository<MaterialEntity, Long> 
 
     @Query(value = "SELECT mat FROM material_entity mat WHERE mat.name like ('%' || :consulting_term || '%')")
     Page<MaterialEntity> getMaterial(@Param("consulting_term") String consultingTerm, PageRequest page);
+
+    @Query(value = "SELECT mat FROM material_entity mat WHERE mat.id IN (?1)")
+    List<MaterialEntity> getList(List<Long> idList);
+
 }

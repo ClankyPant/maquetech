@@ -3,6 +3,7 @@ package com.maquetech.application.components.reservation.user;
 import com.maquetech.application.components.reservation.NewReservationComponent;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
+import com.maquetech.application.services.reservation.ReservationService;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -13,8 +14,8 @@ public class ReservationUserComponent extends VerticalLayout {
 
     private final NewReservationComponent newReservationComponent;
 
-    public ReservationUserComponent(MaterialService materialService, UserService userService) throws NotFoundException {
-        this.newReservationComponent = new NewReservationComponent(materialService, userService);
+    public ReservationUserComponent(MaterialService materialService, UserService userService, ReservationService reservationService) throws NotFoundException {
+        this.newReservationComponent = new NewReservationComponent(materialService, userService, reservationService);
 
         var gridReservation = new Grid<ReservationModel>();
         gridReservation.addColumn(ReservationModel::getBookingStartDate).setKey("start_date").setHeader("Data inicio");

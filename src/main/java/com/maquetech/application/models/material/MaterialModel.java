@@ -1,5 +1,6 @@
 package com.maquetech.application.models.material;
 
+import com.maquetech.application.entities.material.MaterialEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.material.MaterialUnitEnum;
 import com.maquetech.application.helper.ConvertHelper;
@@ -44,6 +45,8 @@ public class MaterialModel {
 
     private final NumberField reservationQuantityField = new NumberField();
 
+    private MaterialEntity entidade;
+
     public String getTypeDescription() {
         return this.type.getDescription();
     }
@@ -73,8 +76,22 @@ public class MaterialModel {
         this.addMaterialButton.setEnabled(!this.onReservation);
         this.removeMaterialButton.setEnabled(this.onReservation);
 
-        addMaterialButton.addClickListener(event -> addMaterial());
-        removeMaterialButton.addClickListener(event -> removeMaterial());
+        addMaterialButton.addClickListener(event -> {
+            try {
+                addMaterial();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                NotificationHelper.error(ex.getMessage());
+            }
+        });
+        removeMaterialButton.addClickListener(event -> {
+            try {
+                removeMaterial();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                NotificationHelper.error(ex.getMessage());
+            }
+        });
 
         var hlContent = new HorizontalLayout();
         hlContent.setSpacing(true);
@@ -85,19 +102,21 @@ public class MaterialModel {
         return hlContent;
     }
 
-    public void addMaterial() {
+    public void validateStockReservation() {
         var reservationQuantity = ConvertHelper.getDouble(this.getReservationQuantity(), 0D);
         var stockQuantity = ConvertHelper.getDouble(this.getStockQty(), 0D);
 
         if (reservationQuantity <= 0) {
-            NotificationHelper.error("Configure uma quantidade maior que zero!");
-            return;
+            throw new IllegalArgumentException("Configure uma quantidade maior que zero!");
         }
 
         if (stockQuantity < reservationQuantity) {
-            NotificationHelper.error("Material não possui estoque suficiente!");
-            return;
+            throw new IllegalArgumentException("Material não possui estoque suficiente!");
         }
+    }
+
+    public void addMaterial() {
+        validateStockReservation();
 
         this.setOnReservation(Boolean.TRUE);
         addMaterialButton.setEnabled(Boolean.FALSE);

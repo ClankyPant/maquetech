@@ -3,6 +3,7 @@ package com.maquetech.application.views.reservation;
 import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
 import com.maquetech.application.components.reservation.user.ReservationUserComponent;
 import com.maquetech.application.services.material.MaterialService;
+import com.maquetech.application.services.reservation.ReservationService;
 import com.maquetech.application.services.user.UserService;
 import com.maquetech.application.views.MainLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
@@ -18,8 +19,8 @@ public class ReservationView extends MaqueVerticalLayout {
 
     private final ReservationUserComponent reservationUserComponent;
 
-    public ReservationView(MaterialService materialService, UserService userService) throws NotFoundException {
-        this.reservationUserComponent = new ReservationUserComponent(materialService, userService);
+    public ReservationView(ReservationService reservationService, MaterialService materialService, UserService userService) throws NotFoundException {
+        this.reservationUserComponent = new ReservationUserComponent(materialService, userService, reservationService);
 
         var tabSheet = new TabSheet();
         tabSheet.setSizeFull();
