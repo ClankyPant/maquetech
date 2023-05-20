@@ -31,10 +31,6 @@ public class MaterialService {
         return entityToModel(this.getPageByUser(term, userTypeEnum, pageRequest).getContent());
     }
 
-    public List<MaterialModel> getList(UserTypeEnum userTypeEnum) {
-        return getList(null, null, userTypeEnum);
-    }
-
     public List<MaterialModel> getList(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
         return this.entityToModel(getListByUser(idList, type, userTypeEnum));
     }
