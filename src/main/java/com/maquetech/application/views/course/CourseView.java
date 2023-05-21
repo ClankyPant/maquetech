@@ -1,7 +1,7 @@
 package com.maquetech.application.views.course;
 
 import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
-import com.maquetech.application.components.maquetech.course.CourseConsultComponent;
+import com.maquetech.application.components.maquetech.course.CourseSearchComponent;
 import com.maquetech.application.components.maquetech.course.CourseRegistrationComponent;
 import com.maquetech.application.services.course.CourseService;
 import com.maquetech.application.views.MainLayout;
@@ -22,7 +22,7 @@ public class CourseView extends MaqueVerticalLayout {
 
         TabSheet tabSheet = new TabSheet();
         tabSheet.setSizeFull();
-        tabSheet.add("Consulta", new CourseConsultComponent(courseService));
+        tabSheet.add("Consulta", new CourseSearchComponent(courseService));
         tabSheet.add("Cadastro", new CourseRegistrationComponent(courseService));
 
         add(tabSheet);

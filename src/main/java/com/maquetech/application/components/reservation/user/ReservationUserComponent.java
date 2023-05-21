@@ -1,10 +1,9 @@
 package com.maquetech.application.components.reservation.user;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
-import com.maquetech.application.components.reservation.NewReservationComponent;
+import com.maquetech.application.components.reservation.ReservationRegistrationComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
@@ -20,7 +19,6 @@ import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,11 +35,11 @@ public class ReservationUserComponent extends VerticalLayout {
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
-    private final NewReservationComponent newReservationComponent;
+    private final ReservationRegistrationComponent reservationRegistrationComponent;
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
     public ReservationUserComponent(MaterialService materialService, ReservationService reservationService) throws NotFoundException {
-        this.newReservationComponent = new NewReservationComponent(materialService, reservationService);
+        this.reservationRegistrationComponent = new ReservationRegistrationComponent(materialService, reservationService);
         this.reservationService = reservationService;
         this.loggedUser = UserHelper.getLoggedUser();
 
@@ -52,7 +50,7 @@ public class ReservationUserComponent extends VerticalLayout {
         createGrid();
         setSizeFull();
         setSpacing(true);
-        add(getHeader(), grid, newReservationComponent, messageDialog);
+        add(getHeader(), grid, reservationRegistrationComponent, messageDialog);
         loadGridData();
     }
 
@@ -111,7 +109,7 @@ public class ReservationUserComponent extends VerticalLayout {
                 startDateTimePicker,
                 endDateTimePicket,
                 btnConsult,
-                new Button("Nova reserva", event -> newReservationComponent.open())
+                new Button("Nova reserva", event -> reservationRegistrationComponent.open())
         );
 
         return formLayout;

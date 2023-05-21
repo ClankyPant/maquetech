@@ -1,6 +1,6 @@
 package com.maquetech.application.components.reservation;
 
-import com.maquetech.application.components.material.consult.MaterialConsultComponent;
+import com.maquetech.application.components.material.consult.MaterialSearchComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
-public class NewReservationComponent extends Dialog {
+public class ReservationRegistrationComponent extends Dialog {
 
     private final TabSheet tabSheet = new TabSheet();
 
@@ -40,12 +40,12 @@ public class NewReservationComponent extends Dialog {
     private final Button btnNext = new Button("Próximo");
     private final Button btnPrevius = new Button("Anterior");
     private final Binder<ReservationModel> binder = new Binder<>();
-    private final MaterialConsultComponent materialConsultComponent;
+    private final MaterialSearchComponent materialSearchComponent;
     private final DateTimePicker endDateTimePicker = new DateTimePicker("Data fim");
     private final DateTimePicker startDateTimePicker = new DateTimePicker("Data inicio");
 
-    public NewReservationComponent(MaterialService materialService, ReservationService reservationService) throws NotFoundException {
-        this.materialConsultComponent = new MaterialConsultComponent(materialService, false);
+    public ReservationRegistrationComponent(MaterialService materialService, ReservationService reservationService) throws NotFoundException {
+        this.materialSearchComponent = new MaterialSearchComponent(materialService, false);
         this.reservationService = reservationService;
         this.loggedUser = UserHelper.getLoggedUser();
 
@@ -104,14 +104,14 @@ public class NewReservationComponent extends Dialog {
 
         tabSheet.setSizeFull();
         tabSheet.add("Etapa 1", getFirstStep());
-        tabSheet.add("Etapa 2", materialConsultComponent).setEnabled(false);
+        tabSheet.add("Etapa 2", materialSearchComponent).setEnabled(false);
 
         add(tabSheet);
     }
 
     private void finish() throws ValidationException {
         var reservationModel = getReservationModel();
-        var materialModelList = materialConsultComponent.getOnReservationListAndValidate();
+        var materialModelList = materialSearchComponent.getOnReservationListAndValidate();
         this.reservationService.create(materialModelList, reservationModel, this.loggedUser);
         NotificationHelper.success("Reserva feita com sucesso!");
         this.close();
@@ -185,7 +185,7 @@ public class NewReservationComponent extends Dialog {
     private void resetConsultConfiguration() {
         try {
             var reservationModel = getReservationModel();
-            this.materialConsultComponent.resetReservationConsult(reservationModel.getBookingStartDate(), reservationModel.getBookingEndDate());
+            this.materialSearchComponent.resetReservationConsult(reservationModel.getBookingStartDate(), reservationModel.getBookingEndDate());
         } catch (Exception ex) {
             ex.printStackTrace();
             NotificationHelper.error(ex.getMessage());

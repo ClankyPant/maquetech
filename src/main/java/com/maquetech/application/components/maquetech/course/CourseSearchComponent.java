@@ -3,12 +3,11 @@ package com.maquetech.application.components.maquetech.course;
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.entities.course.CourseEntity;
 import com.maquetech.application.services.course.CourseService;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class CourseConsultComponent extends VerticalLayout {
+public class CourseSearchComponent extends VerticalLayout {
 
-    public CourseConsultComponent(CourseService courseService) {
+    public CourseSearchComponent(CourseService courseService) {
         setSizeFull();
 
         var grid = new MaqueGrid<CourseEntity>();

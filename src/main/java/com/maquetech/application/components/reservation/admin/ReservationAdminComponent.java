@@ -201,13 +201,13 @@ public class ReservationAdminComponent extends VerticalLayout {
         seeMaterialDialog.setWidth("50%");
         seeMaterialDialog.setHeight("50%");
 
-        var grid = new MaqueGrid<ReservationMaterialModel>();
-        grid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
-        grid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
-        grid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
-        grid.setItems(reservationModel.getMaterialList());
-        grid.setSizeFull();
-        seeMaterialDialog.add(grid);
+        var seeMaterialGrid = new MaqueGrid<ReservationMaterialModel>();
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.setItems(reservationModel.getMaterialList());
+        seeMaterialGrid.setSizeFull();
+        seeMaterialDialog.add(seeMaterialGrid);
 
         seeMaterialDialog.getFooter().add(
                 new Button("Fechar", event -> seeMaterialDialog.close())

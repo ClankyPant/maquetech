@@ -1,7 +1,7 @@
 package com.maquetech.application.views.material;
 
 import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
-import com.maquetech.application.components.material.consult.MaterialConsultComponent;
+import com.maquetech.application.components.material.consult.MaterialSearchComponent;
 import com.maquetech.application.components.material.MaterialRegistrationComponent;
 import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.user.UserService;
@@ -27,7 +27,7 @@ public class MaterialView extends MaqueVerticalLayout {
 
         materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
 
-        var materialConsultComponent = new MaterialConsultComponent(materialService, true);
+        var materialConsultComponent = new MaterialSearchComponent(materialService, true);
         materialConsultComponent.addEditMaterialListener(id -> {
             tabSheet.setSelectedIndex(1);
             materialRegistrationComponent.changeId(id);

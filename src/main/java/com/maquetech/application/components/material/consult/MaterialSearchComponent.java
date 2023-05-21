@@ -10,14 +10,13 @@ import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
 
-public class MaterialConsultComponent extends VerticalLayout {
+public class MaterialSearchComponent extends VerticalLayout {
 
     private Date endBookingDate;
     private Date startBookingDate;
@@ -30,7 +29,7 @@ public class MaterialConsultComponent extends VerticalLayout {
     private final Map<Long, MaterialModel> materialMap = new HashMap<>();
     private final List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 
-    public MaterialConsultComponent(
+    public MaterialSearchComponent(
             MaterialService materialService,
             boolean isOnlyConsult
     ) throws NotFoundException {
