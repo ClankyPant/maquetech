@@ -14,6 +14,7 @@ import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.reservation.ReservationService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -45,9 +46,43 @@ public class ReservationAdminComponent extends VerticalLayout {
     }
 
     private Component getActionButton(ReservationModel reservationModel) {
+        var reservationId = reservationModel.getId();
+
+        var btnAprove = new Button(VaadinIcon.CHECK.create());
+        btnAprove.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnAprove.setTooltipText("Aprovar reserva");
+        btnAprove.setVisible(reservationModel.isPending());
+        btnAprove.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
+            grid.getDataProvider().refreshItem(reservationService.approve(reservationId, reservationModel));
+        }, "Aprovado com sucesso!"));
+
+        var btnDeliver = new Button(VaadinIcon.UPLOAD.create());
+        btnDeliver.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnDeliver.setTooltipText("Entregar materiais");
+        btnDeliver.setVisible(reservationModel.isApproved());
+        btnDeliver.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
+            grid.getDataProvider().refreshItem(reservationService.deliver(reservationId, reservationModel));
+        }, "Reserva entregue com sucesso!"));
+
+        var btnReceive = new Button(VaadinIcon.DOWNLOAD.create());
+        btnReceive.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnReceive.setTooltipText("Receber materiais");
+        btnReceive.setVisible(reservationModel.isInProgress());
+        btnReceive.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
+            grid.getDataProvider().refreshItem(reservationService.receive(reservationId, reservationModel));
+        }, "Reserva recebida com sucesso!"));
+
+        var btnReprove = new Button(VaadinIcon.TRASH.create());
+        btnReprove.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnReprove.setTooltipText("Cancelar reserva");
+        btnReprove.setVisible(!reservationModel.isInProgress() && !reservationModel.isCanceled() && !reservationModel.isFinished());
+        btnReprove.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
+            grid.getDataProvider().refreshItem(reservationService.cancel(reservationId, reservationModel));
+        }, "Reserva cancelada com sucesso!"));
+
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
-
+        hlContent.add(btnAprove, btnDeliver, btnReceive, btnReprove);
         return hlContent;
     }
 

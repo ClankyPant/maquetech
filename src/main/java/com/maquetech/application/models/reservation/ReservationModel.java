@@ -36,6 +36,22 @@ public class ReservationModel {
         return SituationEnum.CANCELED.equals(this.situation);
     }
 
+    public boolean isPending() {
+        return SituationEnum.PENDING.equals(this.situation);
+    }
+
+    public boolean isInProgress() {
+        return SituationEnum.IN_PROGRESS.equals(this.situation);
+    }
+
+    public boolean isFinished() {
+        return SituationEnum.FINISHED.equals(this.situation);
+    }
+
+    public boolean isApproved() {
+        return SituationEnum.APPROVED.equals(this.situation);
+    }
+
     public String getStartDateDisplay() {
         return DateHelper.displayDate(this.getBookingStartDate());
     }

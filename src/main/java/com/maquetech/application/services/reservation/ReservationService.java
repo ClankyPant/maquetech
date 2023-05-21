@@ -54,17 +54,6 @@ public class ReservationService {
         return parse(this.repository.getByUser(startBookingDate, endBookingDate, userId));
     }
 
-    public void cancel(Long id) {
-        var reservationOptional = this.repository.findById(id);
-        if (reservationOptional.isPresent()) {
-            var reservation = reservationOptional.get();
-            reservation.setSituation(SituationEnum.CANCELED);
-            this.repository.save(reservation);
-        } else {
-            throw new IllegalArgumentException("Reserva não foi encontrada!");
-        }
-    }
-
     private List<ReservationModel> parse(List<ReservationEntity> entityList) {
         return entityList.stream().map(this::parse).toList();
     }
@@ -79,5 +68,42 @@ public class ReservationService {
                 .bookingEndDate(entity.getBookingEndDate())
                 .bookingStartDate(entity.getBookingStartDate())
                 .build();
+    }
+
+    public ReservationModel receive(Long id, ReservationModel reservationModel) {
+        return updateSituation(id, SituationEnum.FINISHED, reservationModel);
+    }
+
+    public ReservationModel deliver(Long id, ReservationModel reservationModel) {
+       return updateSituation(id, SituationEnum.IN_PROGRESS, reservationModel);
+    }
+
+    public ReservationModel approve(Long id, ReservationModel reservationModel) {
+        return updateSituation(id, SituationEnum.APPROVED, reservationModel);
+    }
+
+    public ReservationModel cancel(Long id, ReservationModel reservationModel) {
+        return updateSituation(id, SituationEnum.CANCELED, reservationModel);
+    }
+
+    private ReservationModel updateSituation(Long id, SituationEnum situation, ReservationModel reservationModel) {
+        var reservation = this.getById(id);
+        reservation.setSituation(situation);
+        this.repository.save(reservation);
+
+        if (reservationModel != null) {
+            reservationModel.setSituation(situation);
+        }
+
+        return reservationModel;
+    }
+
+    private ReservationEntity getById(Long id) {
+        var reservationOptional = this.repository.findById(id);
+        if (!reservationOptional.isPresent()) {
+            throw new IllegalArgumentException("Reserva não foi encontrada!");
+        }
+
+        return reservationOptional.get();
     }
 }

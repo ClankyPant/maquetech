@@ -63,9 +63,7 @@ public class ReservationUserComponent extends VerticalLayout {
         btnCancel.setEnabled(!reservationModel.isCanceled());
         btnCancel.addClickListener(event -> {
             try {
-                this.reservationService.cancel(reservationModel.getId());
-                reservationModel.setSituation(SituationEnum.CANCELED);
-                grid.getDataProvider().refreshItem(reservationModel);
+                grid.getDataProvider().refreshItem(reservationService.cancel(reservationModel.getId(), reservationModel));
                 NotificationHelper.success("Reserva " + reservationModel.getId() + " cancelada com sucesso!");
             } catch (Exception ex) {
                 ex.printStackTrace();
