@@ -34,4 +34,8 @@ public class MaterialEntity extends AbstractBean {
     private CollectionTypeEntity collectionType;
 
     private Boolean onlyProfessor;
+
+    public boolean isConsumable() {
+        return this.type.equals(MaterialTypeEnum.CONSUMABLE);
+    }
 }

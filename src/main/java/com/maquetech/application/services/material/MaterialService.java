@@ -114,6 +114,31 @@ public class MaterialService {
         return this.repository.findById(id).orElse(null);
     }
 
+    public void update(MaterialEntity materialEntity) {
+        this.repository.save(materialEntity);
+    }
+
+    public void validateAndRemoveConsumables(Long id) {
+        var reservation = reservationService.getById(id);
+        var reservationMaterialList = reservation.getMaterialList();
+        if (org.apache.commons.collections4.CollectionUtils.isEmpty(reservationMaterialList)) {
+            throw new IllegalArgumentException("Erro ao validar materiais da reserva!");
+        }
+
+        for (var reservationMaterial : reservationMaterialList) {
+            var material = reservationMaterial.getMaterial();
+            if (material == null) {
+                throw new IllegalArgumentException("Erro ao validar materiais da reserva!");
+            }
+
+            if (material.isConsumable()) {
+                material.setStockQty(material.getStockQty() - reservationMaterial.getQuantity());
+            }
+
+            this.update(material);
+        }
+    }
+
     public Map<Long, MaterialEntity> getMapById(List<Long> idList) {
         return this.repository.getList(idList).stream().collect(Collectors.toMap(MaterialEntity::getId, value -> value));
     }

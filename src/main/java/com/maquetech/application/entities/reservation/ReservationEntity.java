@@ -33,6 +33,6 @@ public class ReservationEntity extends AbstractBean {
     @Column(columnDefinition = "text")
     private String message;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ReservationMaterialEntity> materialList;
 }

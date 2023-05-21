@@ -3,11 +3,14 @@ package com.maquetech.application.services.reservation;
 import com.maquetech.application.entities.reservation.ReservationEntity;
 import com.maquetech.application.entities.reservation.ReservationMaterialEntity;
 import com.maquetech.application.entities.user.UserEntity;
+import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.repositories.reservation.ReservationRepository;
+import com.maquetech.application.services.material.MaterialService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -75,7 +78,7 @@ public class ReservationService {
     }
 
     public ReservationModel deliver(Long id, ReservationModel reservationModel) {
-       return updateSituation(id, SituationEnum.IN_PROGRESS, reservationModel);
+        return updateSituation(id, SituationEnum.IN_PROGRESS, reservationModel);
     }
 
     public ReservationModel approve(Long id, ReservationModel reservationModel) {
@@ -100,9 +103,9 @@ public class ReservationService {
         return reservationModel;
     }
 
-    private ReservationEntity getById(Long id) {
+    public ReservationEntity getById(Long id) {
         var reservationOptional = this.repository.findById(id);
-        if (!reservationOptional.isPresent()) {
+        if (reservationOptional.isEmpty()) {
             throw new IllegalArgumentException("Reserva não foi encontrada!");
         }
 

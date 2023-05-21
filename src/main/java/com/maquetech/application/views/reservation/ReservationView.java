@@ -36,7 +36,7 @@ public class ReservationView extends MaqueVerticalLayout {
 
     private Component getReservationComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
         if (this.loggedUser.isAdmin()) {
-            return new ReservationAdminComponent(reservationService);
+            return new ReservationAdminComponent(reservationService, materialService);
         }
 
         return new ReservationUserComponent(materialService, reservationService);

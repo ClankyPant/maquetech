@@ -1,10 +1,8 @@
 package com.maquetech.application.components.reservation.admin;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
-import com.maquetech.application.components.reservation.NewReservationComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
@@ -21,7 +19,6 @@ import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -36,13 +33,16 @@ import java.util.Locale;
 public class ReservationAdminComponent extends VerticalLayout {
 
     private final UserEntity loggedUser;
+
+    private final MaterialService materialService;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
-    public ReservationAdminComponent(ReservationService reservationService) throws NotFoundException {
+    public ReservationAdminComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
         this.reservationService = reservationService;
+        this.materialService = materialService;
         this.loggedUser = UserHelper.getLoggedUser();
 
         init();
@@ -68,6 +68,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         btnDeliver.setTooltipText("Entregar materiais");
         btnDeliver.setVisible(reservationModel.isApproved());
         btnDeliver.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
+            materialService.validateAndRemoveConsumables(reservationId);
             grid.getDataProvider().refreshItem(reservationService.deliver(reservationId, reservationModel));
         }, "Reserva entregue com sucesso!"));
 
