@@ -31,6 +31,9 @@ public class ReservationEntity extends AbstractBean {
     @Enumerated(EnumType.STRING)
     private SituationEnum situation;
 
+    @Column(columnDefinition = "text")
+    private String justificationMessage;
+
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<ReservationMaterialEntity> materialList;
 }

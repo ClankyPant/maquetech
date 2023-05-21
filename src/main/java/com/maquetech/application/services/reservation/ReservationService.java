@@ -54,4 +54,22 @@ public class ReservationService {
                         .collect(Collectors.groupingBy(data -> ConvertHelper.getLong(data[0], -1L),
                                 Collectors.summingDouble(data -> ConvertHelper.getDouble(data[1], 0D))));
     }
+
+    public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, UserEntity user) {
+        return parse(this.repository.getByUser(startBookingDate, endBookingDate, user.getId()));
+    }
+
+    public List<ReservationModel> parse(List<ReservationEntity> entityList) {
+        return entityList.stream().map(this::parse).toList();
+    }
+
+    public ReservationModel parse(ReservationEntity entity) {
+        return ReservationModel
+                .builder()
+                .id(entity.getId())
+                .bookingStartDate(entity.getBookingStartDate())
+                .bookingEndDate(entity.getBookingEndDate())
+                .situation(entity.getSituation())
+                .build();
+    }
 }

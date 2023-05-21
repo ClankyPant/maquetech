@@ -1,6 +1,7 @@
 package com.maquetech.application.components.reservation;
 
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
+import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helper.DateHelper;
 import com.maquetech.application.helper.LocalDateTimeHelper;
@@ -165,32 +166,6 @@ public class NewReservationComponent extends Dialog {
         var formLayout = new FormLayout();
         formLayout.add(startDateTimePicket, endDateTimePicket);
         return formLayout;
-    }
-
-    public static class ConvertLocalDateTimeToDate implements Converter<LocalDateTime, Date> {
-
-        @Override
-        public Result<Date> convertToModel(LocalDateTime localDateTime, ValueContext valueContext) {
-            Result<Date> result = null;
-
-            try {
-                if (localDateTime == null) {
-                    throw new IllegalArgumentException("Informe data e hora antes de prosseguir");
-                }
-
-                result = Result.ok(DateHelper.parse(localDateTime));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                result = Result.error(ex.getMessage());
-            }
-
-            return result;
-        }
-
-        @Override
-        public LocalDateTime convertToPresentation(Date date, ValueContext valueContext) {
-            return LocalDateTimeHelper.parse(date);
-        }
     }
 
     public void selectTabByIndex(int index) {
