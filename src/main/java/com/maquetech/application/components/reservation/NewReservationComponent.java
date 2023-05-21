@@ -3,7 +3,6 @@ package com.maquetech.application.components.reservation;
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.helper.DateHelper;
 import com.maquetech.application.helper.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
@@ -23,14 +22,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.tabs.TabSheet;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.binder.ValueContext;
-import com.vaadin.flow.data.converter.Converter;
 import javassist.NotFoundException;
 
 import java.time.*;
-import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class NewReservationComponent extends Dialog {
@@ -44,8 +40,8 @@ public class NewReservationComponent extends Dialog {
     private final Button btnPrevius = new Button("Anterior");
     private final Binder<ReservationModel> binder = new Binder<>();
     private final MaterialConsultComponent materialConsultComponent;
-    private final DateTimePicker endDateTimePicket = new DateTimePicker("Data fim");
-    private final DateTimePicker startDateTimePicket = new DateTimePicker("Data inicio");
+    private final DateTimePicker endDateTimePicker = new DateTimePicker("Data fim");
+    private final DateTimePicker startDateTimePicker = new DateTimePicker("Data inicio");
 
     public NewReservationComponent(MaterialService materialService, UserService userService, ReservationService reservationService) throws NotFoundException {
         this.materialConsultComponent = new MaterialConsultComponent(materialService, userService, false);
@@ -129,8 +125,8 @@ public class NewReservationComponent extends Dialog {
 
     @Override
     public void open() {
-        startDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
-        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
+        startDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
+        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
 
         selectTabByIndex(0);
 
@@ -140,31 +136,33 @@ public class NewReservationComponent extends Dialog {
     public Component getFirstStep() {
         var now = LocalDateTime.now();
 
-        startDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        startDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
-        startDateTimePicket.setStep(Duration.ofMinutes(15));
-        startDateTimePicket.setMin(now);
+        startDateTimePicker.setLocale(new Locale("pt", "BR"));
+        startDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
+        startDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus15Minutes());
+        startDateTimePicker.setStep(Duration.ofMinutes(15));
+        startDateTimePicker.setMin(now);
 
-        endDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
-        endDateTimePicket.setStep(Duration.ofMinutes(15));
-        endDateTimePicket.setMin(now);
+        endDateTimePicker.setLocale(new Locale("pt", "BR"));
+        endDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
+        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
+        endDateTimePicker.setStep(Duration.ofMinutes(15));
+        endDateTimePicker.setMin(now);
 
-        binder.forField(startDateTimePicket)
+        binder.forField(startDateTimePicker)
                 .withValidator(Objects::nonNull, "Informe uma data")
                 .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
-                .withValidator(dateTime -> dateTime.isBefore(endDateTimePicket.getValue()), "Data inicio deve ser menor que data fim!")
+                .withValidator(dateTime -> dateTime.isBefore(endDateTimePicker.getValue()), "Data inicio deve ser menor que data fim!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationModel::getBookingStartDate, ReservationModel::setBookingStartDate);
 
-        binder.forField(endDateTimePicket)
+        binder.forField(endDateTimePicker)
                 .withValidator(Objects::nonNull, "Informe uma data")
                 .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationModel::getBookingEndDate, ReservationModel::setBookingEndDate);
 
         var formLayout = new FormLayout();
-        formLayout.add(startDateTimePicket, endDateTimePicket);
+        formLayout.add(startDateTimePicker, endDateTimePicker);
         return formLayout;
     }
 

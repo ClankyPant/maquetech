@@ -58,7 +58,7 @@ public class MaterialModel {
     public Component getReservationQuantityComponent() {
         reservationQuantityField.setMin(1);
         reservationQuantityField.setStep(1);
-        reservationQuantityField.setWidth("35%");
+        reservationQuantityField.setWidth("50px");
         reservationQuantityField.setAllowedCharPattern("[0-9]");
         reservationQuantityField.addValueChangeListener(event -> {
             var reservationQuantity = event.getValue();

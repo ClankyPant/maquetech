@@ -59,17 +59,29 @@ public class ReservationService {
         return parse(this.repository.getByUser(startBookingDate, endBookingDate, user.getId()));
     }
 
-    public List<ReservationModel> parse(List<ReservationEntity> entityList) {
+    public void cancel(Long id) {
+        var reservationOptional = this.repository.findById(id);
+        if (reservationOptional.isPresent()) {
+            var reservation = reservationOptional.get();
+            reservation.setSituation(SituationEnum.CANCELED);
+            this.repository.save(reservation);
+        } else {
+            throw new IllegalArgumentException("Reserva não foi encontrada!");
+        }
+    }
+
+    private List<ReservationModel> parse(List<ReservationEntity> entityList) {
         return entityList.stream().map(this::parse).toList();
     }
 
-    public ReservationModel parse(ReservationEntity entity) {
+    private ReservationModel parse(ReservationEntity entity) {
         return ReservationModel
                 .builder()
                 .id(entity.getId())
-                .bookingStartDate(entity.getBookingStartDate())
-                .bookingEndDate(entity.getBookingEndDate())
+                .message(entity.getMessage())
                 .situation(entity.getSituation())
+                .bookingEndDate(entity.getBookingEndDate())
+                .bookingStartDate(entity.getBookingStartDate())
                 .build();
     }
 }

@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.AbstractList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +31,7 @@ public class ReservationEntity extends AbstractBean {
     private SituationEnum situation;
 
     @Column(columnDefinition = "text")
-    private String justificationMessage;
+    private String message;
 
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<ReservationMaterialEntity> materialList;
