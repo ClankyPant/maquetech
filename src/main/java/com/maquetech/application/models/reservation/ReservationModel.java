@@ -1,7 +1,7 @@
 package com.maquetech.application.models.reservation;
 
 import com.maquetech.application.enums.reservation.SituationEnum;
-import com.maquetech.application.helper.DateHelper;
+import com.maquetech.application.helpers.DateHelper;
 import io.micrometer.common.util.StringUtils;
 import lombok.*;
 

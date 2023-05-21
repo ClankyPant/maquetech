@@ -1,5 +1,6 @@
 package com.maquetech.application;
 
+import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
@@ -18,6 +19,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @NpmPackage(value = "@fontsource/poppins", version = "4.5.0")
 @Theme(value = "maquetech", variant = Lumo.DARK)
 public class Application implements AppShellConfigurator {
+
+    public static UserService USER_SERVICE;
+
+    public Application(UserService userService) {
+        Application.USER_SERVICE = userService;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

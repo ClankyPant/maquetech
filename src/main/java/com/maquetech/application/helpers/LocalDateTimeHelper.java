@@ -1,4 +1,4 @@
-package com.maquetech.application.helper;
+package com.maquetech.application.helpers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

@@ -4,7 +4,7 @@ package com.maquetech.application.views;
 import com.maquetech.application.components.appnav.AppNav;
 import com.maquetech.application.components.appnav.AppNavItem;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.services.user.UserService;
+import com.maquetech.application.helpers.UserHelper;
 import com.maquetech.application.views.course.CourseView;
 import com.maquetech.application.views.material.MaterialView;
 import com.maquetech.application.views.reservation.ReservationView;
@@ -18,8 +18,6 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -37,29 +35,18 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 @PermitAll
 public class MainLayout extends AppLayout {
 
-    private UserEntity userLogged;
-    private final UserService userService;
+    private final UserEntity userLogged;
     private final transient AuthenticationContext authContext;
 
     private H2 viewTitle;
 
-    public MainLayout(@Autowired AuthenticationContext authContext, @Autowired UserService userService) {
-        this.userService = userService;
+    public MainLayout(@Autowired AuthenticationContext authContext) throws NotFoundException {
         this.authContext = authContext;
 
-        try {
-            this.userLogged = this.userService.getLoggedUser();
-
-            setPrimarySection(Section.DRAWER);
-            addDrawerContent();
-            addHeaderContent();
-        } catch (NotFoundException ex) {
-            ex.printStackTrace();
-            Notification notification = new Notification(ex.getMessage());
-            notification.setDuration(3000);
-            notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-            notification.open();
-        }
+        this.userLogged = UserHelper.getLoggedUser();
+        setPrimarySection(Section.DRAWER);
+        addDrawerContent();
+        addHeaderContent();
     }
 
     private void addHeaderContent() {

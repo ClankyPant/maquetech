@@ -1,7 +1,7 @@
 package com.maquetech.application.converters;
 
-import com.maquetech.application.helper.DateHelper;
-import com.maquetech.application.helper.LocalDateTimeHelper;
+import com.maquetech.application.helpers.DateHelper;
+import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.ValueContext;
 import com.vaadin.flow.data.converter.Converter;

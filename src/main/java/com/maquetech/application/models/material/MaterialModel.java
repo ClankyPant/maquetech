@@ -3,7 +3,7 @@ package com.maquetech.application.models.material;
 import com.maquetech.application.entities.material.MaterialEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.material.MaterialUnitEnum;
-import com.maquetech.application.helper.ConvertHelper;
+import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;

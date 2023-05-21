@@ -3,7 +3,7 @@ package com.maquetech.application.components.reservation;
 import com.maquetech.application.components.material.consult.MaterialConsultComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.helper.LocalDateTimeHelper;
+import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;

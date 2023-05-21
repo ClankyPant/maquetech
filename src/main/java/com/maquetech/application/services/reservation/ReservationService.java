@@ -4,17 +4,12 @@ import com.maquetech.application.entities.reservation.ReservationEntity;
 import com.maquetech.application.entities.reservation.ReservationMaterialEntity;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.enums.reservation.SituationEnum;
-import com.maquetech.application.helper.ConvertHelper;
+import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
-import com.maquetech.application.repositories.reservation.ReservationMaterialRepository;
 import com.maquetech.application.repositories.reservation.ReservationRepository;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
 import java.util.*;
 import java.util.stream.Collectors;
 

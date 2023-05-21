@@ -1,7 +1,7 @@
 package com.maquetech.application.components.material.consult;
 
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.helper.ConvertHelper;
+import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.listeners.material.EditMaterialListener;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.services.material.MaterialService;
@@ -15,7 +15,6 @@ import javassist.NotFoundException;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MaterialConsultComponent extends VerticalLayout {
 

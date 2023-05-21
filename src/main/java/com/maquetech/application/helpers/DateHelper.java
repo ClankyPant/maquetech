@@ -1,4 +1,4 @@
-package com.maquetech.application.helper;
+package com.maquetech.application.helpers;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

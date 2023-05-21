@@ -1,4 +1,4 @@
-package com.maquetech.application.helper;
+package com.maquetech.application.helpers;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Label;
