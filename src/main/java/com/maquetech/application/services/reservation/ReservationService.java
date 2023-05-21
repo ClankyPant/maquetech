@@ -89,11 +89,13 @@ public class ReservationService {
     private ReservationModel updateSituation(Long id, SituationEnum situation, ReservationModel reservationModel) {
         var reservation = this.getById(id);
         reservation.setSituation(situation);
-        this.repository.save(reservation);
 
         if (reservationModel != null) {
             reservationModel.setSituation(situation);
+            reservation.setMessage(reservationModel.getMessage());
         }
+
+        this.repository.save(reservation);
 
         return reservationModel;
     }

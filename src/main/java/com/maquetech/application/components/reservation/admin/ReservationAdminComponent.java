@@ -26,6 +26,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.binder.Binder;
 import javassist.NotFoundException;
 
@@ -54,9 +55,13 @@ public class ReservationAdminComponent extends VerticalLayout {
         btnAprove.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         btnAprove.setTooltipText("Aprovar reserva");
         btnAprove.setVisible(reservationModel.isPending());
-        btnAprove.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
-            grid.getDataProvider().refreshItem(reservationService.approve(reservationId, reservationModel));
-        }, "Aprovado com sucesso!"));
+        btnAprove.addClickListener(event -> {
+            openReservationMessage(reservationModel, "Aprovar", () -> {
+                NotificationHelper.runAndNotify(() -> {
+                    grid.getDataProvider().refreshItem(reservationService.approve(reservationId, reservationModel));
+                }, "Aprovado com sucesso!");
+            });
+        });
 
         var btnDeliver = new Button(VaadinIcon.UPLOAD.create());
         btnDeliver.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -78,9 +83,13 @@ public class ReservationAdminComponent extends VerticalLayout {
         btnReprove.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnReprove.setTooltipText("Cancelar reserva");
         btnReprove.setVisible(!reservationModel.isInProgress() && !reservationModel.isCanceled() && !reservationModel.isFinished());
-        btnReprove.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
-            grid.getDataProvider().refreshItem(reservationService.cancel(reservationId, reservationModel));
-        }, "Reserva cancelada com sucesso!"));
+        btnReprove.addClickListener(event -> {
+            openReservationMessage(reservationModel, "Cancelar reserva", () -> {
+                NotificationHelper.runAndNotify(() -> {
+                    grid.getDataProvider().refreshItem(reservationService.cancel(reservationId, reservationModel));
+                }, "Reserva cancelada com sucesso!");
+            });
+        });
 
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
@@ -161,5 +170,26 @@ public class ReservationAdminComponent extends VerticalLayout {
             ex.printStackTrace();
             NotificationHelper.error(ex.getMessage());
         }
+    }
+
+    private void openReservationMessage(ReservationModel reservationModel, String actionButtonName, Runnable action) {
+        messageDialog.removeAll();
+        messageDialog.getFooter().removeAll();
+        messageDialog.setWidth("50%");
+        messageDialog.setHeight("50%");
+
+        var message = new TextArea("Messagem (Opcional):");
+        message.setSizeFull();
+        messageDialog.add(message);
+
+        messageDialog.getFooter().add(
+                new Button("Cancelar", event -> messageDialog.close()),
+                new Button(actionButtonName, event -> {
+                    reservationModel.setMessage(message.getValue());
+                    messageDialog.close();
+                    action.run();
+                })
+        );
+        messageDialog.open();
     }
 }
