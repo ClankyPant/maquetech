@@ -5,7 +5,6 @@ import com.maquetech.application.components.appnav.AppNav;
 import com.maquetech.application.components.appnav.AppNavItem;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.services.user.UserService;
-import com.maquetech.application.views.helloworld.HelloWorldView;
 import com.maquetech.application.views.course.CourseView;
 import com.maquetech.application.views.material.MaterialView;
 import com.maquetech.application.views.reservation.ReservationView;
@@ -38,10 +37,8 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 @PermitAll
 public class MainLayout extends AppLayout {
 
-    private final UserService userService;
-
     private UserEntity userLogged;
-
+    private final UserService userService;
     private final transient AuthenticationContext authContext;
 
     private H2 viewTitle;
@@ -102,11 +99,10 @@ public class MainLayout extends AppLayout {
 
         var isProfessorStudant = this.userLogged.isStudent() || this.userLogged.isProfessor();
 
-        nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
+        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), isProfessorStudant));
         nav.addItem(new AppNavItem("Professores", ProfessorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
-        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), isProfessorStudant));
 
         return nav;
     }
