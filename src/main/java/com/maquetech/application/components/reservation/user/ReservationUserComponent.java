@@ -151,8 +151,8 @@ public class ReservationUserComponent extends VerticalLayout {
     public void openMessageDialog(ReservationModel reservationModel) {
         messageDialog.removeAll();
         messageDialog.getFooter().removeAll();
-        messageDialog.setWidth("50%");
-        messageDialog.setHeight("50%");
+        messageDialog.setWidth("95%");
+        messageDialog.setHeight("95%");
 
         var message = new TextArea("Messagem");
         message.setSizeFull();

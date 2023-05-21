@@ -90,8 +90,7 @@ public class NewReservationComponent extends Dialog {
     }
 
     public void init() {
-        setWidth("45%");
-        setHeight("40%");
+        setSizeFull();
 
         var btnClose = new Button(new Icon(VaadinIcon.CLOSE));
         btnClose.addClickListener(event -> close());
@@ -170,8 +169,6 @@ public class NewReservationComponent extends Dialog {
         var isFirstStep = index == 0;
         if (!isFirstStep) resetConsultConfiguration();
 
-        setWidth(isFirstStep ? "65%" : "75%");
-        setHeight(isFirstStep ? "450px" : "750px");
         btnPrevius.setEnabled(!isFirstStep);
         btnFinish.setEnabled(!isFirstStep);
         btnNext.setEnabled(isFirstStep);

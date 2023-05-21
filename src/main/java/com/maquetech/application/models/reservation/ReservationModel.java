@@ -2,6 +2,7 @@ package com.maquetech.application.models.reservation;
 
 import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helper.DateHelper;
+import io.micrometer.common.util.StringUtils;
 import lombok.*;
 
 import java.util.Date;
@@ -48,5 +49,9 @@ public class ReservationModel {
 
     public String getEndHourDisplay() {
         return DateHelper.displayHour(this.getBookingEndDate());
+    }
+
+    public String getMessage() {
+        return StringUtils.isNotBlank(message) ? message : "";
     }
 }

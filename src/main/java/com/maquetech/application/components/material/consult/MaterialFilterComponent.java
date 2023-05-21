@@ -67,6 +67,9 @@ public class MaterialFilterComponent extends Dialog {
                 NotificationHelper.error(e.getMessage());
             }
         }));
+
+        setCloseOnEsc(false);
+        setCloseOnOutsideClick(false);
     }
 
     private List<MaterialModel> toList(Set<MaterialModel> data) {

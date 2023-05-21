@@ -111,7 +111,7 @@ public class MaterialModel {
         }
 
         if (stockQuantity < reservationQuantity) {
-            throw new IllegalArgumentException("Material não possui estoque suficiente!");
+            throw new IllegalArgumentException("Quantidade inválida. Estoque atual: " + stockQuantity);
         }
     }
 
