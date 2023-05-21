@@ -7,9 +7,13 @@ import com.maquetech.application.enums.material.MaterialUnitEnum;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -18,22 +22,22 @@ import com.vaadin.flow.data.binder.Binder;
 import java.util.List;
 import java.util.Objects;
 
-public class MaterialRegistrationComponent extends MaqueVerticalLayout {
+public class MaterialRegistrationComponent extends Dialog {
 
     private static final Integer MATERIAL_NAME_MAX_LENGTH = 3;
 
     private MaterialEntity materialEntity;
-
     private final MaterialService materialService;
-
     private final Binder<MaterialEntity> binder = new Binder<>(MaterialEntity.class);
 
     public MaterialRegistrationComponent(MaterialService materialService) {
         this.materialService = materialService;
 
-        var vlContent = new VerticalLayout();
-        vlContent.setSizeFull();
-        vlContent.setWidth("50%");
+        var hlHeader = new HorizontalLayout();
+        hlHeader.setWidth("100%");
+        hlHeader.setPadding(true);
+        hlHeader.add(new H2("Cadastro de material"));
+        getHeader().add(hlHeader);
 
         var materialNameField = new TextField("Nome");
         materialNameField.setRequired(true);
@@ -47,7 +51,6 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         var materialStockQtyField = new NumberField("Quantidade em estoque");
         materialStockQtyField.setRequired(true);
         materialStockQtyField.setMin(0D);
-        materialStockQtyField.setValue(0D);
         binder.forField(materialStockQtyField)
                 .withValidator(Objects::nonNull, "Informe uma quantidade de estoque para o material!")
                 .bind(MaterialEntity::getStockQty, MaterialEntity::setStockQty);
@@ -59,22 +62,21 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         var materialUnitType = new ComboBox<MaterialUnitEnum>("Unidade material");
         materialUnitType.setItems(List.of(MaterialUnitEnum.UN, MaterialUnitEnum.BX, MaterialUnitEnum.ML, MaterialUnitEnum.MG));
         materialUnitType.setItemLabelGenerator(MaterialUnitEnum::getDescription);
-        materialUnitType.setValue(MaterialUnitEnum.UN);
         materialUnitType.setRequired(true);
         binder.forField(materialUnitType).bind(MaterialEntity::getUnit, MaterialEntity::setUnit);
 
         var materialTypeField = new ComboBox<MaterialTypeEnum>("Tipo de material");
         materialTypeField.setItems(List.of(MaterialTypeEnum.TOOL, MaterialTypeEnum.DESK, MaterialTypeEnum.CONSUMABLE, MaterialTypeEnum.ENVIRONMENT));
         materialTypeField.setItemLabelGenerator(MaterialTypeEnum::getDescription);
-        materialTypeField.setValue(MaterialTypeEnum.TOOL);
         materialTypeField.setRequired(true);
         binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
 
         var isOnlyProfessorField = new Checkbox("Apenas professores");
         binder.forField(isOnlyProfessorField).bind(MaterialEntity::getOnlyProfessor, MaterialEntity::setOnlyProfessor);
 
-        var registerButton = new Button("Cadastrar / editar");
-        registerButton.addClickListener(event -> {
+        var btnNewEdit = new Button("Cadastrar/editar");
+        btnNewEdit.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnNewEdit.addClickListener(event -> {
             try {
                 materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
@@ -92,6 +94,9 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
             }
         });
 
+        var btnCancel = new Button("Cancelar", event -> this.close());
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
         var formLayout = new FormLayout();
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
@@ -101,13 +106,19 @@ public class MaterialRegistrationComponent extends MaqueVerticalLayout {
         formLayout.setColspan(materialNameField, 3);
         formLayout.setColspan(materialTypeField, 3);
         formLayout.setColspan(materialLocationField, 3);
-        vlContent.add(formLayout, registerButton);
 
-        add(vlContent);
+        add(formLayout);
+        getFooter().add(btnCancel, btnNewEdit);
     }
 
-    public void changeId(Long id) {
-        materialEntity = this.materialService.getById(id);
-        this.binder.readBean(materialEntity);
+    public void open(Long id) {
+        binder.refreshFields();
+
+        if (id != null) {
+            materialEntity = this.materialService.getById(id);
+            binder.readBean(materialEntity);
+        }
+
+        super.open();
     }
 }

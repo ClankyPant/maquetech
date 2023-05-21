@@ -1,15 +1,16 @@
 package com.maquetech.application.components.material.consult;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
+import com.maquetech.application.components.material.MaterialRegistrationComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.helpers.UserHelper;
-import com.maquetech.application.listeners.material.EditMaterialListener;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +28,7 @@ public class MaterialSearchComponent extends VerticalLayout {
     private final MaterialFilterComponent materialFilter;
     private final MaqueGrid<MaterialModel> grid = new MaqueGrid<>();
     private final Map<Long, MaterialModel> materialMap = new HashMap<>();
-    private final List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
+    private final MaterialRegistrationComponent materialRegistrationComponent;
 
     public MaterialSearchComponent(
             MaterialService materialService,
@@ -37,6 +38,7 @@ public class MaterialSearchComponent extends VerticalLayout {
         this.materialService = materialService;
         this.loggedUser = UserHelper.getLoggedUser();
         this.materialFilter = new MaterialFilterComponent(materialService, loggedUser);
+        this.materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
 
         init();
         initFilter();
@@ -53,12 +55,19 @@ public class MaterialSearchComponent extends VerticalLayout {
         grid.addColumn(MaterialModel::getUnitDescription).setKey("MATERIAL_UNIT").setHeader("Unidade").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
 
         setSizeFull();
-        add(new Button("Filtros", event -> materialFilter.open()), grid);
+        add(getHeader(), grid, materialRegistrationComponent);
+    }
+
+    private Component getHeader() {
+        var hlContent = new HorizontalLayout();
+        hlContent.setWidth("100%");
+        hlContent.add(new Button("Filtros", event -> materialFilter.open()), new Button("Novo", event -> materialRegistrationComponent.open(null)));
+        return hlContent;
     }
 
     private Component getActionColumn(MaterialModel materialModel) {
         if (this.isOnlyConsult) {
-            return new Button("Editar", event -> editMaterial(materialModel.getId()));
+            return new Button("Editar", event -> materialRegistrationComponent.open(materialModel.getId()));
         }
 
         return materialModel.getReservationActionButtons();
@@ -108,16 +117,6 @@ public class MaterialSearchComponent extends VerticalLayout {
         }
 
         return materialListAux;
-    }
-
-    public void addEditMaterialListener(EditMaterialListener listener) {
-        this.editMaterialListenerList.add(listener);
-    }
-
-    public void editMaterial(Long id) {
-        for (var listener : this.editMaterialListenerList) {
-            listener.edit(id);
-        }
     }
 
     public void resetReservationConsult(Date startBookingDate, Date endBookingDate) {

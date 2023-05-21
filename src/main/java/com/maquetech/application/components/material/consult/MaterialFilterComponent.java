@@ -7,10 +7,13 @@ import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.material.consult.MaterialFilterModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import lombok.Getter;
@@ -34,7 +37,16 @@ public class MaterialFilterComponent extends Dialog {
         this.materialService = materialService;
         this.user = user;
 
+        initHeader();
         init();
+    }
+
+    private void initHeader() {
+        var hlHeader = new HorizontalLayout();
+        hlHeader.setWidth("100%");
+        hlHeader.setPadding(true);
+        hlHeader.add(new H2("Filtro de material"));
+        getHeader().add(hlHeader);
     }
 
     private void init() {
@@ -56,17 +68,24 @@ public class MaterialFilterComponent extends Dialog {
         binder.forField(materialTypeField)
                 .bind(MaterialFilterModel::getType, MaterialFilterModel::setType);
 
+        var btnCancel = new Button("Cancelar");
+        btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        btnCancel.addClickListener(event -> this.close());
 
-        setWidth("65%");
-        add(new FormLayout(materialFilter, materialTypeField));
-        getFooter().add(new Button("Filtrar", event -> {
+        var btnSearch = new Button("Filtrar", event -> {
             try {
                 binder.writeBean(materialFilterModel);
-                super.close();
+                this.close();
             } catch (ValidationException e) {
                 NotificationHelper.error(e.getMessage());
             }
-        }));
+        });
+        btnSearch.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+
+
+        setWidth("65%");
+        add(new FormLayout(materialFilter, materialTypeField));
+        getFooter().add(btnCancel, btnSearch);
 
         setCloseOnEsc(false);
         setCloseOnOutsideClick(false);
@@ -88,5 +107,11 @@ public class MaterialFilterComponent extends Dialog {
             ex.printStackTrace();
             NotificationHelper.error(ex.getMessage());
         }
+    }
+
+    @Override
+    public void open() {
+        binder.readBean(materialFilterModel);
+        super.open();
     }
 }
