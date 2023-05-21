@@ -13,8 +13,8 @@ import jakarta.annotation.security.PermitAll;
 import javassist.NotFoundException;
 
 @PermitAll
-@PageTitle("Reservar")
-@Route(value = "reservation", layout = MainLayout.class)
+@PageTitle("Reserva")
+@Route(value = "", layout = MainLayout.class)
 public class ReservationView extends MaqueVerticalLayout {
 
     private final ReservationUserComponent reservationUserComponent;
