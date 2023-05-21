@@ -14,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 public class MaqueNotificationComponent extends Notification {
 
     public MaqueNotificationComponent(String message, NotificationVariant variant) {
+        this.setPosition(Position.MIDDLE);
         this.addThemeVariants(variant);
         this.setDuration(3000);
 
@@ -22,9 +23,7 @@ public class MaqueNotificationComponent extends Notification {
         Button closeButton = new Button(new Icon("lumo", "cross"));
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
         closeButton.getElement().setAttribute("aria-label", "Close");
-        closeButton.addClickListener(event -> {
-            close();
-        });
+        closeButton.addClickListener(event -> close());
 
         HorizontalLayout layout = new HorizontalLayout(text, closeButton);
         layout.setAlignItems(FlexComponent.Alignment.CENTER);

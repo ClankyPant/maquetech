@@ -77,6 +77,10 @@ public class MaterialConsultComponent extends VerticalLayout {
     }
 
     private void loadGrid() {
+        grid.setItems(updateMaterialMap());
+    }
+
+    private HashSet<MaterialModel> updateMaterialMap() {
         var materialType = materialFilter.getMaterialFilterModel().getType();
 
         var materialModelList = materialFilter.getMaterialFilterModel().getMaterialModelList();
@@ -92,20 +96,20 @@ public class MaterialConsultComponent extends VerticalLayout {
                 this.endBookingDate
         );
 
-        if (materialList != null && !materialList.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(materialList)) {
             for (var material : materialList) {
                 materialMap.computeIfAbsent(material.getId(), key -> material);
 
                 materialListAux.add(
-                    materialMap.computeIfPresent(material.getId(), (key, mat) -> {
-                        mat.setStockQty(material.getStockQty());
-                        return mat;
-                    })
+                        materialMap.computeIfPresent(material.getId(), (key, mat) -> {
+                            mat.setStockQty(material.getStockQty());
+                            return mat;
+                        })
                 );
             }
         }
 
-        grid.setItems(materialListAux);
+        return materialListAux;
     }
 
     public void addEditMaterialListener(EditMaterialListener listener) {
@@ -132,6 +136,9 @@ public class MaterialConsultComponent extends VerticalLayout {
     }
 
     public List<MaterialModel> getOnReservationListAndValidate() {
+        this.materialFilter.resetConfiguration();
+        loadGrid();
+
         var materialModelList = this.getOnReservationList();
 
         if (CollectionUtils.isEmpty(materialModelList)) {
@@ -143,16 +150,16 @@ public class MaterialConsultComponent extends VerticalLayout {
 
         for (var materialModel : materialModelList) {
             var materialId = materialModel.getId();
-            var material = materialEntityMap.getOrDefault(materialId, null);
+            var materialEntity = materialEntityMap.getOrDefault(materialId, null);
 
-            if (material == null) throw new IllegalArgumentException("Material " + materialId + " não encontrado");
+            if (materialEntity == null) throw new IllegalArgumentException("Material " + materialId + " não encontrado");
 
             var reservationQuantity = ConvertHelper.getDouble(materialModel.getReservationQuantity(), 0D);
-            var stockQuantity = ConvertHelper.getDouble(material.getStockQty(), 0D);
+            var stockQuantity = ConvertHelper.getDouble(materialModel.getStockQty(), 0D);
 
             if (stockQuantity < reservationQuantity) throw new IllegalArgumentException(materialModel.getName() + " não possui estoque suficiente. Estoque atual: " + stockQuantity + "!");
 
-            materialModel.setEntidade(material);
+            materialModel.setEntidade(materialEntity);
         }
 
         return materialModelList;

@@ -69,9 +69,7 @@ public class MaterialService {
             }
         }
 
-        return materialModelList.stream()
-                .filter(material -> material.getStockQty() > 0)
-                .toList();
+        return materialModelList;
     }
 
     private List<MaterialModel> entityToModel(List<MaterialEntity> entityList) {
