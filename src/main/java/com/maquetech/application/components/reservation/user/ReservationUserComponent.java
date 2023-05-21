@@ -135,7 +135,7 @@ public class ReservationUserComponent extends VerticalLayout {
             binder.writeBean(reservationFilter);
 
             this.grid.setItems(
-                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), loggedUser.getId())
+                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), loggedUser.getId(), null)
             );
         } catch (Exception ex) {
             ex.printStackTrace();

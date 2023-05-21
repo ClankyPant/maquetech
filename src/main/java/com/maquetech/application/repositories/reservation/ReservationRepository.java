@@ -1,6 +1,7 @@
 package com.maquetech.application.repositories.reservation;
 
 import com.maquetech.application.entities.reservation.ReservationEntity;
+import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.models.reservation.ReservationModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,6 +34,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
                 WHERE (re.bookingStartDate >= :r_ini OR CAST(:r_ini AS date) IS NULL)
                 AND (re.bookingEndDate <= :r_fim OR CAST(:r_fim AS date) IS NULL)
                 AND (re.user.id = :user_id OR :user_id IS NULL)
+                AND (re.situation = :situation OR :situation IS NULL)
             """)
-    List<ReservationEntity> getByUser(@Param("r_ini") Date startBookingDate, @Param("r_fim") Date endBookingDate, @Param("user_id") Long userId);
+    List<ReservationEntity> getByUser(@Param("r_ini") Date startBookingDate, @Param("r_fim") Date endBookingDate, @Param("user_id") Long userId, @Param("situation") SituationEnum situation);
 }

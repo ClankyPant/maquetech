@@ -51,8 +51,8 @@ public class ReservationService {
                                 Collectors.summingDouble(data -> ConvertHelper.getDouble(data[1], 0D))));
     }
 
-    public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, Long userId) {
-        return parse(this.repository.getByUser(startBookingDate, endBookingDate, userId));
+    public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, Long userId, SituationEnum situation) {
+        return parse(this.repository.getByUser(startBookingDate, endBookingDate, userId, situation));
     }
 
     private List<ReservationModel> parse(List<ReservationEntity> entityList) {

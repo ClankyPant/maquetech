@@ -12,6 +12,6 @@ public class ReservationFilterModel {
 
     private Date bookingEndDate;
     private Date bookingStartDate;
-    private SituationEnum situationEnum;
+    private SituationEnum situation;
 
 }

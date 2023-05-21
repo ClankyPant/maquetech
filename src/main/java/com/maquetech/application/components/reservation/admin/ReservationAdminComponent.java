@@ -2,6 +2,7 @@ package com.maquetech.application.components.reservation.admin;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
+import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
@@ -13,6 +14,7 @@ import com.maquetech.application.services.reservation.ReservationService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -117,14 +119,20 @@ public class ReservationAdminComponent extends VerticalLayout {
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationFilterModel::getBookingStartDate, ReservationFilterModel::setBookingStartDate);
 
-        var endDateTimePicket = new DateTimePicker();
+        var endDateTimePicker = new DateTimePicker();
         startDateTimePicker.setLocale(new Locale("pt", "BR"));
-        endDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
-        endDateTimePicket.setStep(Duration.ofMinutes(15));
-        binder.forField(endDateTimePicket)
+        endDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
+        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
+        endDateTimePicker.setStep(Duration.ofMinutes(15));
+        binder.forField(endDateTimePicker)
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationFilterModel::getBookingEndDate, ReservationFilterModel::setBookingEndDate);
+
+        var situation = new ComboBox<SituationEnum>("Situação");
+        situation.setClearButtonVisible(true);
+        situation.setItems(SituationEnum.values());
+        situation.setItemLabelGenerator(SituationEnum::getDescription);
+        binder.forField(situation).bind(ReservationFilterModel::getSituation, ReservationFilterModel::setSituation);
 
         var btnConsult = new Button("Consultar");
         btnConsult.addClickListener(event -> loadGridData());
@@ -133,11 +141,12 @@ public class ReservationAdminComponent extends VerticalLayout {
         formLayout.setWidth("100%");
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0px", 1),
-                new FormLayout.ResponsiveStep("1000px", 3)
+                new FormLayout.ResponsiveStep("1000px", 4)
         );
         formLayout.add(
                 startDateTimePicker,
-                endDateTimePicket,
+                endDateTimePicker,
+                situation,
                 btnConsult
         );
 
@@ -166,7 +175,7 @@ public class ReservationAdminComponent extends VerticalLayout {
             binder.writeBean(reservationFilter);
 
             this.grid.setItems(
-                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), null)
+                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), null, reservationFilter.getSituation())
             );
         } catch (Exception ex) {
             ex.printStackTrace();
