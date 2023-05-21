@@ -15,7 +15,7 @@ public class ReservationMaterialEntity extends AbstractBean {
     @OneToOne
     private ReservationEntity reservation;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private MaterialEntity material;
 
     private Double quantity;

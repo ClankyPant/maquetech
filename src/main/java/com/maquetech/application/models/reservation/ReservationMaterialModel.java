@@ -1,10 +1,18 @@
 package com.maquetech.application.models.reservation;
 
-import com.maquetech.application.models.material.MaterialModel;
+import lombok.*;
 
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReservationMaterialModel {
+
+    private Long materialId;
 
     private Double quantity;
 
-    private MaterialModel material;
+    private String materialName;
 }
+

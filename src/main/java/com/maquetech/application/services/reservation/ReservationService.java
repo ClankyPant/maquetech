@@ -3,14 +3,12 @@ package com.maquetech.application.services.reservation;
 import com.maquetech.application.entities.reservation.ReservationEntity;
 import com.maquetech.application.entities.reservation.ReservationMaterialEntity;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.models.material.MaterialModel;
+import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.repositories.reservation.ReservationRepository;
-import com.maquetech.application.services.material.MaterialService;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -69,8 +67,24 @@ public class ReservationService {
                 .situation(entity.getSituation())
                 .userName(entity.getUser().getName())
                 .bookingEndDate(entity.getBookingEndDate())
+                .materialList(parseReservationMaterial(entity.getMaterialList()))
                 .bookingStartDate(entity.getBookingStartDate())
                 .build();
+    }
+
+    private ReservationMaterialModel parseReservationMaterial(ReservationMaterialEntity entity) {
+        var material = entity.getMaterial();
+
+        return ReservationMaterialModel
+                .builder()
+                .materialId(material.getId())
+                .materialName(material.getName())
+                .quantity(entity.getQuantity())
+                .build();
+    }
+
+    private List<ReservationMaterialModel> parseReservationMaterial(List<ReservationMaterialEntity> entityList) {
+        return entityList.stream().map(this::parseReservationMaterial).toList();
     }
 
     public ReservationModel receive(Long id, ReservationModel reservationModel) {

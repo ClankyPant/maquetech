@@ -2,11 +2,10 @@ package com.maquetech.application.components.reservation.admin;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
-import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.models.reservation.filter.ReservationFilterModel;
 import com.maquetech.application.services.material.MaterialService;
@@ -32,18 +31,16 @@ import java.util.Locale;
 
 public class ReservationAdminComponent extends VerticalLayout {
 
-    private final UserEntity loggedUser;
-
     private final MaterialService materialService;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
+    private final Dialog seeMaterialDialog = new Dialog();
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
     public ReservationAdminComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
         this.reservationService = reservationService;
         this.materialService = materialService;
-        this.loggedUser = UserHelper.getLoggedUser();
 
         init();
     }
@@ -92,9 +89,13 @@ public class ReservationAdminComponent extends VerticalLayout {
             });
         });
 
+        var btnSee = new Button(VaadinIcon.PENCIL.create());
+        btnSee.setTooltipText("Ver materiais");
+        btnSee.addClickListener(event -> openSeeMaterial(reservationModel));
+
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
-        hlContent.add(btnAprove, btnDeliver, btnReceive, btnReprove);
+        hlContent.add(btnAprove, btnDeliver, btnReceive, btnReprove, btnSee);
         return hlContent;
     }
 
@@ -102,7 +103,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         createGrid();
         setSizeFull();
         setSpacing(true);
-        add(getHeader(), grid, messageDialog);
+        add(getHeader(), grid, messageDialog, seeMaterialDialog);
         loadGridData();
     }
 
@@ -192,5 +193,25 @@ public class ReservationAdminComponent extends VerticalLayout {
                 })
         );
         messageDialog.open();
+    }
+
+    private void openSeeMaterial(ReservationModel reservationModel) {
+        seeMaterialDialog.removeAll();
+        seeMaterialDialog.getFooter().removeAll();
+        seeMaterialDialog.setWidth("50%");
+        seeMaterialDialog.setHeight("50%");
+
+        var grid = new MaqueGrid<ReservationMaterialModel>();
+        grid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
+        grid.setItems(reservationModel.getMaterialList());
+        grid.setSizeFull();
+        seeMaterialDialog.add(grid);
+
+        seeMaterialDialog.getFooter().add(
+                new Button("Fechar", event -> seeMaterialDialog.close())
+        );
+        seeMaterialDialog.open();
     }
 }
