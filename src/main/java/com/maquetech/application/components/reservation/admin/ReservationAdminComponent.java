@@ -1,5 +1,6 @@
 package com.maquetech.application.components.reservation.admin;
 
+import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.components.reservation.NewReservationComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
@@ -21,6 +22,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -35,7 +37,7 @@ public class ReservationAdminComponent extends VerticalLayout {
     private final UserEntity loggedUser;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
-    private final Grid<ReservationModel> grid = new Grid<>();
+    private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
     public ReservationAdminComponent(ReservationService reservationService) throws NotFoundException {
@@ -140,6 +142,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         var endHourColumn = grid.addColumn(ReservationModel::getEndHourDisplay).setKey("end_hour").setHeader("Hora").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(ReservationModel::getSituationDisplay).setKey("situation").setHeader("Situação").setTextAlign(ColumnTextAlign.CENTER);
         grid.addComponentColumn(this::getActionButton).setKey("action_button").setHeader("Ações").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
 
         var headerRow = grid.prependHeaderRow();
         headerRow.join(startDateColumn, startHourColumn).setComponent(LabelHelper.getCenteredLabel("Inicío"));

@@ -1,5 +1,6 @@
 package com.maquetech.application.components.material.consult;
 
+import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.helpers.UserHelper;
@@ -25,7 +26,7 @@ public class MaterialConsultComponent extends VerticalLayout {
     private final boolean isOnlyConsult;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
-    private final Grid<MaterialModel> grid = new Grid<>();
+    private final MaqueGrid<MaterialModel> grid = new MaqueGrid<>();
     private final Map<Long, MaterialModel> materialMap = new HashMap<>();
     private final List<EditMaterialListener> editMaterialListenerList = new ArrayList<>();
 

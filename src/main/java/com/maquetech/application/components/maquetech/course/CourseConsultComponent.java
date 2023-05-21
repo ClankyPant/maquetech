@@ -1,5 +1,6 @@
 package com.maquetech.application.components.maquetech.course;
 
+import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.entities.course.CourseEntity;
 import com.maquetech.application.services.course.CourseService;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,7 +11,7 @@ public class CourseConsultComponent extends VerticalLayout {
     public CourseConsultComponent(CourseService courseService) {
         setSizeFull();
 
-        var grid = new Grid<CourseEntity>();
+        var grid = new MaqueGrid<CourseEntity>();
         grid.setSizeFull();
         grid.setColumnReorderingAllowed(true);
         grid.setItems(courseService.findAll());

@@ -1,5 +1,6 @@
 package com.maquetech.application.components.reservation.user;
 
+import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.components.reservation.NewReservationComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
@@ -35,7 +36,7 @@ public class ReservationUserComponent extends VerticalLayout {
     private final UserEntity loggedUser;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
-    private final Grid<ReservationModel> grid = new Grid<>();
+    private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final NewReservationComponent newReservationComponent;
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
