@@ -5,10 +5,10 @@ import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
+import com.maquetech.application.helpers.UserHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.reservation.ReservationService;
-import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -25,7 +25,8 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import javassist.NotFoundException;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ public class NewReservationComponent extends Dialog {
 
     private final TabSheet tabSheet = new TabSheet();
 
-    private final UserEntity user;
+    private final UserEntity loggedUser;
     private final ReservationService reservationService;
     private final Button btnFinish = new Button("Finalizar");
     private final Button btnNext = new Button("Próximo");
@@ -43,10 +44,10 @@ public class NewReservationComponent extends Dialog {
     private final DateTimePicker endDateTimePicker = new DateTimePicker("Data fim");
     private final DateTimePicker startDateTimePicker = new DateTimePicker("Data inicio");
 
-    public NewReservationComponent(MaterialService materialService, UserService userService, ReservationService reservationService) throws NotFoundException {
-        this.materialConsultComponent = new MaterialConsultComponent(materialService, userService, false);
+    public NewReservationComponent(MaterialService materialService, ReservationService reservationService) throws NotFoundException {
+        this.materialConsultComponent = new MaterialConsultComponent(materialService, false);
         this.reservationService = reservationService;
-        this.user = userService.getLoggedUser();
+        this.loggedUser = UserHelper.getLoggedUser();
 
         init();
         initFooter();
@@ -111,7 +112,7 @@ public class NewReservationComponent extends Dialog {
     private void finish() throws ValidationException {
         var reservationModel = getReservationModel();
         var materialModelList = materialConsultComponent.getOnReservationListAndValidate();
-        this.reservationService.create(materialModelList, reservationModel, this.user);
+        this.reservationService.create(materialModelList, reservationModel, this.loggedUser);
         NotificationHelper.success("Reserva feita com sucesso!");
         this.close();
     }

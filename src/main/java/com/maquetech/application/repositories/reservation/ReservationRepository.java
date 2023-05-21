@@ -28,11 +28,11 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     List<Object[]> getOnReservation(@Param("r_ini") Date startBookingDate, @Param("r_fim") Date endBookingDate);
 
     @Query(value = """
-                SELECT re.*
+                SELECT re
                 FROM reservation_entity re
-                WHERE (re.booking_start_date >= :r_ini OR CAST(:r_ini AS date) IS NULL)
-                AND (re.booking_end_date <= :r_fim OR CAST(:r_fim AS date) IS NULL)
-                AND re.user_id = :user_id
-            """, nativeQuery = true)
+                WHERE (re.bookingStartDate >= :r_ini OR CAST(:r_ini AS date) IS NULL)
+                AND (re.bookingEndDate <= :r_fim OR CAST(:r_fim AS date) IS NULL)
+                AND (re.user.id = :user_id OR :user_id IS NULL)
+            """)
     List<ReservationEntity> getByUser(@Param("r_ini") Date startBookingDate, @Param("r_fim") Date endBookingDate, @Param("user_id") Long userId);
 }

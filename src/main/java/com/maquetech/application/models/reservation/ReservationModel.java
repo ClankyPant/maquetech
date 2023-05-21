@@ -18,6 +18,7 @@ public class ReservationModel {
     private Long id;
 
     private String message;
+    private String userName;
 
     private Date bookingEndDate;
 

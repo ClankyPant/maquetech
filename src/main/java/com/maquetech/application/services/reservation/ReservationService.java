@@ -50,8 +50,8 @@ public class ReservationService {
                                 Collectors.summingDouble(data -> ConvertHelper.getDouble(data[1], 0D))));
     }
 
-    public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, UserEntity user) {
-        return parse(this.repository.getByUser(startBookingDate, endBookingDate, user.getId()));
+    public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, Long userId) {
+        return parse(this.repository.getByUser(startBookingDate, endBookingDate, userId));
     }
 
     public void cancel(Long id) {
@@ -75,6 +75,7 @@ public class ReservationService {
                 .id(entity.getId())
                 .message(entity.getMessage())
                 .situation(entity.getSituation())
+                .userName(entity.getUser().getName())
                 .bookingEndDate(entity.getBookingEndDate())
                 .bookingStartDate(entity.getBookingStartDate())
                 .build();

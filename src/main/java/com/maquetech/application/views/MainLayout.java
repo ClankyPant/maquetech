@@ -84,9 +84,7 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        var isProfessorStudant = this.userLogged.isStudent() || this.userLogged.isProfessor();
-
-        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), isProfessorStudant));
+        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), true));
         nav.addItem(new AppNavItem("Professores", ProfessorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));

@@ -27,7 +27,7 @@ public class MaterialView extends MaqueVerticalLayout {
 
         materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
 
-        var materialConsultComponent = new MaterialConsultComponent(materialService, userService, true);
+        var materialConsultComponent = new MaterialConsultComponent(materialService, true);
         materialConsultComponent.addEditMaterialListener(id -> {
             tabSheet.setSelectedIndex(1);
             materialRegistrationComponent.changeId(id);

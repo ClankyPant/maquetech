@@ -2,10 +2,10 @@ package com.maquetech.application.components.material.consult;
 
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.ConvertHelper;
+import com.maquetech.application.helpers.UserHelper;
 import com.maquetech.application.listeners.material.EditMaterialListener;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.services.material.MaterialService;
-import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -21,7 +21,7 @@ public class MaterialConsultComponent extends VerticalLayout {
     private Date endBookingDate;
     private Date startBookingDate;
 
-    private final UserEntity user;
+    private final UserEntity loggedUser;
     private final boolean isOnlyConsult;
     private final MaterialService materialService;
     private final MaterialFilterComponent materialFilter;
@@ -31,13 +31,12 @@ public class MaterialConsultComponent extends VerticalLayout {
 
     public MaterialConsultComponent(
             MaterialService materialService,
-            UserService userService,
             boolean isOnlyConsult
     ) throws NotFoundException {
         this.isOnlyConsult = isOnlyConsult;
         this.materialService = materialService;
-        this.user = userService.getLoggedUser();
-        this.materialFilter = new MaterialFilterComponent(materialService, user);
+        this.loggedUser = UserHelper.getLoggedUser();
+        this.materialFilter = new MaterialFilterComponent(materialService, loggedUser);
 
         init();
         initFilter();
@@ -89,7 +88,7 @@ public class MaterialConsultComponent extends VerticalLayout {
         var materialList = this.materialService.getList(
                 materialIdList,
                 materialType,
-                user.getType(),
+                loggedUser.getType(),
                 isOnlyConsult,
                 this.startBookingDate,
                 this.endBookingDate

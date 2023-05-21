@@ -1,4 +1,4 @@
-package com.maquetech.application.components.reservation.user;
+package com.maquetech.application.components.reservation.admin;
 
 import com.maquetech.application.components.reservation.NewReservationComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
@@ -23,61 +23,40 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.binder.Binder;
 import javassist.NotFoundException;
 
 import java.time.Duration;
 import java.util.Locale;
 
-public class ReservationUserComponent extends VerticalLayout {
+public class ReservationAdminComponent extends VerticalLayout {
 
     private final UserEntity loggedUser;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
     private final Grid<ReservationModel> grid = new Grid<>();
-    private final NewReservationComponent newReservationComponent;
     private final Binder<ReservationFilterModel> binder = new Binder<>();
 
-    public ReservationUserComponent(MaterialService materialService, ReservationService reservationService) throws NotFoundException {
-        this.newReservationComponent = new NewReservationComponent(materialService, reservationService);
+    public ReservationAdminComponent(ReservationService reservationService) throws NotFoundException {
         this.reservationService = reservationService;
         this.loggedUser = UserHelper.getLoggedUser();
 
         init();
     }
 
+    private Component getActionButton(ReservationModel reservationModel) {
+        var hlContent = new HorizontalLayout();
+        hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        return hlContent;
+    }
+
     private void init() {
         createGrid();
         setSizeFull();
         setSpacing(true);
-        add(getHeader(), grid, newReservationComponent, messageDialog);
+        add(getHeader(), grid, messageDialog);
         loadGridData();
-    }
-
-    private Component getActionButton(ReservationModel reservationModel) {
-        var btnVerify = new Button(VaadinIcon.BOOK.create());
-        btnVerify.addClickListener(event -> openMessageDialog(reservationModel));
-
-        var btnCancel = new Button(VaadinIcon.TRASH.create());
-        btnCancel.setEnabled(!reservationModel.isCanceled());
-        btnCancel.addClickListener(event -> {
-            try {
-                this.reservationService.cancel(reservationModel.getId());
-                reservationModel.setSituation(SituationEnum.CANCELED);
-                grid.getDataProvider().refreshItem(reservationModel);
-                NotificationHelper.success("Reserva " + reservationModel.getId() + " cancelada com sucesso!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                NotificationHelper.error(ex.getMessage());
-            }
-        });
-
-        var hlContent = new HorizontalLayout();
-        hlContent.add(btnVerify, btnCancel);
-        hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        return hlContent;
     }
 
     private Component getHeader() {
@@ -106,13 +85,12 @@ public class ReservationUserComponent extends VerticalLayout {
         formLayout.setWidth("100%");
         formLayout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0px", 1),
-                new FormLayout.ResponsiveStep("1000px", 4)
+                new FormLayout.ResponsiveStep("1000px", 3)
         );
         formLayout.add(
                 startDateTimePicker,
                 endDateTimePicket,
-                btnConsult,
-                new Button("Nova reserva", event -> newReservationComponent.open())
+                btnConsult
         );
 
         return formLayout;
@@ -120,6 +98,7 @@ public class ReservationUserComponent extends VerticalLayout {
 
     private void createGrid() {
         grid.addColumn(ReservationModel::getId).setKey("id").setHeader("Código").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addColumn(ReservationModel::getUserName).setKey("user_name").setHeader("Usuário").setTextAlign(ColumnTextAlign.CENTER);
         var startDateColumn = grid.addColumn(ReservationModel::getStartDateDisplay).setKey("start_date").setHeader("Data").setTextAlign(ColumnTextAlign.CENTER);
         var startHourColumn = grid.addColumn(ReservationModel::getStartHourDisplay).setKey("start_hour").setHeader("Hora").setTextAlign(ColumnTextAlign.CENTER);
         var endDateColumn = grid.addColumn(ReservationModel::getEndDateDisplay).setKey("end_date").setHeader("Data").setTextAlign(ColumnTextAlign.CENTER);
@@ -138,27 +117,11 @@ public class ReservationUserComponent extends VerticalLayout {
             binder.writeBean(reservationFilter);
 
             this.grid.setItems(
-                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), loggedUser.getId())
+                    this.reservationService.getListByUser(reservationFilter.getBookingStartDate(), reservationFilter.getBookingEndDate(), null)
             );
         } catch (Exception ex) {
             ex.printStackTrace();
             NotificationHelper.error(ex.getMessage());
         }
-    }
-
-    public void openMessageDialog(ReservationModel reservationModel) {
-        messageDialog.removeAll();
-        messageDialog.getFooter().removeAll();
-        messageDialog.setWidth("95%");
-        messageDialog.setHeight("95%");
-
-        var message = new TextArea("Messagem");
-        message.setSizeFull();
-        message.setReadOnly(true);
-        message.setValue(reservationModel.getMessage());
-
-        messageDialog.add(message);
-        messageDialog.getFooter().add(new Button("Fechar", event -> messageDialog.close()));
-        messageDialog.open();
     }
 }
