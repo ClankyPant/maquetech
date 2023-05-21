@@ -19,7 +19,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
             FROM reservation_entity re
             JOIN reservation_material_entity rme ON rme.reservation_id = re.id
             JOIN material_entity me ON me.id = rme.material_id
-            WHERE re.situation NOT IN ('FINISHED', 'CANCELED')
+            WHERE (me."type" <> 'CONSUMABLE' AND re.situation NOT IN ('FINISHED', 'CANCELED') OR me."type" = 'CONSUMABLE' AND re.situation NOT IN ('FINISHED', 'CANCELED', 'IN_PROGRESS'))
             AND (re.booking_start_date >= :r_ini AND re.booking_end_date <= :r_fim
                 OR re.booking_start_date <= :r_ini AND re.booking_end_date >= :r_ini)
             GROUP BY me.id
