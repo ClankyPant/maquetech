@@ -8,6 +8,7 @@ import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.models.reservation.filter.ReservationFilterModel;
 import com.maquetech.application.services.material.MaterialService;
@@ -34,6 +35,7 @@ public class ReservationUserComponent extends VerticalLayout {
     private final UserEntity loggedUser;
     private final Dialog messageDialog = new Dialog();
     private final ReservationService reservationService;
+    private final Dialog seeMaterialDialog = new Dialog();
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final ReservationRegistrationComponent reservationRegistrationComponent;
     private final Binder<ReservationFilterModel> binder = new Binder<>();
@@ -50,7 +52,7 @@ public class ReservationUserComponent extends VerticalLayout {
         createGrid();
         setSizeFull();
         setSpacing(true);
-        add(getHeader(), grid, reservationRegistrationComponent, messageDialog);
+        add(getHeader(), grid, reservationRegistrationComponent, messageDialog, seeMaterialDialog);
         loadGridData();
     }
 
@@ -72,8 +74,12 @@ public class ReservationUserComponent extends VerticalLayout {
             }
         });
 
+        var btnSee = new Button(VaadinIcon.PENCIL.create());
+        btnSee.setTooltipText("Ver materiais");
+        btnSee.addClickListener(event -> openSeeMaterial(reservationModel));
+
         var hlContent = new HorizontalLayout();
-        hlContent.add(btnVerify, btnCancel);
+        hlContent.add(btnVerify, btnCancel, btnSee);
         hlContent.setJustifyContentMode(JustifyContentMode.CENTER);
 
         return hlContent;
@@ -159,5 +165,25 @@ public class ReservationUserComponent extends VerticalLayout {
         messageDialog.add(message);
         messageDialog.getFooter().add(new Button("Fechar", event -> messageDialog.close()));
         messageDialog.open();
+    }
+
+    private void openSeeMaterial(ReservationModel reservationModel) {
+        seeMaterialDialog.removeAll();
+        seeMaterialDialog.getFooter().removeAll();
+        seeMaterialDialog.setWidth("50%");
+        seeMaterialDialog.setHeight("50%");
+
+        var seeMaterialGrid = new MaqueGrid<ReservationMaterialModel>();
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
+        seeMaterialGrid.setItems(reservationModel.getMaterialList());
+        seeMaterialGrid.setSizeFull();
+        seeMaterialDialog.add(seeMaterialGrid);
+
+        seeMaterialDialog.getFooter().add(
+                new Button("Fechar", event -> seeMaterialDialog.close())
+        );
+        seeMaterialDialog.open();
     }
 }
