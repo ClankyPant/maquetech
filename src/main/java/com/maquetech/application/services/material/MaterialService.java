@@ -3,6 +3,7 @@ package com.maquetech.application.services.material;
 import com.maquetech.application.entities.material.MaterialEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.user.UserTypeEnum;
+import com.maquetech.application.helpers.material.MaterialHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.repositories.material.MaterialRepository;
 import com.maquetech.application.services.reservation.ReservationService;
@@ -34,7 +35,7 @@ public class MaterialService {
     }
 
     public List<MaterialModel> getListByPage(String term, UserTypeEnum userTypeEnum, PageRequest pageRequest) {
-        return entityToModel(this.getPageByUser(term, userTypeEnum, pageRequest).getContent());
+        return MaterialHelper.transform(getPageByUser(term, userTypeEnum, pageRequest).getContent());
     }
 
     public List<MaterialModel> getList(List<Long> idList, MaterialTypeEnum type,
@@ -48,13 +49,13 @@ public class MaterialService {
     }
 
     public List<MaterialModel> getListForConsult(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
-        return this.entityToModel(getListByUser(idList, type, userTypeEnum));
+        return MaterialHelper.transform(getListByUser(idList, type, userTypeEnum));
     }
 
     public List<MaterialModel> getListForReservation(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum,
                                                      Date startBookingDate, Date endBookingDate) {
 
-        var materialModelList = this.entityToModel(getListByUser(idList, type, userTypeEnum));
+        var materialModelList = MaterialHelper.transform(getListByUser(idList, type, userTypeEnum));
 
         if (Objects.nonNull(startBookingDate) && Objects.nonNull(endBookingDate)) {
             var onReservationMap = reservationService.getOnReservationMap(startBookingDate, endBookingDate);
@@ -70,23 +71,6 @@ public class MaterialService {
         }
 
         return materialModelList;
-    }
-
-    private List<MaterialModel> entityToModel(List<MaterialEntity> entityList) {
-        return entityList.stream().map(this::entityToModel).toList();
-    }
-
-    private MaterialModel entityToModel(MaterialEntity entity) {
-        return MaterialModel
-                .builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .unit(entity.getUnit())
-                .type(entity.getType())
-                .stockQty(entity.getStockQty())
-                .location(entity.getLocation())
-                .stockSafeQty(entity.getStockSafeQty())
-                .build();
     }
 
     private Page<MaterialEntity> getPageByUser(String term, UserTypeEnum userTypeEnum, PageRequest pageRequest) {

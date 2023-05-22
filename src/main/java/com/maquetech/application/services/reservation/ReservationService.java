@@ -5,6 +5,7 @@ import com.maquetech.application.entities.reservation.ReservationMaterialEntity;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.enums.reservation.SituationEnum;
 import com.maquetech.application.helpers.ConvertHelper;
+import com.maquetech.application.helpers.reservation.ReservationHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
@@ -52,39 +53,7 @@ public class ReservationService {
     }
 
     public List<ReservationModel> getListByUser(Date startBookingDate, Date endBookingDate, Long userId, SituationEnum situation) {
-        return parse(this.repository.getByUser(startBookingDate, endBookingDate, userId, situation));
-    }
-
-    private List<ReservationModel> parse(List<ReservationEntity> entityList) {
-        return entityList.stream().map(this::parse).toList();
-    }
-
-    private ReservationModel parse(ReservationEntity entity) {
-        return ReservationModel
-                .builder()
-                .id(entity.getId())
-                .message(entity.getMessage())
-                .situation(entity.getSituation())
-                .userName(entity.getUser().getName())
-                .bookingEndDate(entity.getBookingEndDate())
-                .materialList(parseReservationMaterial(entity.getMaterialList()))
-                .bookingStartDate(entity.getBookingStartDate())
-                .build();
-    }
-
-    private ReservationMaterialModel parseReservationMaterial(ReservationMaterialEntity entity) {
-        var material = entity.getMaterial();
-
-        return ReservationMaterialModel
-                .builder()
-                .materialId(material.getId())
-                .materialName(material.getName())
-                .quantity(entity.getQuantity())
-                .build();
-    }
-
-    private List<ReservationMaterialModel> parseReservationMaterial(List<ReservationMaterialEntity> entityList) {
-        return entityList.stream().map(this::parseReservationMaterial).toList();
+        return ReservationHelper.transform(this.repository.getByUser(startBookingDate, endBookingDate, userId, situation));
     }
 
     public ReservationModel receive(Long id, ReservationModel reservationModel) {

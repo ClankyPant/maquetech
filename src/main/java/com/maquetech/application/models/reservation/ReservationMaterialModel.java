@@ -1,5 +1,6 @@
 package com.maquetech.application.models.reservation;
 
+import com.maquetech.application.models.material.MaterialModel;
 import lombok.*;
 
 @Getter
@@ -9,10 +10,16 @@ import lombok.*;
 @AllArgsConstructor
 public class ReservationMaterialModel {
 
-    private Long materialId;
-
     private Double quantity;
 
-    private String materialName;
+    private MaterialModel materialModel;
+
+    public String getMaterialName() {
+        return this.materialModel != null ? this.materialModel.getName() : null;
+    }
+
+    public Long getMaterialId() {
+        return this.materialModel != null ? this.materialModel.getId() : null;
+    }
 }
 
