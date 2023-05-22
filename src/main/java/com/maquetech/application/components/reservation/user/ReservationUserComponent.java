@@ -57,8 +57,10 @@ public class ReservationUserComponent extends VerticalLayout {
     private Component getActionButton(ReservationModel reservationModel) {
         var btnVerify = new Button(VaadinIcon.BOOK.create());
         btnVerify.addClickListener(event -> openMessageDialog(reservationModel));
+        btnVerify.setTooltipText("Ver mensagens");
 
         var btnCancel = new Button(VaadinIcon.TRASH.create());
+        btnCancel.setTooltipText("Cancelar reserva");
         btnCancel.setEnabled(!reservationModel.isCanceled() && !reservationModel.isInProgress());
         btnCancel.addClickListener(event -> {
             try {
