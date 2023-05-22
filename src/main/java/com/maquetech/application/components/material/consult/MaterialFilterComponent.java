@@ -6,46 +6,41 @@ import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.models.material.consult.MaterialFilterModel;
 import com.maquetech.application.services.material.MaterialService;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.theme.material.Material;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Getter
-public class MaterialFilterComponent extends Dialog {
+public class MaterialFilterComponent {
 
     private final UserEntity user;
     private final MaterialService materialService;
     private final Binder<MaterialFilterModel> binder = new Binder<>();
+
     public MaterialFilterModel materialFilterModel = new MaterialFilterModel();
+    public Button btnSearch = new Button("Consultar", VaadinIcon.SEARCH.create());
 
     public MaterialFilterComponent(MaterialService materialService, UserEntity user) {
         this.materialService = materialService;
         this.user = user;
 
-        initHeader();
-        init();
+        getComponentBody();
     }
 
-    private void initHeader() {
-        setHeaderTitle("Filtro de material");
-    }
-
-    private void init() {
+    public Component[] getComponentBody() {
         var materialFilter = new MultiSelectComboBox<MaterialModel>("Material");
         materialFilter.setClearButtonVisible(true);
         materialFilter.setItemsWithFilterConverter(
@@ -64,27 +59,17 @@ public class MaterialFilterComponent extends Dialog {
         binder.forField(materialTypeField)
                 .bind(MaterialFilterModel::getType, MaterialFilterModel::setType);
 
-        var btnCancel = new Button("Cancelar");
-        btnCancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        btnCancel.addClickListener(event -> this.close());
-
-        var btnSearch = new Button("Filtrar", event -> {
+        btnSearch.addClickListener(buttonClickEvent -> {
             try {
                 binder.writeBean(materialFilterModel);
-                this.close();
-            } catch (ValidationException e) {
-                NotificationHelper.error(e.getMessage());
+            } catch (ValidationException ex) {
+                ex.printStackTrace();
+                NotificationHelper.error(ex.getMessage());
             }
         });
         btnSearch.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
-
-        setWidth("65%");
-        add(new FormLayout(materialFilter, materialTypeField));
-        getFooter().add(btnCancel, btnSearch);
-
-        setCloseOnEsc(false);
-        setCloseOnOutsideClick(false);
+        return new Component[] { materialFilter, materialTypeField, btnSearch };
     }
 
     private List<MaterialModel> toList(Set<MaterialModel> data) {
@@ -105,9 +90,15 @@ public class MaterialFilterComponent extends Dialog {
         }
     }
 
-    @Override
-    public void open() {
-        binder.readBean(materialFilterModel);
-        super.open();
+    public MaterialTypeEnum getMaterialType() {
+        return this.materialFilterModel.getType();
+    }
+
+    public List<MaterialModel> getMaterialModelList() {
+        return this.materialFilterModel.getMaterialModelList();
+    }
+
+    public List<Long> getMaterialModelIdList() {
+        return getMaterialModelList().stream().map(MaterialModel::getId).toList();
     }
 }

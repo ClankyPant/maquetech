@@ -9,7 +9,9 @@ import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
@@ -41,7 +43,6 @@ public class MaterialSearchComponent extends VerticalLayout {
         this.materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
 
         init();
-        initFilter();
         loadGrid();
     }
 
@@ -59,13 +60,19 @@ public class MaterialSearchComponent extends VerticalLayout {
     }
 
     private Component getHeader() {
-        var btnFilter = new Button("Filtros", event -> materialFilter.open());
-        var btnNew = new Button("Novo", event -> materialRegistrationComponent.open(null));
+        materialFilter.getBtnSearch().addClickListener(buttonClickEvent -> loadGrid());
+
+        var btnNew = new Button("Novo", VaadinIcon.PLUS.create(), event -> materialRegistrationComponent.open(null));
         btnNew.setVisible(loggedUser.isAdmin());
 
-        var hlContent = new HorizontalLayout();
+        var hlContent = new FormLayout();
+        hlContent.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0px", 1),
+                new FormLayout.ResponsiveStep("1000px", 4)
+        );
         hlContent.setWidth("100%");
-        hlContent.add(btnFilter, btnNew);
+        hlContent.add(materialFilter.getComponentBody());
+        hlContent.add(btnNew);
         return hlContent;
     }
 
@@ -77,30 +84,15 @@ public class MaterialSearchComponent extends VerticalLayout {
         return materialModel.getReservationActionButtons();
     }
 
-    private void initFilter() {
-        materialFilter.addOpenedChangeListener(event -> {
-            if (!event.isOpened()) {
-                loadGrid();
-            }
-        });
-
-        add(materialFilter);
-    }
-
     private void loadGrid() {
         grid.setItems(updateMaterialMap());
     }
 
     private HashSet<MaterialModel> updateMaterialMap() {
-        var materialType = materialFilter.getMaterialFilterModel().getType();
-
-        var materialModelList = materialFilter.getMaterialFilterModel().getMaterialModelList();
-        var materialIdList = materialModelList.stream().map(MaterialModel::getId).toList();
-
         var materialListAux = new HashSet<MaterialModel>();
         var materialList = this.materialService.getList(
-                materialIdList,
-                materialType,
+                materialFilter.getMaterialModelIdList(),
+                materialFilter.getMaterialType(),
                 loggedUser.getType(),
                 isOnlyConsult,
                 this.startBookingDate,
