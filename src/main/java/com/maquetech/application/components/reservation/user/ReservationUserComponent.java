@@ -59,7 +59,7 @@ public class ReservationUserComponent extends VerticalLayout {
         btnVerify.addClickListener(event -> openMessageDialog(reservationModel));
 
         var btnCancel = new Button(VaadinIcon.TRASH.create());
-        btnCancel.setEnabled(!reservationModel.isCanceled());
+        btnCancel.setEnabled(!reservationModel.isCanceled() && !reservationModel.isInProgress());
         btnCancel.addClickListener(event -> {
             try {
                 grid.getDataProvider().refreshItem(reservationService.cancel(reservationModel.getId(), reservationModel));

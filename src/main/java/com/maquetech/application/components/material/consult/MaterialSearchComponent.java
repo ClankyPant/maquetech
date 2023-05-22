@@ -59,9 +59,13 @@ public class MaterialSearchComponent extends VerticalLayout {
     }
 
     private Component getHeader() {
+        var btnFilter = new Button("Filtros", event -> materialFilter.open());
+        var btnNew = new Button("Novo", event -> materialRegistrationComponent.open(null));
+        btnNew.setVisible(loggedUser.isAdmin());
+
         var hlContent = new HorizontalLayout();
         hlContent.setWidth("100%");
-        hlContent.add(new Button("Filtros", event -> materialFilter.open()), new Button("Novo", event -> materialRegistrationComponent.open(null)));
+        hlContent.add(btnFilter, btnNew);
         return hlContent;
     }
 
