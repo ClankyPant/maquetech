@@ -42,11 +42,7 @@ public class MaterialFilterComponent extends Dialog {
     }
 
     private void initHeader() {
-        var hlHeader = new HorizontalLayout();
-        hlHeader.setWidth("100%");
-        hlHeader.setPadding(true);
-        hlHeader.add(new H2("Filtro de material"));
-        getHeader().add(hlHeader);
+        setHeaderTitle("Filtro de material");
     }
 
     private void init() {

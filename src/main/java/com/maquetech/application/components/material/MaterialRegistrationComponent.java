@@ -32,12 +32,7 @@ public class MaterialRegistrationComponent extends Dialog {
 
     public MaterialRegistrationComponent(MaterialService materialService) {
         this.materialService = materialService;
-
-        var hlHeader = new HorizontalLayout();
-        hlHeader.setWidth("100%");
-        hlHeader.setPadding(true);
-        hlHeader.add(new H2("Cadastro de material"));
-        getHeader().add(hlHeader);
+        setHeaderTitle("Cadastro de material");
 
         var materialNameField = new TextField("Nome");
         materialNameField.setRequired(true);
