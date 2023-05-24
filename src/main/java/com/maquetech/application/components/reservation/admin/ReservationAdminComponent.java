@@ -39,6 +39,7 @@ public class ReservationAdminComponent extends VerticalLayout {
     private final Dialog seeMaterialDialog = new Dialog();
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final Binder<ReservationFilterModel> binder = new Binder<>();
+    private final ReservationReceiveComponent reservationReceiveComponent = new ReservationReceiveComponent();
 
     public ReservationAdminComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
         this.reservationService = reservationService;
@@ -76,7 +77,8 @@ public class ReservationAdminComponent extends VerticalLayout {
         btnReceive.setTooltipText("Receber materiais");
         btnReceive.setVisible(reservationModel.isInProgress());
         btnReceive.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
-            grid.getDataProvider().refreshItem(reservationService.receive(reservationId, reservationModel));
+            reservationReceiveComponent.open(reservationModel);
+//            grid.getDataProvider().refreshItem(reservationService.receive(reservationId, reservationModel));
         }, "Reserva recebida com sucesso!"));
 
         var btnReprove = new Button(VaadinIcon.TRASH.create());
@@ -105,7 +107,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         createGrid();
         setSizeFull();
         setSpacing(true);
-        add(getHeader(), grid, messageDialog, seeMaterialDialog);
+        add(getHeader(), grid, messageDialog, seeMaterialDialog, reservationReceiveComponent);
         loadGridData();
     }
 
