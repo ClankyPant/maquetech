@@ -6,6 +6,7 @@ import com.maquetech.application.components.reservation.user.ReservationUserComp
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.UserHelper;
 import com.maquetech.application.services.material.MaterialService;
+import com.maquetech.application.services.reservation.ReservationReceiveService;
 import com.maquetech.application.services.reservation.ReservationService;
 import com.maquetech.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
@@ -22,21 +23,21 @@ public class ReservationView extends MaqueVerticalLayout {
 
     private UserEntity loggedUser;
 
-    public ReservationView(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
+    public ReservationView(ReservationService reservationService, MaterialService materialService, ReservationReceiveService reservationReceiveService) throws NotFoundException {
         this.loggedUser = UserHelper.getLoggedUser();
 
         var tabSheet = new TabSheet();
         tabSheet.setSizeFull();
-        tabSheet.add("Reserva", getReservationComponent(reservationService, materialService));
+        tabSheet.add("Reserva", getReservationComponent(reservationService, materialService, reservationReceiveService));
 
         setAlignItems(Alignment.START);
         setJustifyContentMode(JustifyContentMode.START);
         add(tabSheet);
     }
 
-    private Component getReservationComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
+    private Component getReservationComponent(ReservationService reservationService, MaterialService materialService, ReservationReceiveService reservationReceiveService) throws NotFoundException {
         if (this.loggedUser.isAdmin()) {
-            return new ReservationAdminComponent(reservationService, materialService);
+            return new ReservationAdminComponent(reservationService, materialService, reservationReceiveService);
         }
 
         return new ReservationUserComponent(materialService, reservationService);

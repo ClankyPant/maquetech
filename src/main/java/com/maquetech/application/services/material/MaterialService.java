@@ -30,8 +30,12 @@ public class MaterialService {
         this.reservationService = reservationService;
     }
 
-    public void create(MaterialEntity materialEntity) {
-        this.repository.save(materialEntity);
+    public void save(MaterialEntity materialEntity) {
+        save(List.of(materialEntity));
+    }
+
+    public void save(List<MaterialEntity> materialEntityList) {
+        this.repository.saveAll(materialEntityList);
     }
 
     public List<MaterialModel> getListByPage(String term, UserTypeEnum userTypeEnum, PageRequest pageRequest) {

@@ -21,7 +21,7 @@ public class ReservationHelper {
                 .situation(entity.getSituation())
                 .userName(entity.getUser().getName())
                 .bookingEndDate(entity.getBookingEndDate())
-                .materialList(ReservationMaterialHelper.transform(entity.getMaterialList()))
+                .reservationMaterialList(ReservationMaterialHelper.transform(entity.getMaterialList()))
                 .bookingStartDate(entity.getBookingStartDate())
                 .build();
     }

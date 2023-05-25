@@ -1,6 +1,5 @@
 package com.maquetech.application.components.material;
 
-import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
 import com.maquetech.application.entities.material.MaterialEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.material.MaterialUnitEnum;
@@ -12,9 +11,6 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -75,7 +71,7 @@ public class MaterialRegistrationComponent extends Dialog {
             try {
                 materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
-                materialService.create(materialEntity);
+                materialService.save(materialEntity);
 
                 materialEntity = null;
                 binder.refreshFields();

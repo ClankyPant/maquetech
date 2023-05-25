@@ -26,7 +26,7 @@ public class ReservationModel {
 
     private SituationEnum situation;
 
-    private List<ReservationMaterialModel> materialList;
+    private List<ReservationMaterialModel> reservationMaterialList;
 
     public String getSituationDisplay() {
         return this.situation.getDescription();

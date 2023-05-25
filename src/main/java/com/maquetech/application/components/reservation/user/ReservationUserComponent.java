@@ -177,7 +177,7 @@ public class ReservationUserComponent extends VerticalLayout {
         seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
         seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
         seeMaterialGrid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
-        seeMaterialGrid.setItems(reservationModel.getMaterialList());
+        seeMaterialGrid.setItems(reservationModel.getReservationMaterialList());
         seeMaterialGrid.setSizeFull();
         seeMaterialDialog.add(seeMaterialGrid);
 

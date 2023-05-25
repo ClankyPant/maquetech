@@ -10,6 +10,7 @@ import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.models.reservation.filter.ReservationFilterModel;
 import com.maquetech.application.services.material.MaterialService;
+import com.maquetech.application.services.reservation.ReservationReceiveService;
 import com.maquetech.application.services.reservation.ReservationService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -39,9 +40,14 @@ public class ReservationAdminComponent extends VerticalLayout {
     private final Dialog seeMaterialDialog = new Dialog();
     private final MaqueGrid<ReservationModel> grid = new MaqueGrid<>();
     private final Binder<ReservationFilterModel> binder = new Binder<>();
-    private final ReservationReceiveComponent reservationReceiveComponent = new ReservationReceiveComponent();
+    private final ReservationReceiveComponent reservationReceiveComponent;
 
-    public ReservationAdminComponent(ReservationService reservationService, MaterialService materialService) throws NotFoundException {
+    public ReservationAdminComponent(
+            ReservationService reservationService,
+            MaterialService materialService,
+            ReservationReceiveService reservationReceiveService
+    ) {
+        this.reservationReceiveComponent = new ReservationReceiveComponent(reservationReceiveService);
         this.reservationService = reservationService;
         this.materialService = materialService;
 
@@ -81,7 +87,7 @@ public class ReservationAdminComponent extends VerticalLayout {
                     reservationModel,
                     () -> {
                         NotificationHelper.runAndNotify(
-                                () -> reservationService.receive(reservationId, reservationModel),
+                                () -> grid.getDataProvider().refreshItem(reservationService.receive(reservationId, reservationModel)),
                                 "Reserva recebida com sucesso!"
                         );
                     });
@@ -231,7 +237,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialId).setKey("material_id").setHeader("Cód. material").setTextAlign(ColumnTextAlign.CENTER);
         seeMaterialGrid.addColumn(ReservationMaterialModel::getMaterialName).setKey("material_name").setHeader("Material").setTextAlign(ColumnTextAlign.CENTER);
         seeMaterialGrid.addColumn(ReservationMaterialModel::getQuantity).setKey("material_qty").setHeader("Quantidade").setTextAlign(ColumnTextAlign.CENTER);
-        seeMaterialGrid.setItems(reservationModel.getMaterialList());
+        seeMaterialGrid.setItems(reservationModel.getReservationMaterialList());
         seeMaterialGrid.setSizeFull();
         seeMaterialDialog.add(seeMaterialGrid);
 

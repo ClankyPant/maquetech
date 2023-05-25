@@ -4,6 +4,7 @@ import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
+import com.maquetech.application.services.reservation.ReservationReceiveService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,9 +17,12 @@ import com.vaadin.flow.component.textfield.NumberField;
 public class ReservationReceiveComponent extends Dialog {
 
     private Runnable receiveFunc;
+    private ReservationModel reservationModel;
+    private final ReservationReceiveService reservationReceiveService;
     private final MaqueGrid<ReservationMaterialModel> table = new MaqueGrid<>();
 
-    public ReservationReceiveComponent() {
+    public ReservationReceiveComponent(ReservationReceiveService reservationReceiveService) {
+        this.reservationReceiveService = reservationReceiveService;
         setHeaderTitle("Justificativa de reserva");
 
         init();
@@ -32,7 +36,10 @@ public class ReservationReceiveComponent extends Dialog {
         damageField.addValueChangeListener(event -> {
             var requestedQuantity = reservationMaterialModel.getQuantity();
             var inputedQuantity = ConvertHelper.getDouble(ConvertHelper.getDouble(event.getValue(), 0D).intValue());
-            event.getSource().setValue(requestedQuantity < inputedQuantity ? requestedQuantity : inputedQuantity);
+
+            var newValue = requestedQuantity < inputedQuantity ? requestedQuantity : inputedQuantity;
+            event.getSource().setValue(newValue);
+            reservationMaterialModel.setDamageQuantity(newValue);
         });
 
         return damageField;
@@ -55,6 +62,11 @@ public class ReservationReceiveComponent extends Dialog {
 
         var btnFinish = new Button("Finalizar");
         btnFinish.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        btnFinish.addClickListener(event -> {
+            reservationReceiveService.reduceReservationQuantity(this.reservationModel);
+            receiveFunc.run();
+            this.close();
+        });
 
         var hlContent = new HorizontalLayout();
         hlContent.setSizeFull();
@@ -66,7 +78,8 @@ public class ReservationReceiveComponent extends Dialog {
 
     public void open(ReservationModel reservationModel, Runnable receiveFunc) {
         this.receiveFunc = receiveFunc;
-        table.setItems(reservationModel.getMaterialList());
+        this.reservationModel = reservationModel;
+        table.setItems(this.reservationModel.getReservationMaterialList());
         super.open();
     }
 }
