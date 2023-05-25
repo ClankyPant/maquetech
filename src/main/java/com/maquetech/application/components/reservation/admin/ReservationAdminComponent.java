@@ -76,10 +76,25 @@ public class ReservationAdminComponent extends VerticalLayout {
         btnReceive.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         btnReceive.setTooltipText("Receber materiais");
         btnReceive.setVisible(reservationModel.isInProgress());
-        btnReceive.addClickListener(event -> NotificationHelper.runAndNotify(() -> {
-            reservationReceiveComponent.open(reservationModel);
-//            grid.getDataProvider().refreshItem(reservationService.receive(reservationId, reservationModel));
-        }, "Reserva recebida com sucesso!"));
+        btnReceive.addClickListener(event -> {
+            reservationReceiveComponent.open(
+                    reservationModel,
+                    () -> {
+                        NotificationHelper.runAndNotify(
+                                () -> reservationService.receive(reservationId, reservationModel),
+                                "Reserva recebida com sucesso!"
+                        );
+                    });
+        });
+
+
+
+//            reservationReceiveComponent.open(reservationModel, () -> {
+//                NotificationHelper.runAndNotify(() -> {
+//                    reservationService.receive(reservationId, reservationModel);
+//                }, "Reserva recebida com sucesso!");
+//            }));
+
 
         var btnReprove = new Button(VaadinIcon.TRASH.create());
         btnReprove.addThemeVariants(ButtonVariant.LUMO_ERROR);

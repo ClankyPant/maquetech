@@ -9,16 +9,13 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 
-import java.awt.*;
-import java.nio.Buffer;
-
 public class ReservationReceiveComponent extends Dialog {
 
+    private Runnable receiveFunc;
     private final MaqueGrid<ReservationMaterialModel> table = new MaqueGrid<>();
 
     public ReservationReceiveComponent() {
@@ -33,7 +30,9 @@ public class ReservationReceiveComponent extends Dialog {
         damageField.setStep(1);
         damageField.setWidth("50px");
         damageField.addValueChangeListener(event -> {
-           event.getSource().setValue(ConvertHelper.getDouble(ConvertHelper.getDouble(event.getValue(), 0D).intValue()));
+            var requestedQuantity = reservationMaterialModel.getQuantity();
+            var inputedQuantity = ConvertHelper.getDouble(ConvertHelper.getDouble(event.getValue(), 0D).intValue());
+            event.getSource().setValue(requestedQuantity < inputedQuantity ? requestedQuantity : inputedQuantity);
         });
 
         return damageField;
@@ -65,7 +64,8 @@ public class ReservationReceiveComponent extends Dialog {
         getFooter().add(hlContent);
     }
 
-    public void open(ReservationModel reservationModel) {
+    public void open(ReservationModel reservationModel, Runnable receiveFunc) {
+        this.receiveFunc = receiveFunc;
         table.setItems(reservationModel.getMaterialList());
         super.open();
     }
