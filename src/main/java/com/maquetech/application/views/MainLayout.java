@@ -3,6 +3,7 @@ package com.maquetech.application.views;
 
 import com.maquetech.application.components.appnav.AppNav;
 import com.maquetech.application.components.appnav.AppNavItem;
+import com.maquetech.application.components.user.UserConfigurationComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.UserHelper;
 import com.maquetech.application.views.course.CourseView;
@@ -36,20 +37,17 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 public class MainLayout extends AppLayout {
 
     private final UserEntity userLogged;
-    private final transient AuthenticationContext authContext;
 
     private H2 viewTitle;
 
-    public MainLayout(@Autowired AuthenticationContext authContext) throws NotFoundException {
-        this.authContext = authContext;
-
+    public MainLayout() throws NotFoundException {
         this.userLogged = UserHelper.getLoggedUser();
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
     }
 
-    private void addHeaderContent() {
+    private void addHeaderContent() throws NotFoundException {
         DrawerToggle toggle = new DrawerToggle();
         toggle.getElement().setAttribute("aria-label", "Menu toggle");
 
@@ -60,9 +58,7 @@ public class MainLayout extends AppLayout {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        Button btnLogout = new Button(new Icon(VaadinIcon.SIGN_OUT));
-        btnLogout.addClickListener((event) -> this.authContext.logout());
-        hlNavBarInfo.add(viewTitle, btnLogout);
+        hlNavBarInfo.add(viewTitle, new UserConfigurationComponent());
         hlNavBarInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         hlNavBarInfo.setAlignItems(FlexComponent.Alignment.CENTER);
 

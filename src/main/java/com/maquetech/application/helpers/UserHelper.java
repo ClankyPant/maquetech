@@ -9,4 +9,8 @@ public class UserHelper {
     public static UserEntity getLoggedUser() throws NotFoundException {
         return Application.USER_SERVICE.getLoggedUser();
     }
+
+    public static void logout() {
+        Application.AUTHENTICATION_CONTEXT.logout();
+    }
 }
