@@ -1,6 +1,7 @@
 package com.maquetech.application.services.user;
 
 import com.maquetech.application.entities.user.UserEntity;
+import com.maquetech.application.enums.user.UserTypeEnum;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.models.user.UserModel;
@@ -55,8 +56,8 @@ public class UserService {
                 .build();
     }
 
-    public List<UserModel> getSearchList(Long loggedId) {
-        return UserHelper.transform(this.repository.getSearchList(loggedId));
+    public List<UserModel> getSearchList(UserTypeEnum type, Long loggedId) {
+        return UserHelper.transform(this.repository.getSearchList(loggedId, type));
     }
 
     public UserModel get(Long id) {

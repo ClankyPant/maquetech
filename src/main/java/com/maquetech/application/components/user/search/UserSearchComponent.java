@@ -15,20 +15,34 @@ import javassist.NotFoundException;
 public class UserSearchComponent extends VerticalLayout {
 
     private final UserModel loggedUser;
-    private final UserService userService;
     private final UserEditComponent userEdit;
+    private final UserFilterComponent filter;
     private final MaqueGrid<UserModel> grid = new MaqueGrid<>();
 
     public UserSearchComponent(UserService userService) throws NotFoundException {
         this.userEdit = new UserEditComponent(userService);
         this.loggedUser = UserHelper.getLoggerUserModel();
-        this.userService = userService;
 
+        this.filter = new UserFilterComponent(userService, loggedUser.getId());
+
+        createGrid();
         init();
     }
 
     public void init() {
         setSizeFull();
+
+        add(filter.getComponent());
+        add(grid, userEdit);
+
+        userEdit.addUserEditedListener(this::search);
+        filter.addFilterSearchListener(() -> {
+            grid.setItems(filter.getDataList());
+        });
+        search();
+    }
+
+    public void createGrid() {
         grid.setSizeFull();
         grid.addComponentColumn(this::getEdit).setKey("EDIT").setHeader("Editar").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(UserModel::getName).setKey("NAME").setHeader("Nome").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
@@ -37,14 +51,15 @@ public class UserSearchComponent extends VerticalLayout {
         grid.addColumn(UserModel::getPhone).setKey("PHONE").setHeader("Telefone").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getMail).setKey("MAIL").setHeader("E-mail").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getCourseDescription).setKey("COURSE").setHeader("Curso").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
-        grid.setItems(this.userService.getSearchList(loggedUser.getId()));
-
-        add(grid, userEdit);
     }
 
     public Component getEdit(UserModel user) {
         return new Button("Editar", VaadinIcon.PENCIL.create(), event -> {
             this.userEdit.open(user.getId());
         });
+    }
+
+    private void search() {
+        this.filter.search();
     }
 }
