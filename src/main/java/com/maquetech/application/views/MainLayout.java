@@ -76,10 +76,10 @@ public class MainLayout extends AppLayout {
     private AppNav createNavigation() {
         AppNav nav = new AppNav();
 
-        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), true));
-        nav.addItem(new AppNavItem("Usuários", UserView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
-        nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
-        nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.CALENDAR.create(), true));
+        nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.TOOLBOX_SOLID.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Usuários", UserView.class, LineAwesomeIcon.USER.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.BOOK_SOLID.create(), this.userLogged.isAdmin()));
 
         return nav;
     }
