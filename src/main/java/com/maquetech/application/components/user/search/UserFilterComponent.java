@@ -2,7 +2,6 @@ package com.maquetech.application.components.user.search;
 
 import com.maquetech.application.components.search.SearchComponent;
 import com.maquetech.application.enums.user.UserTypeEnum;
-import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.models.user.UserFilterModel;
 import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.services.user.UserService;
@@ -12,8 +11,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
-
-import java.util.List;
 
 public class UserFilterComponent extends SearchComponent<UserFilterModel, UserModel> {
 
