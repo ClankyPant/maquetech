@@ -1,5 +1,6 @@
 package com.maquetech.application.components.search;
 
+import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.listener.FilterSearchListener;
 import com.maquetech.application.models.user.UserFilterModel;
 import com.vaadin.flow.component.Component;
@@ -34,5 +35,14 @@ public abstract class SearchComponent<T, D> extends VerticalLayout {
 
     protected Component getComponent() {
         throw new NotImplementedException();
+    }
+
+    protected void updateFilter(T filter) {
+        try {
+            binder.writeBean(filter);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            NotificationHelper.error(ex.getMessage());
+        }
     }
 }

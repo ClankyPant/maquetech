@@ -29,10 +29,10 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
     @Override
     public Component getComponent() {
         var type = new ComboBox<UserTypeEnum>();
+        type.setClearButtonVisible(true);
         type.setItems(UserTypeEnum.values());
         type.setItemLabelGenerator(UserTypeEnum::getDescription);
-        binder.forField(type)
-                .bind(UserFilterModel::getType, UserFilterModel::setType);
+        binder.forField(type).bind(UserFilterModel::getType, UserFilterModel::setType);
 
         var search = new Button("Consultar", VaadinIcon.SEARCH.create());
         search.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
@@ -45,24 +45,11 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
     }
 
     public void search() {
-        updateFilter();
+        updateFilter(filter);
 
         this.dataList.clear();
         this.dataList.addAll(this.userService.getSearchList(filter.getType(), loggedId));
 
         afterSearch();
-    }
-
-    public List<UserModel> getDataList() {
-        return this.dataList;
-    }
-
-    private void updateFilter() {
-        try {
-            binder.writeBean(filter);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            NotificationHelper.error(ex.getMessage());
-        }
     }
 }
