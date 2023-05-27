@@ -4,7 +4,7 @@ import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.components.material.MaterialRegistrationComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.ConvertHelper;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.models.material.MaterialModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.Component;

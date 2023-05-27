@@ -1,7 +1,11 @@
 package com.maquetech.application.services.user;
 
 import com.maquetech.application.entities.user.UserEntity;
+import com.maquetech.application.helpers.ConvertHelper;
+import com.maquetech.application.helpers.user.UserHelper;
+import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.repositories.user.UserRepository;
+import com.maquetech.application.services.course.CourseService;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,9 +21,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private final CourseService courseService;
 
-    public UserService(@Autowired UserRepository repository) {
+    public UserService(@Autowired UserRepository repository, CourseService courseService) {
         this.repository = repository;
+        this.courseService = courseService;
     }
 
     public List<UserDetails> getAll() {
@@ -41,6 +47,14 @@ public class UserService {
                 .build();
     }
 
+    public UserDetails createUserDetail(UserModel userModel) {
+        return User
+                .withUsername(userModel.getUsername())
+                .password("{bcrypt}"+userModel.getPassword())
+                .roles(userModel.getRoleStr())
+                .build();
+    }
+
     public boolean hasByUsername(String username) {
         return this.getByUsername(username) != null;
     }
@@ -49,7 +63,14 @@ public class UserService {
         return this.repository.findByUsername(username);
     }
 
-    public void save(UserEntity userEntity) {
+    public void save(UserModel model) {
+        var userEntity = this.repository.findById(ConvertHelper.getLong(model.getId(), -1L)).orElse(new UserEntity());
+        UserHelper.transform(userEntity, model);
+
+        if (model.isStudent()) {
+            userEntity.setCourse(courseService.getByName(model.getCourse().getName()));
+        }
+
         this.repository.save(userEntity);
     }
 

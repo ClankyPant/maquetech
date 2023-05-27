@@ -7,7 +7,7 @@ import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.models.reservation.filter.ReservationFilterModel;

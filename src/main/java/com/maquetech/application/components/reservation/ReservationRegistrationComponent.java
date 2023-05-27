@@ -5,7 +5,7 @@ import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LocalDateTimeHelper;
 import com.maquetech.application.helpers.NotificationHelper;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.models.reservation.ReservationModel;
 import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.reservation.ReservationService;

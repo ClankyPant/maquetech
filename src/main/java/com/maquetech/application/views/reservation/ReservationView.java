@@ -4,7 +4,7 @@ import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
 import com.maquetech.application.components.reservation.admin.ReservationAdminComponent;
 import com.maquetech.application.components.reservation.user.ReservationUserComponent;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.reservation.ReservationReceiveService;
 import com.maquetech.application.services.reservation.ReservationService;

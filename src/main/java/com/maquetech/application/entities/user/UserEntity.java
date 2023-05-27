@@ -6,13 +6,16 @@ import com.maquetech.application.entities.course.CourseEntity;
 import com.maquetech.application.entities.reservation.ReservationEntity;
 import com.maquetech.application.enums.user.UserTypeEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
+
 @Setter
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "user_entity")
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
 public class UserEntity extends AbstractBean {
@@ -36,11 +39,11 @@ public class UserEntity extends AbstractBean {
 
     private String phone;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private CourseEntity course;
 
     @OneToMany(mappedBy = "user")
-    private List<ReservationEntity> reservationEntityList;
+    private List<ReservationEntity> reservationList;
 
     public UserTypeEnum getType() {
         return this.type != null ? this.type : UserTypeEnum.LEVEL_1;

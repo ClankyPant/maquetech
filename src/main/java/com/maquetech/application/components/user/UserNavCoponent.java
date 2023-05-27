@@ -2,27 +2,24 @@ package com.maquetech.application.components.user;
 
 import com.maquetech.application.Application;
 import com.maquetech.application.entities.user.UserEntity;
-import com.maquetech.application.helpers.UserHelper;
+import com.maquetech.application.helpers.user.UserHelper;
+import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
-import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import javassist.NotFoundException;
 
-import java.util.Random;
-
-public class UserConfigurationComponent extends HorizontalLayout {
+public class UserNavCoponent extends HorizontalLayout {
 
     private UserEntity loggedUser = UserHelper.getLoggedUser();
+    private final UserEditComponent userConfigurationComponent;
 
-    public UserConfigurationComponent() throws NotFoundException {
+    public UserNavCoponent(UserService userService) throws NotFoundException {
+        userConfigurationComponent = new UserEditComponent(userService);
+
         init();
     }
 
@@ -35,7 +32,7 @@ public class UserConfigurationComponent extends HorizontalLayout {
         subMenu.add(new Hr());
         subMenu.addItem(getSingOut());
 
-        add(menuBar);
+        add(menuBar, userConfigurationComponent);
         setAlignItems(Alignment.CENTER);
     }
 
@@ -47,6 +44,8 @@ public class UserConfigurationComponent extends HorizontalLayout {
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.BETWEEN);
         hlContent.add(icon, label);
+        hlContent.addClickListener(event -> userConfigurationComponent.open());
+
         return hlContent;
     }
 
