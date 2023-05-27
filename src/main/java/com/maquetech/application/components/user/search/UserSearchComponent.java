@@ -14,16 +14,13 @@ import javassist.NotFoundException;
 
 public class UserSearchComponent extends VerticalLayout {
 
-    private final UserModel loggedUser;
     private final UserEditComponent userEdit;
     private final UserFilterComponent filter;
     private final MaqueGrid<UserModel> grid = new MaqueGrid<>();
 
     public UserSearchComponent(UserService userService) throws NotFoundException {
         this.userEdit = new UserEditComponent(userService);
-        this.loggedUser = UserHelper.getLoggerUserModel();
-
-        this.filter = new UserFilterComponent(userService, loggedUser.getId());
+        this.filter = new UserFilterComponent(userService, UserHelper.getLoggerUserModel().getId());
 
         createGrid();
         init();
