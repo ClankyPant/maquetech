@@ -2,6 +2,7 @@ package com.maquetech.application.components.user;
 
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.helpers.user.UserHelper;
+import com.maquetech.application.listener.UserEditedListener;
 import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.button.Button;
@@ -15,12 +16,16 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserEditComponent extends Dialog {
 
     private UserModel user;
     private Binder<UserModel> binder;
     private final UserService userService;
     private final VerticalLayout vlContent = new VerticalLayout();
+    private List<UserEditedListener> userEditedListenerList = new ArrayList<>();
 
     public UserEditComponent(UserService userService) {
         this.userService = userService;
@@ -102,6 +107,7 @@ public class UserEditComponent extends Dialog {
             userService.save(user);
             NotificationHelper.success("Usuário editado com sucesso!");
             super.close();
+            onEdit();
         } catch (ValidationException ex) {
             ex.printStackTrace();
             NotificationHelper.error("Alguns campos não foram preenchidos corretamente!");
@@ -114,5 +120,15 @@ public class UserEditComponent extends Dialog {
     public void open() {
         initFields();
         super.open();
+    }
+
+    public void addUserEditedListener(UserEditedListener userEditedListener) {
+        this.userEditedListenerList.add(userEditedListener);
+    }
+
+    public void onEdit() {
+        for (var userEditedListner : this.userEditedListenerList) {
+            userEditedListner.onEdit();
+        }
     }
 }
