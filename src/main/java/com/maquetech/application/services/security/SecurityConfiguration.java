@@ -23,7 +23,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
 
     @Bean
     public UserDetailsManager userDetailsService(@Autowired UserService service) {
-        return new InMemoryUserDetailsManager(service.getAll());
+        return new InMemoryUserDetailsManager(service.getDetailsList());
     }
 }
 

@@ -50,4 +50,8 @@ public class UserHelper {
         result.setId(entity.getId());
         return result;
     }
+
+    public static List<UserModel> transform(List<UserEntity> entityList) {
+        return entityList.stream().map(UserHelper::transform).toList();
+    }
 }

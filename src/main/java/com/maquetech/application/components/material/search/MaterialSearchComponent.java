@@ -1,4 +1,4 @@
-package com.maquetech.application.components.material.consult;
+package com.maquetech.application.components.material.search;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
 import com.maquetech.application.components.material.MaterialRegistrationComponent;

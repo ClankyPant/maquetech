@@ -25,7 +25,7 @@ public class UserEditComponent extends Dialog {
     private Binder<UserModel> binder;
     private final UserService userService;
     private final VerticalLayout vlContent = new VerticalLayout();
-    private List<UserEditedListener> userEditedListenerList = new ArrayList<>();
+    private final List<UserEditedListener> userEditedListenerList = new ArrayList<>();
 
     public UserEditComponent(UserService userService) {
         this.userService = userService;
@@ -42,7 +42,7 @@ public class UserEditComponent extends Dialog {
         add(vlContent);
     }
 
-    private void initFields() {
+    private void initFields(Long id) {
         binder = new Binder<>();
 
         var name = new TextField("Nome");
@@ -88,13 +88,18 @@ public class UserEditComponent extends Dialog {
         vlContent.add(layout);
         getFooter().removeAll();
         getFooter().add(cancel, edit);
-        loadUserInformation();
+        loadUserInformation(id);
     }
 
-    private void loadUserInformation() {
+    private void loadUserInformation(Long id) {
         try {
-            user = UserHelper.getLoggerUserModel();
-            binder.readBean(UserHelper.getLoggerUserModel());
+            if (id == null) {
+                user = UserHelper.getLoggerUserModel();
+            } else {
+                user = this.userService.get(id);
+            }
+
+            binder.readBean(user);
         } catch (Exception ex) {
             ex.printStackTrace();
             NotificationHelper.error(ex.getMessage());
@@ -118,7 +123,11 @@ public class UserEditComponent extends Dialog {
     }
 
     public void open() {
-        initFields();
+        open(null);
+    }
+
+    public void open(Long id) {
+        initFields(id);
         super.open();
     }
 

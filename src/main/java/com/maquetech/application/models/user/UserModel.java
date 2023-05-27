@@ -30,6 +30,14 @@ public class UserModel {
         return this.type != null ? this.type : UserTypeEnum.LEVEL_1;
     }
 
+    public String getTypeDescription() {
+        return this.type.getDescription();
+    }
+
+    public String getCourseDescription() {
+        return this.course != null ? this.course.getName() : null;
+    }
+
     public boolean isStudent() { return this.type.equals(UserTypeEnum.LEVEL_1); }
 
     public boolean isProfessor() { return this.type.equals(UserTypeEnum.LEVEL_2); }

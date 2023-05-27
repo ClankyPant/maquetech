@@ -28,7 +28,7 @@ public class UserService {
         this.courseService = courseService;
     }
 
-    public List<UserDetails> getAll() {
+    public List<UserDetails> getDetailsList() {
         List<UserDetails> result = new ArrayList<>();
         Iterable<UserEntity> userEntityIterable = this.repository.findAll();
 
@@ -53,6 +53,20 @@ public class UserService {
                 .password("{bcrypt}"+userModel.getPassword())
                 .roles(userModel.getRoleStr())
                 .build();
+    }
+
+    public List<UserModel> getSearchList(Long loggedId) {
+        return UserHelper.transform(this.repository.getSearchList(loggedId));
+    }
+
+    public UserModel get(Long id) {
+        var user = this.repository.findById(id).orElse(null);
+
+        if (user == null) {
+            throw new IllegalArgumentException("Erro ao buscar usuário!");
+        }
+
+        return UserHelper.transform(user);
     }
 
     public boolean hasByUsername(String username) {

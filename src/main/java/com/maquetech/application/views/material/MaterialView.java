@@ -1,7 +1,7 @@
 package com.maquetech.application.views.material;
 
 import com.maquetech.application.components.maquetech.MaqueVerticalLayout;
-import com.maquetech.application.components.material.consult.MaterialSearchComponent;
+import com.maquetech.application.components.material.search.MaterialSearchComponent;
 import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.views.MainLayout;
 import com.vaadin.flow.router.PageTitle;

@@ -1,4 +1,4 @@
-package com.maquetech.application.components.material.consult;
+package com.maquetech.application.components.material.search;
 
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
@@ -11,12 +11,9 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.theme.material.Material;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 

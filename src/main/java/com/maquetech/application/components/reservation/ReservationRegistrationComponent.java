@@ -1,6 +1,6 @@
 package com.maquetech.application.components.reservation;
 
-import com.maquetech.application.components.material.consult.MaterialSearchComponent;
+import com.maquetech.application.components.material.search.MaterialSearchComponent;
 import com.maquetech.application.converters.ConvertLocalDateTimeToDate;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.LocalDateTimeHelper;

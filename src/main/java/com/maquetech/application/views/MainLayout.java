@@ -10,7 +10,7 @@ import com.maquetech.application.services.user.UserService;
 import com.maquetech.application.views.course.CourseView;
 import com.maquetech.application.views.material.MaterialView;
 import com.maquetech.application.views.reservation.ReservationView;
-import com.maquetech.application.views.user.professor.ProfessorView;
+import com.maquetech.application.views.user.UserView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -77,7 +77,7 @@ public class MainLayout extends AppLayout {
         AppNav nav = new AppNav();
 
         nav.addItem(new AppNavItem("Reservas", ReservationView.class, LineAwesomeIcon.GLOBE_SOLID.create(), true));
-        nav.addItem(new AppNavItem("Professores", ProfessorView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
+        nav.addItem(new AppNavItem("Usuários", UserView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Cursos", CourseView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
         nav.addItem(new AppNavItem("Materiais", MaterialView.class, LineAwesomeIcon.GLOBE_SOLID.create(), this.userLogged.isAdmin()));
 
