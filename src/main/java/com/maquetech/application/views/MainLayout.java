@@ -3,7 +3,7 @@ package com.maquetech.application.views;
 
 import com.maquetech.application.components.appnav.AppNav;
 import com.maquetech.application.components.appnav.AppNavItem;
-import com.maquetech.application.components.user.UserNavCoponent;
+import com.maquetech.application.components.user.UserNavComponent;
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.services.user.UserService;
@@ -56,7 +56,7 @@ public class MainLayout extends AppLayout {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        hlNavBarInfo.add(viewTitle, new UserNavCoponent(userService));
+        hlNavBarInfo.add(viewTitle, new UserNavComponent(userService));
         hlNavBarInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         hlNavBarInfo.setAlignItems(FlexComponent.Alignment.CENTER);
 

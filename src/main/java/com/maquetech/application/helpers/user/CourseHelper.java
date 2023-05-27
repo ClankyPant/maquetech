@@ -15,9 +15,12 @@ public class CourseHelper {
     }
 
     public static CourseModel transform(CourseEntity entity) {
+        if (entity == null) throw new IllegalArgumentException("Entity cannot be null!");
+
         return CourseModel
                 .builder()
-                .name(entity != null ? entity.getName() : null)
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 

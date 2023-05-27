@@ -5,19 +5,21 @@ import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.helpers.user.UserHelper;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import javassist.NotFoundException;
 
-public class UserNavCoponent extends HorizontalLayout {
+public class UserNavComponent extends HorizontalLayout {
 
     private UserEntity loggedUser = UserHelper.getLoggedUser();
     private final UserEditComponent userConfigurationComponent;
 
-    public UserNavCoponent(UserService userService) throws NotFoundException {
+    public UserNavComponent(UserService userService) throws NotFoundException {
         userConfigurationComponent = new UserEditComponent(userService);
 
         init();
@@ -28,38 +30,32 @@ public class UserNavCoponent extends HorizontalLayout {
         var item = menuBar.addItem(loggedUser.getName());
 
         var subMenu = item.getSubMenu();
-        subMenu.addItem(getAccount());
+
+        var account = subMenu.addItem(getAccount());
+        account.addClickListener(event -> userConfigurationComponent.open());
+
         subMenu.add(new Hr());
-        subMenu.addItem(getSingOut());
+
+        var singOut = subMenu.addItem(getSingOut());
+        singOut.addClickListener(event -> UserHelper.logout());
 
         add(menuBar, userConfigurationComponent);
         setAlignItems(Alignment.CENTER);
     }
 
     private Component getAccount() {
-        var label = new Span("Conta");
-        var icon = VaadinIcon.USER.create();
-        icon.setSize("15px");
-
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        hlContent.add(icon, label);
-        hlContent.addClickListener(event -> userConfigurationComponent.open());
-
+        hlContent.add(VaadinIcon.USER.create());
+        hlContent.add("Conta");
         return hlContent;
     }
 
     private Component getSingOut() {
-        var label = new Span("Sair");
-        var icon = VaadinIcon.SIGN_OUT.create();
-        icon.setSize("15px");
-
         var hlContent = new HorizontalLayout();
         hlContent.setJustifyContentMode(JustifyContentMode.BETWEEN);
-        hlContent.addClickListener(event -> {
-            Application.AUTHENTICATION_CONTEXT.logout();
-        });
-        hlContent.add(icon, label);
+        hlContent.add(VaadinIcon.SIGN_OUT.create());
+        hlContent.add("Sair");
         return hlContent;
     }
 }
