@@ -27,6 +27,7 @@ public class UserSearchComponent extends VerticalLayout {
 
         createGrid();
         init();
+        search();
     }
 
     public void init() {
@@ -39,7 +40,6 @@ public class UserSearchComponent extends VerticalLayout {
         filter.addFilterSearchListener(() -> {
             grid.setItems(filter.getDataList());
         });
-        search();
     }
 
     public void createGrid() {
