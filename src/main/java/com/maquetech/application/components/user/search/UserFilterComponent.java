@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class UserFilterComponent extends SearchComponent<UserFilterModel, UserModel> {
 
@@ -24,7 +25,7 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
     }
 
     @Override
-    public Component getComponent() {
+    public Component getComponent(Component... components) {
         var type = new ComboBox<UserTypeEnum>();
         type.setClearButtonVisible(true);
         type.setItems(UserTypeEnum.values());
@@ -36,7 +37,16 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
         search.addClickListener(event -> search());
 
         var layout = new FormLayout();
+        layout.setResponsiveSteps(
+                new FormLayout.ResponsiveStep("0px", 1),
+                new FormLayout.ResponsiveStep("1000px", 3)
+        );
         layout.add(type, search);
+        if (ArrayUtils.isNotEmpty(components)) {
+            for (Component component : components) {
+                layout.add(component);
+            }
+        }
 
         return layout;
     }

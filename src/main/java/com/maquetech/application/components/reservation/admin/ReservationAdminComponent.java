@@ -93,15 +93,6 @@ public class ReservationAdminComponent extends VerticalLayout {
                     });
         });
 
-
-
-//            reservationReceiveComponent.open(reservationModel, () -> {
-//                NotificationHelper.runAndNotify(() -> {
-//                    reservationService.receive(reservationId, reservationModel);
-//                }, "Reserva recebida com sucesso!");
-//            }));
-
-
         var btnReprove = new Button(VaadinIcon.TRASH.create());
         btnReprove.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnReprove.setTooltipText("Cancelar reserva");
@@ -157,8 +148,8 @@ public class ReservationAdminComponent extends VerticalLayout {
         situation.setItemLabelGenerator(SituationEnum::getDescription);
         binder.forField(situation).bind(ReservationFilterModel::getSituation, ReservationFilterModel::setSituation);
 
-        var btnConsult = new Button("Consultar");
-        btnConsult.addClickListener(event -> loadGridData());
+        var btnConsult = new Button("Consultar", VaadinIcon.SEARCH.create(), event -> loadGridData());
+        btnConsult.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
         var formLayout = new FormLayout();
         formLayout.setWidth("100%");

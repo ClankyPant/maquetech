@@ -15,6 +15,7 @@ import com.maquetech.application.services.material.MaterialService;
 import com.maquetech.application.services.reservation.ReservationService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePickerVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -104,8 +105,8 @@ public class ReservationUserComponent extends VerticalLayout {
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationFilterModel::getBookingEndDate, ReservationFilterModel::setBookingEndDate);
 
-        var btnConsult = new Button("Consultar");
-        btnConsult.addClickListener(event -> loadGridData());
+        var btnConsult = new Button("Consultar", VaadinIcon.SEARCH.create(), event -> loadGridData());
+        btnConsult.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
 
         var formLayout = new FormLayout();
         formLayout.setWidth("100%");

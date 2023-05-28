@@ -19,6 +19,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class MaterialModel {
+
     private Long id;
 
     private String name;
@@ -29,23 +30,23 @@ public class MaterialModel {
 
     private Double stockSafeQty;
 
-    @Builder.Default
-    private Double reservationQuantity = 0D;
-
     private MaterialTypeEnum type;
 
     private MaterialUnitEnum unit;
 
+    private MaterialEntity entidade;
+
+    private Button addMaterialButton;
+
+    private Button removeMaterialButton;
+
     @Builder.Default
     private boolean onReservation = false;
 
-    private final Button addMaterialButton = new Button(VaadinIcon.CHECK.create());
-
-    private final Button removeMaterialButton = new Button(VaadinIcon.TRASH.create());
+    @Builder.Default
+    private Double reservationQuantity = 0D;
 
     private final NumberField reservationQuantityField = new NumberField();
-
-    private MaterialEntity entidade;
 
     public String getTypeDescription() {
         return this.type.getDescription();
@@ -73,6 +74,9 @@ public class MaterialModel {
     }
 
     public Component getReservationActionButtons() {
+        this.addMaterialButton = new Button(VaadinIcon.CHECK.create());
+        this.removeMaterialButton = new Button(VaadinIcon.TRASH.create());
+
         this.addMaterialButton.setEnabled(!this.onReservation);
         this.removeMaterialButton.setEnabled(this.onReservation);
 

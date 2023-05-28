@@ -33,7 +33,7 @@ public abstract class SearchComponent<T, D> extends VerticalLayout {
         }
     }
 
-    protected Component getComponent() {
+    protected Component getComponent(Component... components) {
         throw new NotImplementedException();
     }
 
