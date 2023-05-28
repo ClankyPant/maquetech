@@ -11,16 +11,20 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import javassist.NotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 public class UserNavComponent extends HorizontalLayout {
 
+    private Long id;
     private Label navName;
     private final UserEditComponent userEdit;
 
-    public UserNavComponent(UserService userService) throws NotFoundException {
-        this.navName = new Label(UserHelper.getLoggerUserModel().getName());
+    public UserNavComponent(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) throws NotFoundException {
+        var user = UserHelper.getLoggerUserModel();
+        this.id = user.getId();
+        this.navName = new Label(user.getName());
 
-        userEdit = new UserEditComponent(userService);
+        userEdit = new UserEditComponent(userService, inMemoryUserDetailsManager);
         userEdit.addUserEditedListener(() -> {
             try {
                 this.navName.removeAll();
@@ -41,7 +45,7 @@ public class UserNavComponent extends HorizontalLayout {
         var subMenu = item.getSubMenu();
 
         var account = subMenu.addItem(getAccount());
-        account.addClickListener(event -> userEdit.open());
+        account.addClickListener(event -> userEdit.open(this.id));
 
         subMenu.add(new Hr());
 

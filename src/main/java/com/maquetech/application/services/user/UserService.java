@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -79,6 +80,10 @@ public class UserService {
     }
 
     public void save(UserModel model) {
+        save(model, null);
+    }
+
+    public void save(UserModel model, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         var userEntity = this.repository.findById(ConvertHelper.getLong(model.getId(), -1L)).orElse(new UserEntity());
         UserHelper.transform(userEntity, model);
 
@@ -87,6 +92,21 @@ public class UserService {
         }
 
         this.repository.save(userEntity);
+        if (inMemoryUserDetailsManager != null) inMemoryUserDetailsManager.createUser(this.createUserDetail(userEntity));
+    }
+
+    public void changePassword(Long id, String newPassword, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+        var user = this.repository.findById(id).orElse(null);
+
+        if (user == null) {
+            throw new IllegalArgumentException("Erro ao buscar usuário!");
+        }
+
+        user.setPassword(newPassword);
+        this.repository.save(user);
+
+        var userDetail = inMemoryUserDetailsManager.loadUserByUsername(user.getUsername());
+        inMemoryUserDetailsManager.updatePassword(userDetail, "{bcrypt}"+newPassword);
     }
 
     public UserEntity getLoggedUser() throws NotFoundException {

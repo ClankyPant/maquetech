@@ -24,6 +24,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 import javassist.NotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -35,9 +36,11 @@ public class MainLayout extends AppLayout {
     private H2 viewTitle;
     private final UserEntity userLogged;
     private final UserService userService;
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
-    public MainLayout(UserService userService) throws NotFoundException {
+    public MainLayout(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) throws NotFoundException {
         this.userService = userService;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
 
         this.userLogged = UserHelper.getLoggedUser();
         setPrimarySection(Section.DRAWER);
@@ -56,7 +59,7 @@ public class MainLayout extends AppLayout {
         viewTitle = new H2();
         viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
-        hlNavBarInfo.add(viewTitle, new UserNavComponent(userService));
+        hlNavBarInfo.add(viewTitle, new UserNavComponent(userService, this.inMemoryUserDetailsManager));
         hlNavBarInfo.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         hlNavBarInfo.setAlignItems(FlexComponent.Alignment.CENTER);
 

@@ -12,19 +12,20 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import javassist.NotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @RolesAllowed("ADMIN")
 @PageTitle("Usuários")
 @Route(value = "usuario", layout = MainLayout.class)
 public class UserView extends MaqueVerticalLayout {
 
-    public UserView(ProfessorCodeService professorCodeService, UserService userService) throws NotFoundException {
+    public UserView(ProfessorCodeService professorCodeService, UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) throws NotFoundException {
         setAlignItems(FlexComponent.Alignment.START);
         setJustifyContentMode(FlexComponent.JustifyContentMode.START);
 
         TabSheet tabSheet = new TabSheet();
         tabSheet.setSizeFull();
-        tabSheet.add("Usuários", new UserSearchComponent(userService));
+        tabSheet.add("Usuários", new UserSearchComponent(userService, inMemoryUserDetailsManager));
         tabSheet.add("Gerador de código", new ProfessorCodeGeneratorComponent(professorCodeService));
 
         add(tabSheet);

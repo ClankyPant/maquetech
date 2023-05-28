@@ -11,6 +11,7 @@ import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 public class UserSearchComponent extends VerticalLayout {
 
@@ -18,8 +19,8 @@ public class UserSearchComponent extends VerticalLayout {
     private final UserFilterComponent filter;
     private final MaqueGrid<UserModel> grid = new MaqueGrid<>();
 
-    public UserSearchComponent(UserService userService) throws NotFoundException {
-        this.userEdit = new UserEditComponent(userService);
+    public UserSearchComponent(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) throws NotFoundException {
+        this.userEdit = new UserEditComponent(userService, inMemoryUserDetailsManager);
         this.filter = new UserFilterComponent(userService, UserHelper.getLoggerUserModel().getId());
 
         createGrid();

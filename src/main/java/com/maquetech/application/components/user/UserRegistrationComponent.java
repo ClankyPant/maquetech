@@ -200,9 +200,7 @@ public class UserRegistrationComponent extends Dialog {
             String bcryptPassword = BCrypt.hashpw(password, saltPassword);
             user.setPassword(bcryptPassword);
 
-            this.userService.save(user);
-            this.inMemoryUserDetailsManager.createUser(this.userService.createUserDetail(user));
-
+            this.userService.save(user, inMemoryUserDetailsManager);
             NotificationHelper.success("Cadastro realizado com sucesso!");
             this.close();
         } catch (ValidationException ex) {

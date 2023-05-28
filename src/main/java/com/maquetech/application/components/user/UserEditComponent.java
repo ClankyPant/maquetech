@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,12 @@ public class UserEditComponent extends Dialog {
     private Binder<UserModel> binder;
     private final UserService userService;
     private final VerticalLayout vlContent = new VerticalLayout();
+    private final UserChangePasswordComponent userChangePasswordComponent;
     private final List<UserEditedListener> userEditedListenerList = new ArrayList<>();
 
-    public UserEditComponent(UserService userService) {
+    public UserEditComponent(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.userService = userService;
+        this.userChangePasswordComponent = new UserChangePasswordComponent(userService, inMemoryUserDetailsManager);
 
         init();
     }
@@ -39,7 +42,7 @@ public class UserEditComponent extends Dialog {
         vlContent.setSizeFull();
         vlContent.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        add(vlContent);
+        add(vlContent, userChangePasswordComponent);
     }
 
     private void initFields(Long id) {
@@ -74,11 +77,13 @@ public class UserEditComponent extends Dialog {
                 .asRequired()
                 .bind(UserModel::getPhone, UserModel::setPhone);
 
+        var changePassword = new Button("Mudar senha", event -> userChangePasswordComponent.open(this.user.getId()));
+
         var cancel = new Button("Cancelar");
         cancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
         cancel.addClickListener((event) -> this.close());
 
-        var edit = new Button("Editar");
+        var edit = new Button("Salvar");
         edit.addClickListener(event -> edit());
 
         var layout = new FormLayout();
@@ -87,17 +92,13 @@ public class UserEditComponent extends Dialog {
         vlContent.removeAll();
         vlContent.add(layout);
         getFooter().removeAll();
-        getFooter().add(cancel, edit);
+        getFooter().add(cancel, changePassword, edit);
         loadUserInformation(id);
     }
 
     private void loadUserInformation(Long id) {
         try {
-            if (id == null) {
-                user = UserHelper.getLoggerUserModel();
-            } else {
-                user = this.userService.get(id);
-            }
+            user = this.userService.get(id);
 
             binder.readBean(user);
         } catch (Exception ex) {
@@ -120,10 +121,6 @@ public class UserEditComponent extends Dialog {
             e.printStackTrace();
             NotificationHelper.error(e.getMessage());
         }
-    }
-
-    public void open() {
-        open(null);
     }
 
     public void open(Long id) {
