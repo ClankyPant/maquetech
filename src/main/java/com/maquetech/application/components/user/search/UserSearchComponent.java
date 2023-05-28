@@ -39,7 +39,7 @@ public class UserSearchComponent extends VerticalLayout {
         add(filter.getComponent(new Button("Novo", VaadinIcon.PLUS.create(), event -> userRegistration.open())));
         add(grid, userEdit);
 
-        userEdit.addUserEditedListener(this::search);
+        userEdit.addDialogCloseListener(this::search);
         filter.addFilterSearchListener(() -> {
             grid.setItems(filter.getDataList());
         });

@@ -4,6 +4,7 @@ import com.maquetech.application.entities.material.MaterialEntity;
 import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.enums.material.MaterialUnitEnum;
 import com.maquetech.application.helpers.NotificationHelper;
+import com.maquetech.application.listener.DialogCloseListener;
 import com.maquetech.application.services.material.MaterialService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,6 +16,8 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +28,7 @@ public class MaterialRegistrationComponent extends Dialog {
     private MaterialEntity materialEntity;
     private final MaterialService materialService;
     private final Binder<MaterialEntity> binder = new Binder<>(MaterialEntity.class);
+    private final List<DialogCloseListener> dialogCloseListenerList = new ArrayList<>();
 
     public MaterialRegistrationComponent(MaterialService materialService) {
         this.materialService = materialService;
@@ -69,7 +73,6 @@ public class MaterialRegistrationComponent extends Dialog {
         btnNewEdit.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         btnNewEdit.addClickListener(event -> {
             try {
-                materialEntity = new MaterialEntity();
                 binder.writeBean(materialEntity);
                 materialService.save(materialEntity);
 
@@ -79,6 +82,8 @@ public class MaterialRegistrationComponent extends Dialog {
                 materialUnitType.setValue(MaterialUnitEnum.UN);
                 materialTypeField.setValue(MaterialTypeEnum.TOOL);
                 NotificationHelper.success("Material cadastrado com sucesso!");
+                this.close();
+                onClose();
             } catch (Exception ex) {
                 ex.printStackTrace();
                 NotificationHelper.error("Alguns campos não foram preenchidos corretamente!");
@@ -108,8 +113,20 @@ public class MaterialRegistrationComponent extends Dialog {
         if (id != null) {
             materialEntity = this.materialService.getById(id);
             binder.readBean(materialEntity);
+        } else {
+            materialEntity = new MaterialEntity();
         }
 
         super.open();
+    }
+
+    public void addDialogCloseListenerList(DialogCloseListener dialogCloseListener) {
+        this.dialogCloseListenerList.add(dialogCloseListener);
+    }
+
+    public void onClose() {
+        for (var userEditedListner : this.dialogCloseListenerList) {
+            userEditedListner.onClose();
+        }
     }
 }

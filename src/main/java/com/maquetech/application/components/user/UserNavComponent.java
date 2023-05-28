@@ -2,7 +2,6 @@ package com.maquetech.application.components.user;
 
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.helpers.user.UserHelper;
-import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.services.user.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.html.Hr;
@@ -25,7 +24,7 @@ public class UserNavComponent extends HorizontalLayout {
         this.navName = new Label(user.getName());
 
         userEdit = new UserEditComponent(userService, inMemoryUserDetailsManager);
-        userEdit.addUserEditedListener(() -> {
+        userEdit.addDialogCloseListener(() -> {
             try {
                 this.navName.removeAll();
                 this.navName.add(UserHelper.getLoggerUserModel().getName());

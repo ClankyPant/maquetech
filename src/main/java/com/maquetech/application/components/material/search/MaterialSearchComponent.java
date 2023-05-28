@@ -40,6 +40,7 @@ public class MaterialSearchComponent extends VerticalLayout {
         this.loggedUser = UserHelper.getLoggedUser();
         this.materialFilter = new MaterialFilterComponent(materialService, loggedUser);
         this.materialRegistrationComponent = new MaterialRegistrationComponent(materialService);
+        this.materialRegistrationComponent.addDialogCloseListenerList(this::loadGrid);
 
         init();
         loadGrid();
@@ -104,7 +105,11 @@ public class MaterialSearchComponent extends VerticalLayout {
 
                 materialListAux.add(
                         materialMap.computeIfPresent(material.getId(), (key, mat) -> {
+                            mat.setStockSafeQty(material.getStockSafeQty());
                             mat.setStockQty(material.getStockQty());
+                            mat.setName(material.getName());
+                            mat.setUnit(material.getUnit());
+                            mat.setType(material.getType());
                             return mat;
                         })
                 );
