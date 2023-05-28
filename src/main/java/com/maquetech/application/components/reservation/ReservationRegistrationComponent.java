@@ -150,14 +150,14 @@ public class ReservationRegistrationComponent extends Dialog {
 
         binder.forField(startDateTimePicker)
                 .withValidator(Objects::nonNull, "Informe uma data")
-                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
+                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa ser válida!")
                 .withValidator(dateTime -> dateTime.isBefore(endDateTimePicker.getValue()), "Data inicio deve ser menor que data fim!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationModel::getBookingStartDate, ReservationModel::setBookingStartDate);
 
         binder.forField(endDateTimePicker)
                 .withValidator(Objects::nonNull, "Informe uma data")
-                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa válido!")
+                .withValidator(dateTime -> dateTime.isAfter(LocalDateTime.now()), "Data precisa ser válida!")
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationModel::getBookingEndDate, ReservationModel::setBookingEndDate);
 
