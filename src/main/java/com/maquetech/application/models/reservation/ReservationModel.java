@@ -32,8 +32,8 @@ public class ReservationModel {
         return this.situation.getDescription();
     }
 
-    public boolean isCanceled() {
-        return SituationEnum.CANCELED.equals(this.situation);
+    public boolean isntCanceled() {
+        return !SituationEnum.CANCELED.equals(this.situation);
     }
 
     public boolean isPending() {
@@ -44,8 +44,12 @@ public class ReservationModel {
         return SituationEnum.IN_PROGRESS.equals(this.situation);
     }
 
-    public boolean isFinished() {
-        return SituationEnum.FINISHED.equals(this.situation);
+    public boolean isntInProgress() {
+        return !isInProgress();
+    }
+
+    public boolean isntFinished() {
+        return !SituationEnum.FINISHED.equals(this.situation);
     }
 
     public boolean isApproved() {

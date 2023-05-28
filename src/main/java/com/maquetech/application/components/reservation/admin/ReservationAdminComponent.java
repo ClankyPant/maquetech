@@ -95,7 +95,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         var btnReprove = new Button(VaadinIcon.TRASH.create());
         btnReprove.addThemeVariants(ButtonVariant.LUMO_ERROR);
         btnReprove.setTooltipText("Cancelar reserva");
-        btnReprove.setVisible(!reservationModel.isInProgress() && !reservationModel.isCanceled() && !reservationModel.isFinished());
+        btnReprove.setVisible(reservationModel.isntInProgress() && reservationModel.isntCanceled() && reservationModel.isntFinished());
         btnReprove.addClickListener(event -> {
             openReservationMessage(reservationModel, "Cancelar reserva", () -> {
                 NotificationHelper.runAndNotify(() -> {
