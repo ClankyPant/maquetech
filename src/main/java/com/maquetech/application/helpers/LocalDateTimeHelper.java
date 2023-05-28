@@ -2,7 +2,6 @@ package com.maquetech.application.helpers;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -36,5 +35,9 @@ public class LocalDateTimeHelper {
 
     public static LocalDateTime truncate(LocalDateTime localDateTime) {
         return localDateTime.truncatedTo(ChronoUnit.MINUTES);
+    }
+
+    public static LocalDateTime getNowPlusTwoWeek() {
+        return getNowPlus15Minutes().plusWeeks(2);
     }
 }

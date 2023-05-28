@@ -64,7 +64,7 @@ public class ReservationUserComponent extends VerticalLayout {
 
         var btnCancel = new Button(VaadinIcon.TRASH.create());
         btnCancel.setTooltipText("Cancelar reserva");
-        btnCancel.setEnabled(!reservationModel.isCanceled() && !reservationModel.isInProgress());
+        btnCancel.setEnabled(!reservationModel.isCanceled() && !reservationModel.isInProgress() && !reservationModel.isFinished());
         btnCancel.addClickListener(event -> {
             try {
                 grid.getDataProvider().refreshItem(reservationService.cancel(reservationModel.getId(), reservationModel));
@@ -75,7 +75,7 @@ public class ReservationUserComponent extends VerticalLayout {
             }
         });
 
-        var btnSee = new Button(VaadinIcon.PENCIL.create());
+        var btnSee = new Button(VaadinIcon.SEARCH.create());
         btnSee.setTooltipText("Ver materiais");
         btnSee.addClickListener(event -> openSeeMaterial(reservationModel));
 
@@ -96,12 +96,12 @@ public class ReservationUserComponent extends VerticalLayout {
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationFilterModel::getBookingStartDate, ReservationFilterModel::setBookingStartDate);
 
-        var endDateTimePicket = new DateTimePicker("Data fim");
-        endDateTimePicket.setLocale(new Locale("pt", "BR"));
-        endDateTimePicket.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicket.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
-        endDateTimePicket.setStep(Duration.ofMinutes(15));
-        binder.forField(endDateTimePicket)
+        var endDateTimePicker = new DateTimePicker("Data fim");
+        endDateTimePicker.setLocale(new Locale("pt", "BR"));
+        endDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
+        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlusTwoWeek());
+        endDateTimePicker.setStep(Duration.ofMinutes(15));
+        binder.forField(endDateTimePicker)
                 .withConverter(new ConvertLocalDateTimeToDate())
                 .bind(ReservationFilterModel::getBookingEndDate, ReservationFilterModel::setBookingEndDate);
 
@@ -116,7 +116,7 @@ public class ReservationUserComponent extends VerticalLayout {
         );
         formLayout.add(
                 startDateTimePicker,
-                endDateTimePicket,
+                endDateTimePicker,
                 btnConsult,
                 new Button("Nova reserva", event -> reservationRegistrationComponent.open())
         );

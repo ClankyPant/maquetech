@@ -27,7 +27,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.binder.Binder;
-import javassist.NotFoundException;
 
 import java.time.Duration;
 import java.util.Locale;
@@ -105,7 +104,7 @@ public class ReservationAdminComponent extends VerticalLayout {
             });
         });
 
-        var btnSee = new Button(VaadinIcon.PENCIL.create());
+        var btnSee = new Button(VaadinIcon.SEARCH.create());
         btnSee.setTooltipText("Ver materiais");
         btnSee.addClickListener(event -> openSeeMaterial(reservationModel));
 
@@ -136,7 +135,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         var endDateTimePicker = new DateTimePicker("Data fim");
         startDateTimePicker.setLocale(new Locale("pt", "BR"));
         endDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlus1HourAnd15Minutes());
+        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlusTwoWeek());
         endDateTimePicker.setStep(Duration.ofMinutes(15));
         binder.forField(endDateTimePicker)
                 .withConverter(new ConvertLocalDateTimeToDate())
