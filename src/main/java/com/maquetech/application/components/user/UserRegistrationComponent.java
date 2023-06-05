@@ -4,6 +4,7 @@ import com.maquetech.application.Application;
 import com.maquetech.application.enums.user.UserTypeEnum;
 import com.maquetech.application.helpers.EnvironmentHelper;
 import com.maquetech.application.helpers.NotificationHelper;
+import com.maquetech.application.helpers.StringHelper;
 import com.maquetech.application.models.user.CourseModel;
 import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.services.course.CourseService;
@@ -97,6 +98,7 @@ public class UserRegistrationComponent extends Dialog {
         cpf.setAllowedCharPattern("[0-9]");
         cpf.setRequired(true);
         binder.forField(cpf)
+                .withValidator(StringHelper::validateCPF, "CPF inválido!")
                 .asRequired()
                 .bind(UserModel::getCpf, UserModel::setCpf);
 
