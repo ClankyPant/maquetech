@@ -21,6 +21,7 @@ public class ReservationMaterialHelper {
                         .builder()
                         .id(material.getId())
                         .name(material.getName())
+                        .type(material.getType())
                         .build())
                 .quantity(entity.getQuantity())
                 .build();

@@ -1,6 +1,7 @@
 package com.maquetech.application.components.reservation.admin;
 
 import com.maquetech.application.components.maquetech.grid.MaqueGrid;
+import com.maquetech.application.enums.material.MaterialTypeEnum;
 import com.maquetech.application.helpers.ConvertHelper;
 import com.maquetech.application.models.reservation.ReservationMaterialModel;
 import com.maquetech.application.models.reservation.ReservationModel;
@@ -33,6 +34,7 @@ public class ReservationReceiveComponent extends Dialog {
         var damageField = new NumberField();
         damageField.setStep(1);
         damageField.setWidth("50px");
+        damageField.setReadOnly(reservationMaterialModel.getMaterialModel().getType().equals(MaterialTypeEnum.CONSUMABLE));
         damageField.addValueChangeListener(event -> {
             var requestedQuantity = reservationMaterialModel.getQuantity();
             var inputedQuantity = ConvertHelper.getDouble(ConvertHelper.getDouble(event.getValue(), 0D).intValue());
