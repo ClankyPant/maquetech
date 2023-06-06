@@ -1,8 +1,8 @@
 package com.maquetech.application.components.user;
 
-import com.maquetech.application.Application;
 import com.maquetech.application.enums.user.UserTypeEnum;
 import com.maquetech.application.helpers.EnvironmentHelper;
+import com.maquetech.application.helpers.LabelHelper;
 import com.maquetech.application.helpers.NotificationHelper;
 import com.maquetech.application.helpers.StringHelper;
 import com.maquetech.application.models.user.CourseModel;
@@ -10,14 +10,16 @@ import com.maquetech.application.models.user.UserModel;
 import com.maquetech.application.services.course.CourseService;
 import com.maquetech.application.services.user.UserService;
 import com.maquetech.application.services.user.professor.ProfessorCodeService;
-import com.maquetech.application.views.user.UserLoginView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -41,6 +43,7 @@ public class UserRegistrationComponent extends Dialog {
     private final ProfessorCodeService professorCodeService;
     private final VerticalLayout vlContent = new VerticalLayout();
     private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    private final UserTermsComponent userTermsComponent = new UserTermsComponent();
     private ComboBox<CourseModel> course;
     private TextField specialCode;
 
@@ -161,11 +164,15 @@ public class UserRegistrationComponent extends Dialog {
         vlContent.removeAll();
         vlContent.add(layout);
         getFooter().removeAll();
-        getFooter().add(cancel, edit);
+        getFooter().add(userTermsComponent, cancel, edit);
     }
 
     private void register() {
         try {
+            if (!userTermsComponent.isAceepted()) {
+                throw new IllegalArgumentException("Aceite os termos de privacidade antes de prosseguir!");
+            }
+
             var user = new UserModel();
             binder.writeBean(user);
 
