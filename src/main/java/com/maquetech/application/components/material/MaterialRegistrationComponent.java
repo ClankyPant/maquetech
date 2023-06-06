@@ -67,6 +67,7 @@ public class MaterialRegistrationComponent extends Dialog {
         binder.forField(materialTypeField).bind(MaterialEntity::getType, MaterialEntity::setType);
 
         var isOnlyProfessorField = new Checkbox("Apenas professores");
+        isOnlyProfessorField.setTooltipText("Materiais marcados com \"Apenas professores\" apenas podem ser reservados por professores!");
         binder.forField(isOnlyProfessorField).bind(MaterialEntity::getOnlyProfessor, MaterialEntity::setOnlyProfessor);
 
         var btnNewEdit = new Button("Cadastrar/editar");
