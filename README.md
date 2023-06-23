@@ -1,3 +1,6 @@
+BUILD: mvn package -Pproduction
+DEPLOY: heroku deploy:jar .\target\maquetech-1.0.jar -a maquetech
+
 # MaqueTech
 
 This project can be used as a starting point to create your own Vaadin application with Spring Boot.
