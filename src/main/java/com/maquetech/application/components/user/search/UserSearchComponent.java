@@ -16,6 +16,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import javassist.NotFoundException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 public class UserSearchComponent extends VerticalLayout {
@@ -41,17 +42,13 @@ public class UserSearchComponent extends VerticalLayout {
         setSizeFull();
 
         bulkChange.addClickEvent(() -> bulkChange.openBulkChange(grid.getSelectedItems()));
-        bulkChange.addAfterSaveFunc(this::filter);
+        bulkChange.addAfterSaveFunc(this::search);
 
         add(filter.getComponent(bulkChange.getBulkChangeButton(), new Button("Novo", VaadinIcon.PLUS.create(), event -> userRegistration.open())));
         add(grid, userEdit);
 
         userEdit.addDialogCloseListener(this::search);
-        filter.addFilterSearchListener(this::filter);
-    }
-
-    private void filter() {
-        grid.setItems(filter.getDataList());
+        filter.addFilterSearchListener(() -> grid.setItems(filter.getDataList()));
     }
 
     public void createGrid() {
@@ -65,10 +62,7 @@ public class UserSearchComponent extends VerticalLayout {
         grid.addColumn(UserModel::getPhone).setKey("PHONE").setHeader("Telefone").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getMail).setKey("MAIL").setHeader("E-mail").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getCourseDescription).setKey("COURSE").setHeader("Curso").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
-        grid.addSelectionListener(event -> {
-           var listSelected = event.getAllSelectedItems();
-           bulkChange.changeEnable(listSelected.size() > 0);
-        });
+        grid.addSelectionListener(event -> bulkChange.changeEnable(CollectionUtils.isNotEmpty(event.getAllSelectedItems())));
     }
 
     public Component getEdit(UserModel user) {
