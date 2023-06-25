@@ -27,7 +27,7 @@ public class UserSearchComponent extends VerticalLayout {
     private final UserBulkChangeComponent bulkChange;
 
     public UserSearchComponent(UserService userService, CourseService courseService, ProfessorCodeService professorCodeService, InMemoryUserDetailsManager inMemoryUserDetailsManager) throws NotFoundException {
-        this.bulkChange = new UserBulkChangeComponent(userService);
+        this.bulkChange = new UserBulkChangeComponent(userService, inMemoryUserDetailsManager);
         this.userRegistration = new UserRegistrationComponent(userService, courseService, professorCodeService, inMemoryUserDetailsManager);
         this.userEdit = new UserEditComponent(userService, inMemoryUserDetailsManager);
         this.filter = new UserFilterComponent(userService, UserHelper.getLoggerUserModel().getId());

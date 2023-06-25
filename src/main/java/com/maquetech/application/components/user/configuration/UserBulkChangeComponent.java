@@ -10,6 +10,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,14 +21,16 @@ public class UserBulkChangeComponent extends Dialog {
     private Runnable afterSaveFunc;
     private final UserService userService;
     private final Set<UserModel> setUserModel = new HashSet<>();
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
 
+    private ComboBox<Boolean> situation;
     private final Button save = new Button("Salvar");
     private final Button cancel = new Button("Cancelar");
     private final Button bulkChange = new Button("Alteração em massa");
-    private ComboBox<Boolean> situation;
 
-    public UserBulkChangeComponent(UserService userService) {
+    public  UserBulkChangeComponent(UserService userService, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.userService = userService;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
 
         init();
         initFooter();
@@ -105,7 +108,7 @@ public class UserBulkChangeComponent extends Dialog {
 
     private void save() {
         try {
-            this.userService.bulkChange(this.setUserModel, this.situation.getValue());
+            this.userService.bulkChange(this.setUserModel, this.situation.getValue(), inMemoryUserDetailsManager);
             NotificationHelper.success("Usuários alterados com sucesso!");
         } catch (Exception ex) {
             ex.printStackTrace();

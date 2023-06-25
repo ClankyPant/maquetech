@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
+    @Query(value = "SELECT * FROM user_entity WHERE is_active = true", nativeQuery = true)
+    List<UserEntity> getOnlyActive();
+
     @Query("""
            SELECT user
            FROM user_entity user

@@ -11,8 +11,10 @@ import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class UserService {
 
     public List<UserDetails> getDetailsList() {
         List<UserDetails> result = new ArrayList<>();
-        Iterable<UserEntity> userEntityIterable = this.repository.findAll();
+        List<UserEntity> userEntityIterable = this.repository.getOnlyActive();
 
         for (UserEntity userIterable : userEntityIterable) {
             result.add(createUserDetail(userIterable));
@@ -49,14 +51,6 @@ public class UserService {
                 .withUsername(userEntity.getUsername())
                 .password("{bcrypt}"+userEntity.getPassword())
                 .roles(userEntity.getRoleStr())
-                .build();
-    }
-
-    public UserDetails createUserDetail(UserModel userModel) {
-        return User
-                .withUsername(userModel.getUsername())
-                .password("{bcrypt}"+userModel.getPassword())
-                .roles(userModel.getRoleStr())
                 .build();
     }
 
@@ -99,6 +93,7 @@ public class UserService {
     }
 
     public void changePassword(Long id, String newPassword, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+
         var user = this.repository.findById(id).orElse(null);
 
         if (user == null) {
@@ -127,14 +122,24 @@ public class UserService {
         return result;
     }
 
-    public void bulkChange(Set<UserModel> setUserModel, boolean situation) {
+    public void bulkChange(Set<UserModel> setUserModel, boolean situation, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         var idList = setUserModel.stream().map(UserModel::getId).toList();
-        var iterable = this.repository.findAllById(idList);
-        var iterator = iterable.iterator();
-        while (iterator.hasNext()) {
-            var entity = iterator.next();
+        var listUser = this.repository.findAllById(idList);
+
+        for (UserEntity entity : listUser) {
             entity.setActive(situation);
             this.repository.save(entity);
+
+            var username = entity.getUsername();
+            if (situation) {
+                try {
+                    inMemoryUserDetailsManager.loadUserByUsername(username);
+                } catch (UsernameNotFoundException ex) {
+                    inMemoryUserDetailsManager.createUser(this.createUserDetail(entity));
+                }
+            } else {
+                inMemoryUserDetailsManager.deleteUser(username);
+            }
         }
     }
 }
