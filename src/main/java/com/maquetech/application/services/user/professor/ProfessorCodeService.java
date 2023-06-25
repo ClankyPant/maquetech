@@ -15,7 +15,7 @@ public class ProfessorCodeService {
     }
 
     private ProfessorCodeEntity getByCode(String code) throws NotFoundException {
-        ProfessorCodeEntity result = this.repository.getByCode(code);
+        var result = this.repository.getByCode(code);
         if (result == null) throw new NotFoundException("Código não encontrado na base de dados!");
 
         return result;

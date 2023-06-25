@@ -13,5 +13,5 @@ public interface ProfessorCodeRepository extends CrudRepository<ProfessorCodeEnt
                     FROM professor_code_entity p
                     WHERE p.code = ?1
                     """)
-    public ProfessorCodeEntity getByCode(String code);
+    ProfessorCodeEntity getByCode(String code);
 }

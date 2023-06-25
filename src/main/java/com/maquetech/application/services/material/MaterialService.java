@@ -24,7 +24,6 @@ public class MaterialService {
     private final MaterialRepository repository;
     private final ReservationService reservationService;
 
-
     public MaterialService(MaterialRepository repository, ReservationService reservationService) {
         this.repository = repository;
         this.reservationService = reservationService;
@@ -52,11 +51,11 @@ public class MaterialService {
         return getListForReservation(idList, type, userTypeEnum, startBookingDate, endBookingDate);
     }
 
-    public List<MaterialModel> getListForConsult(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
+    private List<MaterialModel> getListForConsult(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum) {
         return MaterialHelper.transform(getListByUser(idList, type, userTypeEnum));
     }
 
-    public List<MaterialModel> getListForReservation(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum,
+    private List<MaterialModel> getListForReservation(List<Long> idList, MaterialTypeEnum type, UserTypeEnum userTypeEnum,
                                                      Date startBookingDate, Date endBookingDate) {
 
         var materialModelList = MaterialHelper.transform(getListByUser(idList, type, userTypeEnum));
@@ -102,10 +101,6 @@ public class MaterialService {
         return this.repository.findById(id).orElse(null);
     }
 
-    public void update(MaterialEntity materialEntity) {
-        this.repository.save(materialEntity);
-    }
-
     public void validateAndRemoveConsumables(Long id) {
         var reservation = reservationService.getById(id);
         var reservationMaterialList = reservation.getMaterialList();
@@ -123,7 +118,7 @@ public class MaterialService {
                 material.setStockQty(material.getStockQty() - reservationMaterial.getQuantity());
             }
 
-            this.update(material);
+            this.save(material);
         }
     }
 
