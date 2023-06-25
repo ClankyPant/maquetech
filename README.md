@@ -1,5 +1,8 @@
-BUILD: mvn package -Pproduction
-DEPLOY: heroku deploy:jar .\target\maquetech-1.0.jar -a maquetech
+# Configuraçoes gerais
+
+* Para buildar projeto: mvn package -Pproduction
+* Para dar deployt: heroku deploy:jar .\target\maquetech-1.0.jar -a maquetech
+
 
 # MaqueTech
 
