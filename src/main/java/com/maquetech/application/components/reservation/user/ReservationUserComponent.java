@@ -90,7 +90,7 @@ public class ReservationUserComponent extends VerticalLayout {
         var startDateTimePicker = new DateTimePicker("Data inicio");
         startDateTimePicker.setLocale(new Locale("pt", "BR"));
         startDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        startDateTimePicker.setValue(LocalDateTimeHelper.now());
+        startDateTimePicker.setValue(LocalDateTimeHelper.getTodayStartHour());
         startDateTimePicker.setStep(Duration.ofMinutes(15));
         binder.forField(startDateTimePicker)
                 .withConverter(new ConvertLocalDateTimeToDate())
@@ -99,7 +99,7 @@ public class ReservationUserComponent extends VerticalLayout {
         var endDateTimePicker = new DateTimePicker("Data fim");
         endDateTimePicker.setLocale(new Locale("pt", "BR"));
         endDateTimePicker.addThemeVariants(DateTimePickerVariant.LUMO_SMALL);
-        endDateTimePicker.setValue(LocalDateTimeHelper.getNowPlusTwoWeek());
+        endDateTimePicker.setValue(LocalDateTimeHelper.getTodayFinalHour());
         endDateTimePicker.setStep(Duration.ofMinutes(15));
         binder.forField(endDateTimePicker)
                 .withConverter(new ConvertLocalDateTimeToDate())

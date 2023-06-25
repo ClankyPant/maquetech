@@ -11,6 +11,14 @@ public class LocalDateTimeHelper {
 
     }
 
+    public static LocalDateTime getTodayStartHour() {
+        return LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+    }
+
+    public static LocalDateTime getTodayFinalHour() {
+        return LocalDateTime.now().withHour(23).withMinute(50).withSecond(0);
+    }
+
     public static LocalDateTime now() {
         return LocalDateTime.now();
     }
