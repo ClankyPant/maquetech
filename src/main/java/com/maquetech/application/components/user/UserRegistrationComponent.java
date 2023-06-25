@@ -180,6 +180,10 @@ public class UserRegistrationComponent extends Dialog {
                 throw new Exception("Login " + user.getUsername() + " já está em uso!");
             }
 
+            if (this.userService.hasByCpf(user.getCpf())) {
+                throw new Exception("CPF " + user.getCpf() + " já está em uso!");
+            }
+
             if (user.isStudent() && course.getValue() == null) {
                 throw new Exception("Informe um curso para finalizar o cadastro!");
             }

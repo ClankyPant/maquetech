@@ -68,6 +68,14 @@ public class UserService {
         return UserHelper.transform(user);
     }
 
+    public boolean hasByCpf(String cpf) {
+        return this.getByCpf(cpf) != null;
+    }
+
+    public UserEntity getByCpf(String cpf) {
+        return this.repository.findByCpf(cpf);
+    }
+
     public boolean hasByUsername(String username) {
         return this.getByUsername(username) != null;
     }

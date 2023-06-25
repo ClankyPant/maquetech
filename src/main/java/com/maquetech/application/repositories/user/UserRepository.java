@@ -22,6 +22,12 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
            """)
     UserEntity findByUsername(String username);
 
+    @Query("""
+           SELECT user
+           FROM user_entity user
+           WHERE user.cpf = ?1
+           """)
+    UserEntity findByCpf(String cpf);
 
     @Query(value = """
            SELECT us
