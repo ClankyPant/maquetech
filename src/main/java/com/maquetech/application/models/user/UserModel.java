@@ -50,6 +50,10 @@ public class UserModel {
         return !this.isStudent();
     }
 
+    public String getSituationDisplay() {
+        return this.isActive ? "Ativo" : "Inativo";
+    }
+
     public String getRoleStr() {
         String result = "NORMAL";
         if (this.isProfessor()) result = "PROFESSOR";

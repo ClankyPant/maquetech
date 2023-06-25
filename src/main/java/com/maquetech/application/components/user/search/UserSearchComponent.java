@@ -60,6 +60,7 @@ public class UserSearchComponent extends VerticalLayout {
         grid.addComponentColumn(this::getEdit).setKey("EDIT").setHeader("Editar").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(UserModel::getName).setKey("NAME").setHeader("Nome").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getCpf).setKey("CPF").setHeader("CPF").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
+        grid.addColumn(UserModel::getSituationDisplay).setKey("SITUATION").setHeader("Situação").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getTypeDescription).setKey("TYPE").setHeader("Tipo").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getPhone).setKey("PHONE").setHeader("Telefone").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);
         grid.addColumn(UserModel::getMail).setKey("MAIL").setHeader("E-mail").setTextAlign(ColumnTextAlign.CENTER).setAutoWidth(true);

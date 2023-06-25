@@ -26,7 +26,7 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
 
     @Override
     public Component getComponent(Component... components) {
-        var type = new ComboBox<UserTypeEnum>();
+        var type = new ComboBox<UserTypeEnum>("Tipo usuário");
         type.setClearButtonVisible(true);
         type.setItems(UserTypeEnum.values());
         type.setItemLabelGenerator(UserTypeEnum::getDescription);

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -41,12 +42,7 @@ public class UserBulkChangeComponent extends Dialog {
         setCloseOnOutsideClick(false);
 
         bulkChange.setEnabled(false);
-        bulkChange.addClickListener(event -> {
-
-        });
-
-        setCloseOnEsc(false);
-        setCloseOnOutsideClick(false);
+        bulkChange.setIcon(VaadinIcon.COG.create());
 
         situation = new ComboBox<>("Situação");
         situation.setItems(Boolean.TRUE, Boolean.FALSE);
