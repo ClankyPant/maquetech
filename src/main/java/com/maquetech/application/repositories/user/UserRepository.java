@@ -2,6 +2,7 @@ package com.maquetech.application.repositories.user;
 
 import com.maquetech.application.entities.user.UserEntity;
 import com.maquetech.application.enums.user.UserTypeEnum;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

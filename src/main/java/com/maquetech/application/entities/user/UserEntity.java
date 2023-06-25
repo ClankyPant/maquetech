@@ -42,6 +42,9 @@ public class UserEntity extends AbstractBean {
     @OneToOne(fetch = FetchType.EAGER)
     private CourseEntity course;
 
+    @Column(columnDefinition = "boolean default true")
+    private boolean isActive = true;
+
     @OneToMany(mappedBy = "user")
     private List<ReservationEntity> reservationList;
 

@@ -21,6 +21,8 @@ public class UserModel {
     private String phone;
     private String username;
     private String password;
+    private boolean isActive = true;
+
     private CourseModel course;
     private List<ReservationModel> reservationList;
 

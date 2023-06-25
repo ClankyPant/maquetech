@@ -22,13 +22,14 @@ public class UserHelper {
     }
 
     public static UserEntity transform(UserEntity result, UserModel model) {
-        result.setUsername(model.getUsername());
+        result.setCpf(model.getCpf());
+        result.setMail(model.getMail());
         result.setName(model.getName());
         result.setType(model.getType());
-        result.setMail(model.getMail());
-        result.setPassword(model.getPassword());
-        result.setCpf(model.getCpf());
         result.setPhone(model.getPhone());
+        result.setActive(model.isActive());
+        result.setUsername(model.getUsername());
+        result.setPassword(model.getPassword());
         if (model.isStudent()) result.setCourse(CourseHelper.transform(model.getCourse()));
 
         return result;
@@ -37,13 +38,14 @@ public class UserHelper {
     public static UserModel transform(UserEntity entity) {
         var result = UserModel
                 .builder()
-                .username(entity.getUsername())
+                .cpf(entity.getCpf())
                 .name(entity.getName())
                 .type(entity.getType())
                 .mail(entity.getMail())
-                .password(entity.getPassword())
-                .cpf(entity.getCpf())
                 .phone(entity.getPhone())
+                .isActive(entity.isActive())
+                .username(entity.getUsername())
+                .password(entity.getPassword())
                 .course(CourseHelper.transform(entity.getCourse()))
                 .build();
 

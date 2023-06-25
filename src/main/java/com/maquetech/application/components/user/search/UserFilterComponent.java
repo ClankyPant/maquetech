@@ -39,7 +39,7 @@ public class UserFilterComponent extends SearchComponent<UserFilterModel, UserMo
         var layout = new FormLayout();
         layout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0px", 1),
-                new FormLayout.ResponsiveStep("1000px", 3)
+                new FormLayout.ResponsiveStep("1000px", 4)
         );
         layout.add(type, search);
         if (ArrayUtils.isNotEmpty(components)) {

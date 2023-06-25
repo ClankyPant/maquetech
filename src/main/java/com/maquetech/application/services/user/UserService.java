@@ -17,7 +17,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -122,5 +125,16 @@ public class UserService {
         if (result == null) throw new NotFoundException("Usuário logado inválido!");
 
         return result;
+    }
+
+    public void bulkChange(Set<UserModel> setUserModel, boolean situation) {
+        var idList = setUserModel.stream().map(UserModel::getId).toList();
+        var iterable = this.repository.findAllById(idList);
+        var iterator = iterable.iterator();
+        while (iterator.hasNext()) {
+            var entity = iterator.next();
+            entity.setActive(situation);
+            this.repository.save(entity);
+        }
     }
 }
