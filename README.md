@@ -7,7 +7,7 @@
 
 ## Documentação
 
-Para conseguir acessa a documentação do sistema clieque [aqui](https://catolicasc-my.sharepoint.com/:f:/g/personal/luis_albino_catolicasc_edu_br/EpZd-9SRVG1KnwBzTpQwy3sB0nkg9hVd22bg3kG0EFneFQ?e=x52mrr)!
+Para conseguir acessa a documentação do sistema clique [aqui](https://catolicasc-my.sharepoint.com/:f:/g/personal/luis_albino_catolicasc_edu_br/EpZd-9SRVG1KnwBzTpQwy3sB0nkg9hVd22bg3kG0EFneFQ?e=x52mrr)!
 
 [//]: # (# MaqueTech)
 
