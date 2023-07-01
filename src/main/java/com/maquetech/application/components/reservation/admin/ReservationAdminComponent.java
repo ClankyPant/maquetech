@@ -174,7 +174,7 @@ public class ReservationAdminComponent extends VerticalLayout {
         var endDateColumn = grid.addColumn(ReservationModel::getEndDateDisplay).setKey("end_date").setHeader("Data").setTextAlign(ColumnTextAlign.CENTER);
         var endHourColumn = grid.addColumn(ReservationModel::getEndHourDisplay).setKey("end_hour").setHeader("Hora").setTextAlign(ColumnTextAlign.CENTER);
         grid.addColumn(ReservationModel::getSituationDisplay).setKey("situation").setHeader("Situação").setTextAlign(ColumnTextAlign.CENTER);
-        grid.addComponentColumn(this::getActionButton).setKey("action_button").setHeader("Ações").setTextAlign(ColumnTextAlign.CENTER);
+        grid.addComponentColumn(this::getActionButton).setKey("action_button").setHeader("Ações").setTextAlign(ColumnTextAlign.CENTER).setWidth("250px");
         grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COLUMN_BORDERS);
 
         var headerRow = grid.prependHeaderRow();
