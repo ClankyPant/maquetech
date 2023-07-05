@@ -15,6 +15,10 @@ username: professor<br />
 senha: professor123<br />
 [Link acesso](https://maquetech.herokuapp.com/login)
 
+## Outros
+[Heroku](https://id.heroku.com/login)
+<br />
+[Jira](https://maquetech.atlassian.net/jira/software/c/projects/MAQ/boards/1/timeline)
 
 [//]: # (# MaqueTech)
 
