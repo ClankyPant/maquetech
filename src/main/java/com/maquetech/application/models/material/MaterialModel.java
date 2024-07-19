@@ -28,6 +28,8 @@ public class MaterialModel {
 
     private Double stockQty;
 
+    private Double t;
+
     private Double stockSafeQty;
 
     private MaterialTypeEnum type;
